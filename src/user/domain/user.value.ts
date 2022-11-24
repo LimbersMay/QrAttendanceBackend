@@ -6,15 +6,15 @@ export class UserValue implements UserEntity {
     email: string;
     password: string;
     name: string;
-    mothers_name: string;
-    fathers_name: string;
+    mothersName: string;
+    fathersName: string;
 
-    constructor ({email, password, name, mothers_name, fathers_name}: UserEntity) {
+    constructor ({email, password, name, mothersName: mothers_name, fathersName: fathers_name}: UserEntity) {
         this.email = email;
         this.password = password;
         this.name = name;
-        this.mothers_name = mothers_name;
-        this.fathers_name = fathers_name;
+        this.mothersName = mothers_name;
+        this.fathersName = fathers_name;
 
         this.userId = uuid();
     }

@@ -4,6 +4,6 @@ export interface UserEntity {
     email: string,
     password: string,
     name: string,
-    mothers_name: string,
-    fathers_name: string,
+    mothersName: string,
+    fathersName: string,
 }
