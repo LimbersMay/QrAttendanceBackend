@@ -5,8 +5,8 @@ CREATE database QrAassistance;
 
 USE QrAassistance;
 
-CREATE TABLE professor (
-    professor_id INT PRIMARY KEY NOT NULL UNIQUE,
+CREATE TABLE user (
+    user_id INT PRIMARY KEY NOT NULL UNIQUE,
     name varchar(25) NOT NULL,
     email varchar(25) NOT NULL,
     password varchar(25) NOT NULL,
@@ -27,10 +27,10 @@ CREATE TABLE registry(
 
 CREATE TABLE qr_code(
     qr_id INT PRIMARY KEY NOT NULL,
-    professor_id INT,
+    user_id INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (professor_id) REFERENCES professor(professor_id)
+    FOREIGN KEY (user_id) REFERENCES user(user_id)
 );
 
 CREATE TABLE qr_registry(
