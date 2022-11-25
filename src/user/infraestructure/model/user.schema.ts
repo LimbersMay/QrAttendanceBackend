@@ -35,7 +35,8 @@ const User = db.define('user', {
     }
 },
 {
-    timestamps: false
+    timestamps: false,
+    tableName: "user"
 });
 
 export default User;
