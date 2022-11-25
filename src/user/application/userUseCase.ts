@@ -3,15 +3,23 @@ import { UserEntity } from '../domain/user.entity';
 import { UserValue } from '../domain/user.value';
 
 export class UserUseCase {
-    constructor( private readonly userRepository: UserRepository ) {
+    constructor( private readonly userRepository: UserRepository ) {}
 
-    }
-
-    public async registerUser({name, email, password, mothersName, fathersName}: UserEntity) {
+    public registerUser = async ({name, email, password, mothersName, fathersName}: UserEntity) => {
         const userValue = new UserValue({name, email, password, mothersName, fathersName});
-        const userCreated = await this.userRepository.registerUser(userValue)
+        const userCreated = await this.userRepository.createUser(userValue)
         return userCreated;
     }
 
-    public async registerQr() {}
+    public loginUser = async ({email, password}: {email: string, password: string}) => {
+        const user = await this.userRepository.loginUser({email, password});
+        return user;
+    }
+
+    public findUserById = async (userId: string) => {
+        const user = await this.userRepository.findUserById(userId);
+        return user;
+    }
+
+    public registerQr = async () => {};
 } 
