@@ -6,4 +6,6 @@ export interface UserEntity {
     name: string,
     mothersName: string,
     fathersName: string,
+    updatedAt?: Date,
+    createdAt?: Date
 }
