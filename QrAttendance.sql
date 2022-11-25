@@ -1,9 +1,9 @@
 
-DROP database if exists QrAassistance;
+DROP database if exists QrAttendance;
 
-CREATE database QrAassistance;
+CREATE database QrAttendance;
 
-USE QrAassistance;
+USE QrAttendance;
 
 CREATE TABLE user (
     user_id INT PRIMARY KEY NOT NULL UNIQUE,
