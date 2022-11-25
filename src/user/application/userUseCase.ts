@@ -2,7 +2,7 @@ import { UserRepository } from '../domain/user.repository';
 import { UserEntity } from '../domain/user.entity';
 import { UserValue } from '../domain/user.value';
 
-export class userUseCase {
+export class UserUseCase {
     constructor( private readonly userRepository: UserRepository ) {
 
     }
