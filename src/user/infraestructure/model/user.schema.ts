@@ -23,18 +23,19 @@ const User = db.define('user', {
     fathers_name: {
         type: DataTypes.STRING
     },
-    createdAt: {
+    created_at: {
         type: "TIMESTAMP",
         defaultValue: db.literal("CURRENT_TIMESTAMP"),
-        allowNull: false
     },
-    updatedAt: {
+    updated_at: {
         type: "TIMESTAMP",
         defaultValue: db.literal(
           "CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"
         ),
-        allowNull: false,
-      }
+    }
+},
+{
+    timestamps: false
 });
 
 export default User;
