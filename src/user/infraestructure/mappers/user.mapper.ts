@@ -1,0 +1,16 @@
+import { MapperService } from './mapper';
+import { UserEntity } from '../../domain/user.entity';
+
+export class UserMapperService extends MapperService<any, UserEntity> {
+    protected map(entity: any): UserEntity {
+        return {
+            name: entity.name,
+            email: entity.email,
+            password: entity.password,
+            mothersName: entity.mothers_name,
+            fathersName: entity.fathers_name,
+            updatedAt: entity.updated_at,
+            createdAt: entity.created_at
+        }
+    }
+}
