@@ -19,10 +19,6 @@ export class MysqlRepository implements UserRepository {
 
     async createUser(user: UserEntity): Promise<UserEntity | null> {
         const mappedUser = this.dtoMapperService.transform(user);
-
-        mappedUser.modifiedAt = new Date();
-        mappedUser.createdAt = new Date();
-
         const userCreated = await User.create(mappedUser);
         return this.userMapperService.transform(userCreated);
     }
