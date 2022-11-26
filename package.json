@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "",
-    "dev": "nodemon ./src/user/user.app.ts"
+    "dev": "nodemon src/contexts/QrAttendance/user/user.app.ts"
   },
   "keywords": [],
   "author": "",
