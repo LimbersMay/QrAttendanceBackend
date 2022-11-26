@@ -9,10 +9,17 @@ export class UserController {
         const { userId = '' } = query;
 
         const user = await this.userUseCase.findUserById(`${userId}`);
-        return res.send({user});
+        return res.status(200).json({
+            user
+        });
     }
 
-    public insertCtrl = async() => {
+    public insertCtrl = async({ body }: Request, res: Response ) => {
+        const { name, email,  password, mothersName, fathersName } = body;
 
+        const user = await this.userUseCase.registerUser({ name, email, password, mothersName, fathersName });
+        return res.status(200).json({
+            user
+        });
     }
 }
