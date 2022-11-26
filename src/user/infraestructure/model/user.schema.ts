@@ -24,10 +24,12 @@ const User = db.define('user', {
         type: DataTypes.STRING
     },
     created_at: {
-        type: "TIMESTAMP"
+        type: "TIMESTAMP",
+        defaultValue: db.literal("CURRENT_TIMESTAMP")
     },
     updated_at: {
-        type: "TIMESTAMP"
+        type: "TIMESTAMP",
+        defaultValue: db.literal("CURRENT_TIMESTAMP")
     }
 },
 {
