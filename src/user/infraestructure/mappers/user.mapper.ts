@@ -14,3 +14,18 @@ export class UserMapperService extends MapperService<any, UserEntity> {
         }
     }
 }
+
+export class DtoMapperService extends MapperService<UserEntity, any> {
+    protected map(entity: UserEntity): any {
+        return {
+            user_id: entity.userId,
+            name: entity.name,
+            email: entity.email,
+            password: entity.password,
+            mothers_name: entity.mothersName,
+            fathers_name: entity.fathersName,
+            updated_at: entity.updatedAt,
+            created_at: entity.createdAt
+        }
+    }
+}
