@@ -18,6 +18,16 @@ export class UserMysqlRepository implements UserRepository {
         return this.userMapperService.toDomain(user);
     }
 
+    findUserByEmail = async(userEmail: string): Promise<UserEntity | null> => {
+        const user = await User.findOne({
+            where: {
+                email: userEmail
+            }
+        });
+
+        return this.userMapperService.toDomain(user);
+    }
+
     listUser(): Promise<UserEntity | null> {
         throw new Error('Method not implemented.');
     }
@@ -25,5 +35,4 @@ export class UserMysqlRepository implements UserRepository {
     modifyUser(user: UserEntity): Promise<UserEntity | null> {
         throw new Error('Method not implemented.');
     }
-
 }
