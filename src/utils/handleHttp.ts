@@ -1,5 +1,6 @@
-import {Request, Response} from "express";
+import {Response} from "express";
 
-export const errorHandle = (req: Request, res: Response) => {
-
+export const handleHttp = ( res: Response, error: string ) => {
+    res.status(500);
+    res.send({error});
 }
