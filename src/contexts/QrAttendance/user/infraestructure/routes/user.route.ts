@@ -3,7 +3,7 @@ import { Router } from "express";
 import { MysqlRepository } from '../repository/mysql.repository';
 import { UserUseCase } from '../../application/userUseCase';
 import { UserController } from '../controller/user.controller';
-import { DtoMapperService, UserMapperService } from '../mappers/user.mapper';
+import { UserMapperService } from '../mappers/user.mapper';
 
 const userRouter = Router();
 
@@ -11,7 +11,7 @@ const userRouter = Router();
  * Iniciamos el repositorio
  */
 
-const mysqlRepository = new MysqlRepository(new UserMapperService(), new DtoMapperService());
+const mysqlRepository = new MysqlRepository(new UserMapperService());
 
 /**
  * Iniciamos casos de uso 
