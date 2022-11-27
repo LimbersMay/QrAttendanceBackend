@@ -3,7 +3,7 @@ import {UserEntity} from "../interfaces/user/user.entity";
 import {MapperService} from "../mappers/mapper";
 import User from "../models/user.schema";
 
-export class MysqlRepository implements UserRepository {
+export class UserMysqlRepository implements UserRepository {
 
     constructor( private  userMapperService: MapperService<any, UserEntity>) {}
 
