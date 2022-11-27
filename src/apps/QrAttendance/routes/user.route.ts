@@ -1,9 +1,9 @@
 
 import { Router } from "express";
-import { MysqlRepository } from '../repository/mysql.repository';
-import { UserUseCase } from '../../application/userUseCase';
-import { UserController } from '../controller/user.controller';
-import { DtoMapperService, UserMapperService } from '../mappers/user.mapper';
+import { MysqlRepository } from '../../../contexts/QrAttendance/user/infraestructure/repository/mysql.repository';
+import { UserUseCase } from '../../../contexts/QrAttendance/user/application/userUseCase';
+import { UserController } from '../../../contexts/QrAttendance/user/infraestructure/controller/user.controller';
+import { DtoMapperService, UserMapperService } from '../../../contexts/QrAttendance/user/infraestructure/mappers/user.mapper';
 
 const userRouter = Router();
 
@@ -14,7 +14,7 @@ const userRouter = Router();
 const mysqlRepository = new MysqlRepository(new UserMapperService(), new DtoMapperService());
 
 /**
- * Iniciamos casos de uso 
+ * Iniciamos casos de uso
  */
 const userUseCase = new UserUseCase(mysqlRepository);
 
@@ -24,7 +24,7 @@ const userUseCase = new UserUseCase(mysqlRepository);
 const userCtrl = new UserController(userUseCase);
 
 /**
- * 
+ *
  */
 userRouter.get('/user', userCtrl.getCtrl);
 userRouter.post('/user/signin', userCtrl.insertCtrl);
