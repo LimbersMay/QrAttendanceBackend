@@ -21,6 +21,6 @@ const userRepository = new UserMysqlRepository(userMapper);
  */
 const userController = new UserController(userRepository);
 
-router.get('/users', userController.getUsers);
+router.get('/', userController.getUser);
 
 export default router;
