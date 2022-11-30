@@ -4,6 +4,7 @@ import { UserEntity } from '../../domain/user.entity';
 export class UserMapperService extends MapperService<any, UserEntity> {
     protected mapToDomain(entity: any): UserEntity {
         return {
+            userId: entity.user_id,
             name: entity.name,
             email: entity.email,
             password: entity.password,
