@@ -1,6 +1,6 @@
 import { RegistryEntity } from './registry.entity';
 
-export interface RegistryRepository {
+export interface IRegistryRepository {
     createRegistry(registry: RegistryEntity): Promise<RegistryEntity | null>;
     deleteRegistry(registryId: string): Promise<RegistryEntity | null>;
     editRegistry(registry: RegistryEntity, registryId: string): Promise<RegistryEntity | null>;
