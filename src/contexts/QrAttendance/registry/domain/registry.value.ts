@@ -1,4 +1,3 @@
-import { v4 as uuid } from 'uuid';
 import { RegistryEntity } from "./registry.entity";
 
 export class RegistryValue implements RegistryEntity {
@@ -6,12 +5,16 @@ export class RegistryValue implements RegistryEntity {
     name: string;
     mothersName: string;
     fathersName: string;
+    modifiedAt: Date | undefined;
+    createdAt: Date | undefined;
     
-    constructor({name, mothersName, fathersName}: RegistryEntity) {
+    constructor({registryId, name, mothersName, fathersName, createdAt, modifiedAt}: RegistryEntity) {
         this.name = name;
         this.mothersName = mothersName;
         this.fathersName = fathersName;
 
-        this.registryId = uuid();
+        this.registryId = registryId;
+        this.createdAt = createdAt;
+        this.modifiedAt = modifiedAt;
     }
 }
