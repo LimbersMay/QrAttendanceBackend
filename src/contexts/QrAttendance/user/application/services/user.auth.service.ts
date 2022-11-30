@@ -1,5 +1,5 @@
 import {AuthService} from "./auth.service";
-import {EncryptService} from "../../../shared/infraestructure/adapters/encrypt.service";
+import {EncryptService} from "../../../shared/application/services/encrypt.service";
 import {UserRepository} from "../../domain/user.repository";
 import {UserEntity} from "../../domain/user.entity";
 
