@@ -2,8 +2,9 @@ import { MapperService } from './mapper';
 import { UserEntity } from '../../domain/user.entity';
 
 export class UserMapperService extends MapperService<any, UserEntity> {
-    protected map(entity: any): UserEntity {
+    protected mapToDomain(entity: any): UserEntity {
         return {
+            userId: entity.user_id,
             name: entity.name,
             email: entity.email,
             password: entity.password,
@@ -13,10 +14,8 @@ export class UserMapperService extends MapperService<any, UserEntity> {
             createdAt: entity.created_at
         }
     }
-}
 
-export class DtoMapperService extends MapperService<UserEntity, any> {
-    protected map(entity: UserEntity): any {
+    protected mapToDto(entity: UserEntity): any {
         return {
             user_id: entity.userId,
             name: entity.name,

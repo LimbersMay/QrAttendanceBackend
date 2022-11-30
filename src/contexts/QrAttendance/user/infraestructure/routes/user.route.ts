@@ -1,32 +1,40 @@
 
 import { Router } from "express";
-import { MysqlRepository } from '../repository/mysql.repository';
-import { UserUseCase } from '../../application/userUseCase';
+import { UserMysqlRepository } from '../repository/userMysqlRepository';
+import { UserService } from '../../application/user.service';
 import { UserController } from '../controller/user.controller';
-import { DtoMapperService, UserMapperService } from '../mappers/user.mapper';
+import { UserMapperService } from '../mappers/user.mapper';
+import {BcryptAdapter} from "../adapters/bcryptAdapter";
+import {UuidAdapter} from "../adapters/uuid.adapter";
 
 const userRouter = Router();
+
+/**
+ * Iniciamos los adaptadores
+ */
+const bcryptAdapter = new BcryptAdapter();
+const uuidAdapter = new UuidAdapter();
 
 /**
  * Iniciamos el repositorio
  */
 
-const mysqlRepository = new MysqlRepository(new UserMapperService(), new DtoMapperService());
+const mysqlRepository = new UserMysqlRepository(new UserMapperService());
 
 /**
  * Iniciamos casos de uso 
  */
-const userUseCase = new UserUseCase(mysqlRepository);
+const userService = new UserService(mysqlRepository, bcryptAdapter, uuidAdapter);
 
 /**
  * Iniciamos el User controllers
  */
-const userCtrl = new UserController(userUseCase);
+const userCtrl = new UserController(userService);
 
 /**
  * 
  */
 userRouter.get('/user', userCtrl.getCtrl);
-userRouter.post('/user/signin', userCtrl.insertCtrl);
+userRouter.post('/api/user/signin', userCtrl.insertCtrl);
 
 export default userRouter;

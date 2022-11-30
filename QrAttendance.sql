@@ -10,7 +10,7 @@ CREATE TABLE user (
     user_id varchar(100) PRIMARY KEY NOT NULL UNIQUE,
     name varchar(25) NOT NULL,
     email varchar(25) NOT NULL,
-    password varchar(25) NOT NULL,
+    password varchar(100) NOT NULL,
     mothers_name varchar(25) NOT NULL,
     fathers_name varchar(25) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
