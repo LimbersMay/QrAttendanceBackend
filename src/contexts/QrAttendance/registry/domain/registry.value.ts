@@ -5,16 +5,16 @@ export class RegistryValue implements RegistryEntity {
     name: string;
     mothersName: string;
     fathersName: string;
-    modifiedAt: Date | undefined;
+    updatedAt: Date | undefined;
     createdAt: Date | undefined;
     
-    constructor({registryId, name, mothersName, fathersName, createdAt, modifiedAt}: RegistryEntity) {
+    constructor({registryId, name, mothersName, fathersName, createdAt, updatedAt}: RegistryEntity) {
         this.name = name;
         this.mothersName = mothersName;
         this.fathersName = fathersName;
 
         this.registryId = registryId;
         this.createdAt = createdAt;
-        this.modifiedAt = modifiedAt;
+        this.updatedAt = updatedAt;
     }
 }
