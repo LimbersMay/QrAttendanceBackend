@@ -11,9 +11,9 @@ export class UserService {
         private readonly uuidService: UuiService
     ) {}
 
-    public registerUser = async ({userId, name, email, password, mothersName, fathersName}: UserEntity) => {
+    public registerUser = async ({name, email, password, mothersName, fathersName}: { name: string, email: string, password: string, mothersName: string, fathersName: string }) => {
 
-        userId = this.uuidService.random();
+        const userId = this.uuidService.random();
         password = await this.encryptService.hash(password);
 
         const userValue = new UserValue({userId, name, email, password, mothersName, fathersName});
