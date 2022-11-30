@@ -1,4 +1,4 @@
-import {UuiService} from "../../../shared/infraestructure/adapters/uui.service";
+import {UuiService} from "../../../shared/application/services/uui.service";
 
 import { v4 as uuid } from 'uuid';
 
