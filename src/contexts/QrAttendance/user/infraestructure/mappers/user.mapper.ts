@@ -1,4 +1,4 @@
-import { MapperService } from './mapper';
+import { MapperService } from '../../../shared/infraestructure/mappers/mapper';
 import { UserEntity } from '../../domain/user.entity';
 
 export class UserMapperService extends MapperService<any, UserEntity> {
