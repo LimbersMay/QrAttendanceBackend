@@ -1,4 +1,4 @@
-import {EncryptService} from "../../../shared/infraestructure/adapters/encrypt.service";
+import {EncryptService} from "../../../shared/application/services/encrypt.service";
 import bcryptjs from 'bcryptjs';
 export class BcryptAdapter implements EncryptService {
     async hash(text:string): Promise<string>{
