@@ -4,17 +4,20 @@ import {UserRepository} from '../../domain/user.repository';
 import User from '../model/user.schema';
 import { UserMapperService} from "../mappers/user.mapper";
 
-export class MysqlRepository implements UserRepository {
+export class UserMysqlRepository implements UserRepository {
 
     public constructor(private userMapperService: UserMapperService){}
+
+    async findUserBy(query: any): Promise<UserEntity | null> {
+        const user = await User.findOne({
+            where: query
+        });
+        return this.userMapperService.toDomain(user);
+    }
 
     async findUserById(userId: string): Promise<UserEntity | null> {
         const user = await User.findByPk(userId);
         return this.userMapperService.toDomain(user);
-    }
-
-    async loginUser({email, password}: {email: string, password: string}): Promise<UserEntity | null> {
-        throw new Error('Method not implemented.');
     }
 
     async createUser(user: UserEntity): Promise<UserEntity | null> {
@@ -23,7 +26,7 @@ export class MysqlRepository implements UserRepository {
         return this.userMapperService.toDomain(userCreated);
     }
 
-    async listUser(): Promise<UserEntity | null> {
+    async listUser(): Promise<UserEntity[] | null> {
         throw new Error('Method not implemented.');
     }
 }
