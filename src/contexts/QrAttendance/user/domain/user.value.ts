@@ -1,5 +1,4 @@
 import { UserEntity } from './user.entity';
-import { v4 as uuid } from 'uuid';
 
 export class UserValue implements UserEntity {
     userId: string;
@@ -11,7 +10,7 @@ export class UserValue implements UserEntity {
     updatedAt: Date | undefined;
     createdAt: Date | undefined;
 
-    constructor ({name, email, password, mothersName, fathersName, createdAt, updatedAt}: UserEntity) {
+    constructor ({userId, name, email, password, mothersName, fathersName, createdAt, updatedAt}: UserEntity) {
         this.email = email;
         this.password = password;
         this.name = name;
@@ -20,6 +19,6 @@ export class UserValue implements UserEntity {
 
         this.updatedAt = updatedAt ;
         this.createdAt = createdAt;
-        this.userId = uuid();
+        this.userId = userId;
     }
 }
