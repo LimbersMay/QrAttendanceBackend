@@ -1,7 +1,7 @@
 
 import { Router } from "express";
 import { UserMysqlRepository } from '../repository/userMysqlRepository';
-import { UserUseCase } from '../../application/userUseCase';
+import { UserService } from '../../application/user.service';
 import { UserController } from '../controller/user.controller';
 import { UserMapperService } from '../mappers/user.mapper';
 import {BcryptAdapter} from "../adapters/bcryptAdapter";
@@ -12,7 +12,7 @@ const userRouter = Router();
 /**
  * Iniciamos los adaptadores
  */
-const bycriptAdapter = new BcryptAdapter();
+const bcryptAdapter = new BcryptAdapter();
 const uuidAdapter = new UuidAdapter();
 
 /**
@@ -24,12 +24,12 @@ const mysqlRepository = new UserMysqlRepository(new UserMapperService());
 /**
  * Iniciamos casos de uso 
  */
-const userUseCase = new UserUseCase(mysqlRepository);
+const userService = new UserService(mysqlRepository, bcryptAdapter, uuidAdapter);
 
 /**
  * Iniciamos el User controllers
  */
-const userCtrl = new UserController(userUseCase, bycriptAdapter, uuidAdapter);
+const userCtrl = new UserController(userService);
 
 /**
  * 
