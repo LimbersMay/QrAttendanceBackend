@@ -2,7 +2,7 @@ import "dotenv/config";
 import express from 'express';
 import cors from "express";
 import userRouter from "./infraestructure/routes/user.route";
-import db from "./infraestructure/db/mysql.connection";
+import db from "../../shared/infraestructure/db/mysql.connection";
 
 const app = express();
 app.use(cors());

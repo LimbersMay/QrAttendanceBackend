@@ -1,6 +1,6 @@
 
 import { DataTypes } from "sequelize";
-import db from '../db/mysql.connection';
+import db from '../../../../shared/infraestructure/db/mysql.connection';
 
 const User = db.define('user', {
     user_id: {
