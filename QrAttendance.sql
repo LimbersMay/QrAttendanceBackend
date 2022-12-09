@@ -50,6 +50,7 @@ CREATE TABLE registry(
 CREATE TABLE qr_code(
     qr_id varchar(100) PRIMARY KEY NOT NULL,
     user_id varchar(100),
+    name varchar(25),
     url varchar(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
