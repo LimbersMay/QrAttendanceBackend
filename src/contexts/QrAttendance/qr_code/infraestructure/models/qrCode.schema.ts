@@ -27,6 +27,8 @@ const QrCode = db.define('qrCode', {
         field: 'updated_at'
     }
 }, {
+    freezeTableName: true,
     timestamps: true,
-    underscored: true
+    underscored: true,
+    tableName: "qr_code"
 })
