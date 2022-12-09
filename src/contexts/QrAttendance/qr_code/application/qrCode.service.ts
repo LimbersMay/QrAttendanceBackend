@@ -10,11 +10,11 @@ export class QrCodeService implements QrCodeRepository {
         throw new Error("Not implemented");
     }
 
-    findQrCodeById(qrCodeId: string): Promise<QrCodeEntity | null> {
+    updateQrCode(fields: any, qrCodeId: string): Promise<QrCodeEntity | null> {
         throw new Error("Not implemented");
     }
 
-    updateQrCode(fields: any, qrCodeId: string): Promise<QrCodeEntity | null> {
+    findQrCodeById(qrCodeId: string): Promise<QrCodeEntity | null> {
         throw new Error("Not implemented");
     }
 
