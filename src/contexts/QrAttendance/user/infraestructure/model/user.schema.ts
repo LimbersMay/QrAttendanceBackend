@@ -41,7 +41,8 @@ const User = db.define('user', {
     });
 
 User.hasMany(QrCode, {
-    foreignKey: 'user_id'
+    foreignKey: 'user_id',
+    as: "qrCodes"
 });
 
 QrCode.belongsTo(User);
