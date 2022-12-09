@@ -8,10 +8,6 @@ const QrCode = db.define('qrCode', {
         allowNull: false,
         primaryKey: true
     },
-    user_id: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
     name: {
         type: DataTypes.STRING
     },
