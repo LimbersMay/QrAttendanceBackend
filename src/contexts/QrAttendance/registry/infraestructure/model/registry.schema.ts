@@ -19,17 +19,19 @@ const Registry = db.define('registry', {
             type: DataTypes.STRING,
             allowNull: false
         },
-        created_at: {
-            type: "TIMESTAMP",
-            defaultValue: db.literal("CURRENT_TIMESTAMP")
+        createdAt: {
+            type: DataTypes.DATE,
+            field: 'created_at'
         },
-        updated_at: {
-            type: "TIMESTAMP",
-            defaultValue: db.literal("CURRENT_TIMESTAMP")
+        updatedAt: {
+            type: DataTypes.DATE,
+            field: 'updated_at'
         }
     },
     {
-        timestamps: false,
+        timestamps: true,
+        underscored: true,
+        freezeTableName: true,
         tableName: "registry"
     });
 
