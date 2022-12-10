@@ -3,6 +3,7 @@ import {UserRepository} from '../../domain/user.repository';
 
 import User from '../model/user.schema';
 import { UserMapperService} from "../mappers/user.mapper";
+import {UserQuery} from "../../domain/user.query";
 
 export class UserMysqlRepository implements UserRepository {
 
@@ -34,10 +35,12 @@ export class UserMysqlRepository implements UserRepository {
 
         return this.userMapperService.toDomain(user);
     }
-    async updateUser(fields: any, userId: string): Promise<UserEntity | null> {
+    async updateUser(fields: UserQuery, userId: string): Promise<UserEntity | null> {
 
         await User.update(
-            fields,
+            {
+                ...fields
+            },
             {
                 where: {
                     user_id: userId
@@ -45,8 +48,7 @@ export class UserMysqlRepository implements UserRepository {
             }
         )
 
-        const affedtedUser = User.findByPk(userId);
-
+        const affedtedUser = await User.findByPk(userId);
         return this.userMapperService.toDomain(affedtedUser);
     }
     async listUsers(): Promise<UserEntity | null> {
