@@ -4,6 +4,6 @@ export interface RegistryEntity {
     name: string,
     mothersName: string,
     fathersName: string,
-    createdAt: Date | undefined,
-    updatedAt: Date | undefined
+    createdAt: Date,
+    updatedAt: Date
 }
