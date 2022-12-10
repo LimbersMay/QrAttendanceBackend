@@ -15,7 +15,7 @@ export class UserMapperService extends MapperService<any, UserEntity> {
         }
     }
 
-    protected mapToDto(entity: UserEntity): any {
+    protected mapToPersistance(entity: UserEntity): any {
         return {
             user_id: entity.userId,
             name: entity.name,

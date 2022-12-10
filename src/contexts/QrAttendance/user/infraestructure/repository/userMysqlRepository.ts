@@ -19,7 +19,7 @@ export class UserMysqlRepository implements UserRepository {
         return this.userMapperService.toDomain(user);
     }
     async createUser(user: UserEntity): Promise<UserEntity | null> {
-        const mappedUser = this.userMapperService.toDto(user);
+        const mappedUser = this.userMapperService.toPersistance(user);
         const userCreated = await User.create(mappedUser);
         return this.userMapperService.toDomain(userCreated);
     }

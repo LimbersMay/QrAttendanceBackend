@@ -9,7 +9,7 @@ export class RegistryRepository implements IRegistryRepository {
     constructor( private RegistryMapperService: RegistryMapperService ) {}
 
     async createRegistry(registry: RegistryEntity): Promise<RegistryEntity | null> {
-        const mappedRegistry = this.RegistryMapperService.toDto(registry);
+        const mappedRegistry = this.RegistryMapperService.toPersistance(registry);
         const registryCreated = await Registry.create(mappedRegistry);
 
         return this.RegistryMapperService.toDomain(registryCreated);
