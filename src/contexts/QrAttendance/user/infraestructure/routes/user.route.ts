@@ -39,5 +39,6 @@ const userCtrl = new UserController(userService);
 userRouter.get('/user', userCtrl.getUserById);
 userRouter.post('/api/user/signin', userCtrl.createUser);
 userRouter.put('/api/user/update', userCtrl.updateUser);
+userRouter.delete('/api/user/delete', userCtrl.deleteUser);
 
 export default userRouter;
