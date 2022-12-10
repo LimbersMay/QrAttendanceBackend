@@ -1,5 +1,6 @@
 import { MapperService } from '../../../shared/infraestructure/mappers/mapper';
 import { UserEntity } from '../../domain/user.entity';
+import {UserDTO} from "../../application/DTOs/userDTO";
 
 export class UserMapperService extends MapperService<any, UserEntity> {
     protected mapToDomain(entity: any): UserEntity {
@@ -25,6 +26,15 @@ export class UserMapperService extends MapperService<any, UserEntity> {
             fathers_name: entity.fathersName,
             updated_at: entity.updatedAt,
             created_at: entity.createdAt
+        }
+    }
+
+    protected mapToDTO(entity: UserEntity): UserDTO {
+        return {
+            name: entity.name,
+            email: entity.email,
+            mothersName: entity.mothersName,
+            fathersName: entity.fathersName
         }
     }
 }
