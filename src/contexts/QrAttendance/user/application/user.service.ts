@@ -43,7 +43,11 @@ export class UserService {
         return this.userMapperService.toDTO(user);
     }
     public deleteUser = async(userId: string) => {
-        return await this.userRepository.deleteUser(userId);
+
+        const user = await this.userRepository.deleteUser(userId);
+        if (!user) return null;
+
+        return this.userMapperService.toDTO(user);
     }
 
     public registerQr = async ({userId, name, url}: {userId: string, name: string, url: string}) => {
