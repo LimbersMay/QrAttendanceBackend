@@ -1,9 +1,12 @@
 import {UserRepository} from '../domain/user.repository';
-import {UserEntity} from '../domain/user.entity';
+import {QrCodeRepository} from "../../qr_code/domain/qrCode.repository";
+
 import {UserValue} from '../domain/user.value';
+import {QrCodeValue} from "../../qr_code/domain/qrCode.value";
+
 import {EncryptService} from "../../shared/application/services/encrypt.service";
 import {UuiService} from "../../shared/application/services/uui.service";
-import {QrCodeRepository} from "../../qr_code/domain/qrCode.repository";
+
 
 export class UserService {
     constructor(
@@ -12,6 +15,10 @@ export class UserService {
         private readonly encryptService: EncryptService,
         private readonly uuidService: UuiService
     ) {}
+
+    public findUserById = async (userId: string) => {
+        return await this.userRepository.findUserById(userId);
+    }
 
     public registerUser = async ({name, email, password, mothersName, fathersName}: { name: string, email: string, password: string, mothersName: string, fathersName: string }) => {
 
@@ -22,7 +29,11 @@ export class UserService {
         return await this.userRepository.createUser(userValue);
     }
 
-    public registerQr = async (userId: string) => {
+    public registerQr = async ({userId, name, url}: {userId: string, name: string, url: string}) => {
 
+        const qrId = this.uuidService.random();
+        const qrCodeValue = new QrCodeValue({qrId, userId, name, url});
+
+        return await this.qrCodeRepository.createQrCode(qrCodeValue);
     };
 } 
