@@ -16,6 +16,8 @@ const userRouter = Router();
 const bcryptAdapter = new BcryptAdapter();
 const uuidAdapter = new UuidAdapter();
 
+const userMapperService = new UserMapperService();
+
 /**
  * Iniciamos el repositorio
  */
@@ -26,7 +28,7 @@ const qrCodeRepository = new QrCodeMysqlRepository();
 /**
  * Iniciamos casos de uso 
  */
-const userService = new UserService(mysqlRepository, qrCodeRepository , bcryptAdapter, uuidAdapter);
+const userService = new UserService(mysqlRepository, qrCodeRepository, bcryptAdapter, userMapperService, uuidAdapter);
 
 /**
  * Iniciamos el User controllers
