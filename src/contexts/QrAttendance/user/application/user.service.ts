@@ -37,7 +37,10 @@ export class UserService {
     }
 
     public updateUser = async(fields: UserQuery, userId: string) => {
-        return await this.userRepository.updateUser(fields, userId);
+        const user = await this.userRepository.updateUser(fields, userId);
+        if (!user) return;
+
+        return this.userMapperService.toDTO(user);
     }
     public deleteUser = async(userId: string) => {
         return await this.userRepository.deleteUser(userId);
