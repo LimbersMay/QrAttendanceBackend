@@ -4,6 +4,6 @@ export interface QrCodeEntity {
     userId: string,
     name: string,
     url: string,
-    createdAt: Date | undefined,
-    updatedAt: Date | undefined
+    createdAt?: Date | undefined,
+    updatedAt?: Date | undefined
 }
