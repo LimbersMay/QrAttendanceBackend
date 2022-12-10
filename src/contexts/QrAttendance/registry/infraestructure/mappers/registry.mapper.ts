@@ -1,5 +1,6 @@
 import {MapperService} from "../../../shared/infraestructure/mappers/mapper";
 import {RegistryEntity} from "../../domain/registry.entity";
+import {RegistryDTO} from "../../application/DTOs/registryDTO";
 export class RegistryMapperService extends MapperService<any, RegistryEntity>{
     protected mapToDomain(entity: any): RegistryEntity {
         return {
@@ -19,6 +20,16 @@ export class RegistryMapperService extends MapperService<any, RegistryEntity>{
             fathers_name: entity.fathersName,
             created_at: entity.createdAt,
             updated_at: entity.updatedAt
+        }
+    }
+
+    protected mapToDTO(entity: RegistryEntity): RegistryDTO {
+        return {
+            registryId: entity.registryId,
+            name: entity.name,
+            mothersName: entity.mothersName,
+            fathersName: entity.fathersName,
+            createdAt: entity.createdAt
         }
     }
 }
