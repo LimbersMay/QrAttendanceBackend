@@ -20,7 +20,12 @@ export class UserService {
     ) {}
 
     public findUserById = async (userId: string) => {
-        return await this.userRepository.findUserById(userId);
+
+        const user = await this.userRepository.findUserById(userId);
+
+        if (!user) return null;
+
+        return this.userMapperService.toDTO(user);
     }
 
     public registerUser = async ({name, email, password, mothersName, fathersName}: { name: string, email: string, password: string, mothersName: string, fathersName: string }) => {
