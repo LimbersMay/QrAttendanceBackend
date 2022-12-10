@@ -7,6 +7,7 @@ import {QrCodeValue} from "../../qr_code/domain/qrCode.value";
 import {EncryptService} from "../../shared/application/services/encrypt.service";
 import {UuiService} from "../../shared/application/services/uui.service";
 import {UserQuery} from "../domain/user.query";
+import {UserMapperService} from "../infraestructure/mappers/user.mapper";
 
 
 export class UserService {
@@ -14,6 +15,7 @@ export class UserService {
         private readonly userRepository: UserRepository,
         private readonly qrCodeRepository: QrCodeRepository,
         private readonly encryptService: EncryptService,
+        private readonly userMapperService: UserMapperService,
         private readonly uuidService: UuiService
     ) {}
 
@@ -27,7 +29,11 @@ export class UserService {
         password = await this.encryptService.hash(password);
 
         const userValue = new UserValue({userId, name, email, password, mothersName, fathersName});
-        return await this.userRepository.createUser(userValue);
+        const user = await this.userRepository.createUser(userValue);
+
+        if (!user) return null;
+
+        return await this.userMapperService.toDTO(user);
     }
 
     public updateUser = async(fields: UserQuery, userId: string) => {
