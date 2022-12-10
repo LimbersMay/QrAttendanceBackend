@@ -6,6 +6,7 @@ import {QrCodeValue} from "../../qr_code/domain/qrCode.value";
 
 import {EncryptService} from "../../shared/application/services/encrypt.service";
 import {UuiService} from "../../shared/application/services/uui.service";
+import {UserQuery} from "../domain/user.query";
 
 
 export class UserService {
@@ -28,6 +29,10 @@ export class UserService {
         const userValue = new UserValue({userId, name, email, password, mothersName, fathersName});
         return await this.userRepository.createUser(userValue);
     }
+
+    public updateUser = async(fields: UserQuery, userId: string) => {
+        return this.userRepository.updateUser(fields, userId);
+}
 
     public registerQr = async ({userId, name, url}: {userId: string, name: string, url: string}) => {
 
