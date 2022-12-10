@@ -31,8 +31,11 @@ export class UserService {
     }
 
     public updateUser = async(fields: UserQuery, userId: string) => {
-        return this.userRepository.updateUser(fields, userId);
-}
+        return await this.userRepository.updateUser(fields, userId);
+    }
+    public deleteUser = async(userId: string) => {
+        return await this.userRepository.deleteUser(userId);
+    }
 
     public registerQr = async ({userId, name, url}: {userId: string, name: string, url: string}) => {
 
