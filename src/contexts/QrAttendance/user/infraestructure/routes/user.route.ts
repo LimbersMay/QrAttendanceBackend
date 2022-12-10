@@ -6,6 +6,7 @@ import { UserController } from '../controller/user.controller';
 import { UserMapperService } from '../mappers/user.mapper';
 import {BcryptAdapter} from "../adapters/bcryptAdapter";
 import {UuidAdapter} from "../adapters/uuid.adapter";
+import {QrCodeMysqlRepository} from "../../../qr_code/infraestructure/repository/QrCodeMysqlRepository";
 
 const userRouter = Router();
 
@@ -20,11 +21,12 @@ const uuidAdapter = new UuidAdapter();
  */
 
 const mysqlRepository = new UserMysqlRepository(new UserMapperService());
+const qrCodeRepository = new QrCodeMysqlRepository();
 
 /**
  * Iniciamos casos de uso 
  */
-const userService = new UserService(mysqlRepository, bcryptAdapter, uuidAdapter);
+const userService = new UserService(mysqlRepository, qrCodeRepository , bcryptAdapter, uuidAdapter);
 
 /**
  * Iniciamos el User controllers

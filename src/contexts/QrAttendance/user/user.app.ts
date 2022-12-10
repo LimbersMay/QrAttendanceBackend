@@ -11,4 +11,9 @@ app.use(express.json());
 const port = process.env.PORT || 3001;
 app.use(userRouter);
 db.authenticate().then();
-app.listen(port, () => console.log(`USER LISTO POR EL PUERTO ${port}`));
+db.sync().then(result => {
+    app.listen(port, () => console.log(`USER LISTO POR EL PUERTO ${port}`));
+})
+    .catch(error => {
+        console.log(error);
+    });

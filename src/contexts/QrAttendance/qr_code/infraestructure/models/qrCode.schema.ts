@@ -28,3 +28,5 @@ const QrCode = db.define('qrCode', {
     underscored: true,
     tableName: "qr_code"
 })
+
+export default QrCode;

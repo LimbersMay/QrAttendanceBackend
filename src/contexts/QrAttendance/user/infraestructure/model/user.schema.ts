@@ -1,6 +1,8 @@
 import {DataTypes} from "sequelize";
 import db from '../../../../shared/infraestructure/db/mysql.connection';
 
+import QrCode from '../../../qr_code/infraestructure/models/qrCode.schema';
+
 const User = db.define('user', {
         user_id: {
             type: DataTypes.STRING,
@@ -37,5 +39,12 @@ const User = db.define('user', {
         timestamps: true,
         tableName: "user"
     });
+
+User.hasMany(QrCode, {
+    foreignKey: 'user_id',
+    as: "qrCodes"
+});
+
+QrCode.belongsTo(User);
 
 export default User;
