@@ -36,4 +36,15 @@ export class UserController {
             user
         });
     }
+
+    public deleteUser  = async({body}: Request, res: Response) => {
+
+        const { userId } = body;
+
+        const user = await this.userService.deleteUser(userId);
+        res.status(200);
+        res.json({
+            user
+        });
+    }
 }
