@@ -1,36 +1,44 @@
-import User from "../../../user/infraestructure/model/user.schema";
+import Group from "../model/group.schema";
 
 export class GroupRepository {
 
     public async findGroupById (groupId: string) {
-        return User.findByPk(groupId);
+        return Group.findByPk(groupId);
+    }
+
+    public async findGroupsByUserId (userId: string) {
+        return Group.findAll({
+            where: {
+                user_id: userId
+            }
+        });
     }
 
     public async createGroup ({ name, userId, createdAt, updatedAt }: {name: string, userId: string, createdAt: Date, updatedAt: Date}) {
-        return User.create({ name, userId, createdAt, updatedAt });
+        return Group.create({name, userId, createdAt, updatedAt});
     }
 
     public async deleteGroup (groupId: string) {
-        return User.destroy({
+        return Group.destroy({
             where: {
                 group_id: groupId
             }
         });
     }
 
-    async updateGroup(fields: any, userId: string) {
+    async updateGroup(fields: any, groupId: string) {
 
-        await User.update(
+        Group.update(
             {
                 ...fields
             },
             {
                 where: {
-                    user_id: userId
+                    group_id: groupId
                 }
             }
         )
 
-        return await User.findByPk(userId);
+        return Group.findByPk(groupId);
     }
 }
