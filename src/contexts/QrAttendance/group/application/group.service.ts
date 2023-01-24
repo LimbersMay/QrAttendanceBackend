@@ -5,20 +5,18 @@ import {GroupEntity} from "../domain/group.entity";
 import {GroupError} from "./errors/group.errors";
 import {GroupValue} from "../domain/group.value";
 import {left, right} from "fp-ts/Either";
-import {GroupMapper} from "../infraestructure/mappers/group.mapper";
-import {DateFormatter} from "../../shared/application/services/dateFormatter";
+import {GroupMapper} from "../infraestructure/mappers";
 
 export class GroupService {
 
     constructor(
         private readonly groupRepository: GroupRepository,
         private readonly uuidGenerator: UUIDGenerator,
-        private readonly groupMapper: GroupMapper,
-        private readonly dateFormatter: DateFormatter
-    ){
+        private readonly groupMapper: GroupMapper
+    ) {
     }
 
-    async createGroup(name: string, userId: string, timezone: string): Promise<Either<GroupError, GroupEntity>> {
+    createGroup = async (name: string, userId: string): Promise<Either<GroupError, GroupEntity>> => {
 
         const group = GroupValue.create({
             groupId: this.uuidGenerator.random(),
@@ -38,7 +36,7 @@ export class GroupService {
         return right(mapped);
     }
 
-    async getGroupsByUserId(userId: string): Promise<Either<GroupError, GroupEntity[]>> {
+    getGroupsByUserId = async (userId: string): Promise<Either<GroupError, GroupEntity[]>> => {
 
         const groups = await this.groupRepository.findGroupsByUserId(userId);
         if (!groups) return left(GroupError.CANNOT_GET_GROUPS);
@@ -49,7 +47,7 @@ export class GroupService {
         return right(groupsDto);
     }
 
-    async deleteGroup(groupId: string): Promise<Either<GroupError, GroupEntity>> {
+    deleteGroup = async (groupId: string): Promise<Either<GroupError, GroupEntity>> => {
         const group = await this.groupRepository.findGroupById(groupId);
         if (!group) return left(GroupError.GROUP_NOT_FOUND);
 
