@@ -1,7 +1,7 @@
 import {UserValue} from '../domain/user.value';
 
 import {EncryptService} from "../../shared/application/services/encrypt.service";
-import {UuiService} from "../../shared/application/services/uui.service";
+import {UUIDGenerator} from "../../shared/application/services/UUIDGenerator";
 import {UserQuery} from "../domain/user.query";
 import {UserMapperService} from "../infraestructure/mappers/user.mapper";
 import {UserRepository} from "../infraestructure/repository/userRepository";
@@ -17,7 +17,7 @@ export class UserService {
         private readonly userRepository: UserRepository,
         private readonly encryptService: EncryptService,
         private readonly userMapperService: UserMapperService,
-        private readonly uuidService: UuiService
+        private readonly uuidService: UUIDGenerator
     ) {}
 
     public findUserById = async (userId: string) => {
