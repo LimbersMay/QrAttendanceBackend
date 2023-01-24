@@ -1,6 +1,6 @@
 
 import { Router } from "express";
-import { UserMysqlRepository } from '../repository/userMysqlRepository';
+import { UserRepository } from '../repository/userRepository';
 import { UserService } from '../../application/user.service';
 import { UserController } from '../controller/user.controller';
 import { UserMapperService } from '../mappers/user.mapper';
@@ -15,16 +15,18 @@ const userRouter = Router();
 const bcryptAdapter = new BcryptAdapter();
 const uuidAdapter = new UuidAdapter();
 
+const userMapperService = new UserMapperService();
+
 /**
  * Iniciamos el repositorio
  */
 
-const mysqlRepository = new UserMysqlRepository(new UserMapperService());
+const mysqlRepository = new UserRepository();
 
 /**
  * Iniciamos casos de uso 
  */
-const userService = new UserService(mysqlRepository, bcryptAdapter, uuidAdapter);
+const userService = new UserService(mysqlRepository, bcryptAdapter, userMapperService, uuidAdapter);
 
 /**
  * Iniciamos el User controllers
@@ -34,7 +36,9 @@ const userCtrl = new UserController(userService);
 /**
  * 
  */
-userRouter.get('/user', userCtrl.getCtrl);
-userRouter.post('/api/user/signin', userCtrl.insertCtrl);
+userRouter.get('/', userCtrl.getUserById);
+userRouter.post('/register', userCtrl.createUser);
+userRouter.put('/update', userCtrl.updateUser);
+userRouter.delete('/delete', userCtrl.deleteUser);
 
 export default userRouter;

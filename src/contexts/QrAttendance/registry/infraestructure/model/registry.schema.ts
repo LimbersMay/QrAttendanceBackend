@@ -1,25 +1,23 @@
 import {DataTypes} from "sequelize";
 import db from '../../../../shared/infraestructure/db/mysql.connection';
 
-
-
-const User = db.define('user', {
-        user_id: {
+const Registry = db.define('registry', {
+        registry_id: {
             type: DataTypes.STRING,
             allowNull: false,
             primaryKey: true
         },
         name: {
-            type: DataTypes.STRING
+            type: DataTypes.STRING,
+            allowNull: false
         },
-        email: {
-            type: DataTypes.STRING
+        mothers_name: {
+            type: DataTypes.STRING,
+            allowNull: false
         },
-        password: {
-            type: DataTypes.STRING
-        },
-        lastname: {
-            type: DataTypes.STRING
+        fathers_name: {
+            type: DataTypes.STRING,
+            allowNull: false
         },
         createdAt: {
             type: DataTypes.DATE,
@@ -31,11 +29,10 @@ const User = db.define('user', {
         }
     },
     {
-        freezeTableName: true,
-        underscored: true,
         timestamps: true,
-        tableName: "user"
-    }
-);
+        underscored: true,
+        freezeTableName: true,
+        tableName: "registry"
+    });
 
-export default User;
+export default Registry;
