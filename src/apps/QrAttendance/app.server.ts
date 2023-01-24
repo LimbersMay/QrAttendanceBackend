@@ -13,6 +13,7 @@ import {UserMapperService} from "../../contexts/QrAttendance/user/infraestructur
 // routes
 import authRoutes from "../../contexts/QrAttendance/auth/infraestructure/routes/auth.routes";
 import userRoutes from "../../contexts/QrAttendance/user/infraestructure/routes/user.route";
+import groupRoutes from "../../contexts/QrAttendance/group/infraestructure/routes/group.route";
 
 import cookieParser from "cookie-parser";
 import session from "express-session";
@@ -43,6 +44,7 @@ export class Server {
         this.appRoutes = {
             auth: '/api/auth',
             user: '/api/user',
+            group: '/api/group'
         }
 
         // DB connection
@@ -86,6 +88,7 @@ export class Server {
     public routes() {
         this.app.use(this.appRoutes.auth, authRoutes);
         this.app.use(this.appRoutes.user, userRoutes);
+        this.app.use(this.appRoutes.group, groupRoutes);
     }
 
     public listen() {
