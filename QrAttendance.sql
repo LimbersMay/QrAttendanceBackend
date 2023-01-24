@@ -11,8 +11,7 @@ CREATE TABLE user
     name         varchar(25)              NOT NULL,
     email        varchar(25)              NOT NULL,
     password     varchar(100)             NOT NULL,
-    mothers_name varchar(25)              NOT NULL,
-    fathers_name varchar(25)              NOT NULL,
+    lastname     varchar(25)              NOT NULL,
     created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
@@ -67,14 +66,15 @@ CREATE TABLE registry
     registry_id  varchar(100) PRIMARY KEY NOT NULL,
     qr_id        varchar(100),
     name         varchar(25)              NOT NULL,
-    mothers_name varchar(25)              NOT NULL,
-    fathers_name varchar(25)              NOT NULL,
+    first_surname varchar(25)              NOT NULL,
+    second_surname varchar(25)              NOT NULL,
     created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (qr_id) REFERENCES qr_code (qr_id)
 );
 
 
+/*
 # ASIGNACIÓN DE VALORES DENTRO DE LA BASE DE DATOS
 # --- REGISTRAR USUARIOS DENTRO DE LA DB ----
 INSERT INTO user(user_id, name, email, password, mothers_name, fathers_name, created_at, updated_at)
@@ -118,3 +118,4 @@ VALUES ('2753', 'UTC-6');
 # LE INDICAMOS LAS PREFERENCIAS A UN USUARIO
 INSERT INTO preferences(preference_id, user_id, timezone_id, language_id)
 VALUES ('1635', '93945', '1256', '2985');
+/*
