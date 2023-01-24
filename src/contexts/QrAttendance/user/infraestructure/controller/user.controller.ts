@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { UserService } from '../../application/user.service';
+import {isLeft} from "fp-ts/Either";
 
 export class UserController {
     constructor(
@@ -20,9 +21,17 @@ export class UserController {
         let { name, email,  password, mothersName, fathersName } = body;
 
         const user = await this.userService.registerUser({ name, email, password, mothersName, fathersName });
+
+        if (isLeft(user)) {
+            return res.status(400).json({
+                ok: false,
+                msg: user.left
+            });
+        }
+
         res.status(200);
         res.json({
-            user
+            user: user.right
         });
     }
 
