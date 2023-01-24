@@ -31,6 +31,7 @@ export class UserMapperService extends MapperService<any, UserEntity> {
 
     protected mapToDTO(entity: UserEntity): UserDTO {
         return {
+            id: entity.userId,
             name: entity.name,
             email: entity.email,
             mothersName: entity.mothersName,
