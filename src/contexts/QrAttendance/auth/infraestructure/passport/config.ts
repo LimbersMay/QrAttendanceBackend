@@ -3,8 +3,10 @@ import {Strategy as LocalStrategy} from 'passport-local';
 import passport from "passport";
 import {EncryptService} from "../../../shared/application/services/encrypt.service";
 import {UserEntity} from "../../../user/domain/user.entity";
-import {AuthService} from "../../application/services/AuthService";
 import {UserService} from "../../../user/application/user.service";
+
+import {isLeft} from "fp-ts/Either";
+import {UserError} from "../../../user/application/exceptions/userError";
 
 declare global {
     namespace Express {
@@ -14,7 +16,7 @@ declare global {
 }
 
 // decouple passport using dependency injection
-export class PassportLocalStrategy implements AuthService{
+export class PassportLocalStrategy {
     constructor(
         private readonly userService: UserService,
         private readonly hashService: EncryptService
@@ -34,11 +36,14 @@ export class PassportLocalStrategy implements AuthService{
                     // your logic here
 
                     const user = await this.userService.findUserByEmail(email);
-                    if (!user) return done(null, false);
 
-                    const isValidPassword = await this.hashService.compare(password, user.password);
+                    if (isLeft(user)) {
+                        return done(user.left, false)
+                    }
 
-                    if (!isValidPassword) return done(null, false);
+                    const isValidPassword = await this.hashService.compare(password, user.right.password);
+
+                    if (!isValidPassword) return done(UserError.USER_NOT_FOUND, false);
 
                     return done(null, user);
                 },
@@ -64,9 +69,5 @@ export class PassportLocalStrategy implements AuthService{
 
     public session() {
         return passport.session();
-    }
-
-    static authenticate(options?: any) {
-        return passport.authenticate('local', {session: true});
     }
 }
