@@ -14,4 +14,7 @@ export class GroupValue implements GroupEntity{
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
+    static create({groupId, userId, name, createdAt, updatedAt}: GroupEntity): GroupValue {
+        return new GroupValue({groupId, userId, name, createdAt, updatedAt});
+    }
 }
