@@ -18,9 +18,9 @@ export class UserController {
     }
 
     public createUser = async({ body }: Request, res: Response ) => {
-        let { name, email,  password, mothersName, fathersName } = body;
+        let { name, email,  password, lastname } = body;
 
-        const user = await this.userService.registerUser({ name, email, password, mothersName, fathersName });
+        const user = await this.userService.registerUser({ name, email, password, lastname });
 
         if (isLeft(user)) {
             return res.status(400).json({
