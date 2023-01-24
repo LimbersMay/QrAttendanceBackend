@@ -1,12 +1,15 @@
-
 import { DataTypes } from "sequelize";
 import db from '../../../../shared/infraestructure/db/mysql.connection';
+import Registry from "../../../registry/infraestructure/model/registry.schema";
 
 const QrCode = db.define('qrCode', {
     qr_id: {
         type: DataTypes.STRING,
         allowNull: false,
         primaryKey: true
+    },
+    group_id: {
+        type: DataTypes.STRING
     },
     name: {
         type: DataTypes.STRING
@@ -27,6 +30,9 @@ const QrCode = db.define('qrCode', {
     timestamps: true,
     underscored: true,
     tableName: "qr_code"
-})
+});
+
+QrCode.hasMany(Registry, { foreignKey: 'qr_id' });
+Registry.belongsTo(QrCode);
 
 export default QrCode;
