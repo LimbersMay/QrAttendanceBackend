@@ -5,11 +5,11 @@ import {UuiService} from "../../shared/application/services/uui.service";
 import {UserQuery} from "../domain/user.query";
 import {UserMapperService} from "../infraestructure/mappers/user.mapper";
 import {UserRepository} from "../infraestructure/repository/userRepository";
-import {Either} from "./exceptions/duplicatedEmailError";
 import {UserError} from "./exceptions/userError";
 import {UserEntity} from "../domain/user.entity";
 import {left, right} from "fp-ts/Either";
 import {UserDTO} from "./DTOs/userDTO";
+import {Either} from "../../../shared/types/ErrorEither";
 
 
 export class UserService {
