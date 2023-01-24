@@ -1,8 +1,8 @@
 import { Sequelize } from "sequelize";
 
-export default new Sequelize('QrAttendance', 'root', '123456', {
+export default new Sequelize('QrAttendance', 'limber', '15891', {
     host: 'localhost',
     dialect: 'mariadb',
-    // logging: false
+   // logging: false
 });
 
