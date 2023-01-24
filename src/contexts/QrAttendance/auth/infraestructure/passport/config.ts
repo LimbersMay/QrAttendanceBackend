@@ -45,7 +45,7 @@ export class PassportLocalStrategy {
 
                     if (!isValidPassword) return done(UserError.USER_NOT_FOUND, false);
 
-                    return done(null, user);
+                    return done(null, user.right);
                 },
             ),
         );
