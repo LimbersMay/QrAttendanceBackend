@@ -18,10 +18,7 @@ const User = db.define('user', {
         password: {
             type: DataTypes.STRING
         },
-        mothers_name: {
-            type: DataTypes.STRING
-        },
-        fathers_name: {
+        lastname: {
             type: DataTypes.STRING
         },
         createdAt: {
