@@ -1,5 +1,6 @@
 
 export enum GroupError {
     GROUP_NOT_FOUND = 'G201',
-    GROUP_NOT_CREATED = 'G202',
+    CANNOT_GET_GROUPS = 'G202',
+    GROUP_NOT_CREATED = 'G203',
 }
