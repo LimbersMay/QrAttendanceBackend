@@ -26,7 +26,7 @@ export class GroupController {
         });
     }
 
-    findGroupByUserId  = async(req: Request, res: Response) => {
+    findGroupsByUserId  = async(req: Request, res: Response) => {
         const { userId } = req.params;
 
         const groups = await this.groupService.getGroupsByUserId(userId);
