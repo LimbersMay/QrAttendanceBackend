@@ -1,7 +1,6 @@
 import {DataTypes} from "sequelize";
 import db from '../../../../shared/infraestructure/db/mysql.connection';
-
-
+import Group from "../../../group/infraestructure/model/group.schema";
 
 const User = db.define('user', {
         user_id: {
@@ -37,5 +36,11 @@ const User = db.define('user', {
         tableName: "user"
     }
 );
+
+User.hasMany(Group, {
+    foreignKey: 'user_id'
+});
+
+Group.belongsTo(User);
 
 export default User;
