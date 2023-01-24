@@ -29,7 +29,7 @@ export class UserService {
         return this.userMapperService.toDTO(mapped);
     }
 
-    public registerUser = async ({name, email, password, mothersName, fathersName}: { name: string, email: string, password: string, mothersName: string, fathersName: string }): Promise<Either<UserError, UserDTO>> => {
+    public registerUser = async ({name, email, password, lastname}: { name: string, email: string, password: string, lastname: string }): Promise<Either<UserError, UserDTO>> => {
 
         // verify if user already exists
         const userExists = await this.userRepository.findUserByEmail(email);
@@ -38,7 +38,7 @@ export class UserService {
         const userId = this.uuidService.random();
         password = await this.encryptService.hash(password);
 
-        const userValue = new UserValue({userId, name, email, password, mothersName, fathersName});
+        const userValue = new UserValue({userId, name, email, password,lastname});
         const persistanceUser = this.userMapperService.toPersistance(userValue);
 
         await this.userRepository.createUser(persistanceUser);
