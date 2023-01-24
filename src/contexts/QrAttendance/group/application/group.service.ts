@@ -17,7 +17,6 @@ export class GroupService {
     }
 
     createGroup = async (name: string, userId: string): Promise<Either<GroupError, GroupEntity>> => {
-
         const group = GroupValue.create({
             groupId: this.uuidGenerator.random(),
             userId,
@@ -28,8 +27,8 @@ export class GroupService {
 
         const groupPersistance = this.groupMapper.toPersistance(group);
 
-        await this.groupRepository.createGroup(groupPersistance);
-        if (!group) return left(GroupError.GROUP_NOT_CREATED);
+        const newGroup = await this.groupRepository.createGroup(groupPersistance);
+        if (!newGroup) return left(GroupError.GROUP_NOT_CREATED);
 
         const mapped = this.groupMapper.toDTO(group);
 
