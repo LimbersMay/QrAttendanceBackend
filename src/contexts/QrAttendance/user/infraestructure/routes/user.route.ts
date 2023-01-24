@@ -1,12 +1,11 @@
 
 import { Router } from "express";
-import { UserMysqlRepository } from '../repository/userMysqlRepository';
+import { UserRepository } from '../repository/userRepository';
 import { UserService } from '../../application/user.service';
 import { UserController } from '../controller/user.controller';
 import { UserMapperService } from '../mappers/user.mapper';
 import {BcryptAdapter} from "../adapters/bcryptAdapter";
 import {UuidAdapter} from "../adapters/uuid.adapter";
-import {QrCodeMysqlRepository} from "../../../qr_code/infraestructure/repository/QrCodeMysqlRepository";
 
 const userRouter = Router();
 
@@ -22,13 +21,12 @@ const userMapperService = new UserMapperService();
  * Iniciamos el repositorio
  */
 
-const mysqlRepository = new UserMysqlRepository(new UserMapperService());
-const qrCodeRepository = new QrCodeMysqlRepository();
+const mysqlRepository = new UserRepository();
 
 /**
  * Iniciamos casos de uso 
  */
-const userService = new UserService(mysqlRepository, qrCodeRepository, bcryptAdapter, userMapperService, uuidAdapter);
+const userService = new UserService(mysqlRepository, bcryptAdapter, userMapperService, uuidAdapter);
 
 /**
  * Iniciamos el User controllers
@@ -38,9 +36,9 @@ const userCtrl = new UserController(userService);
 /**
  * 
  */
-userRouter.get('/user', userCtrl.getUserById);
-userRouter.post('/api/user/signin', userCtrl.createUser);
-userRouter.put('/api/user/update', userCtrl.updateUser);
-userRouter.delete('/api/user/delete', userCtrl.deleteUser);
+userRouter.get('/', userCtrl.getUserById);
+userRouter.post('/register', userCtrl.createUser);
+userRouter.put('/update', userCtrl.updateUser);
+userRouter.delete('/delete', userCtrl.deleteUser);
 
 export default userRouter;
