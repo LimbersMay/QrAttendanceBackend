@@ -32,7 +32,7 @@ export class GroupRepository {
         });
     }
 
-    async updateGroup(fields: any, groupId: string) {
+    async updateGroup(groupId: string, userId: string, fields: Record<string, any>) {
 
         Group.update(
             {
@@ -40,11 +40,17 @@ export class GroupRepository {
             },
             {
                 where: {
-                    group_id: groupId
+                    group_id: groupId,
+                    user_id: userId
                 }
             }
         )
 
-        return Group.findByPk(groupId);
+        return Group.findOne({
+            where: {
+                group_id: groupId,
+                user_id: userId
+            }
+        });
     }
 }
