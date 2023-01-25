@@ -1,11 +1,11 @@
 import {GroupRepository} from "../infraestructure/repository";
 import {UUIDGenerator} from "../../shared/application/services/UUIDGenerator";
 import {Either} from "../../../shared/types/ErrorEither";
-import {GroupEntity} from "../domain/group.entity";
 import {GroupError} from "./errors/group.errors";
 import {GroupValue} from "../domain/group.value";
 import {left, right} from "fp-ts/Either";
 import {GroupMapper} from "../infraestructure/mappers";
+import {GroupDTO} from "./entities/group.dto";
 
 export class GroupService {
 
@@ -16,7 +16,7 @@ export class GroupService {
     ) {
     }
 
-    createGroup = async (name: string, userId: string): Promise<Either<GroupError, GroupEntity>> => {
+    createGroup = async (name: string, userId: string): Promise<Either<GroupError, GroupDTO>> => {
         const group = GroupValue.create({
             groupId: this.uuidGenerator.random(),
             userId,
@@ -35,7 +35,7 @@ export class GroupService {
         return right(mapped);
     }
 
-    getGroupsByUserId = async (userId: string): Promise<Either<GroupError, GroupEntity[]>> => {
+    getGroupsByUserId = async (userId: string): Promise<Either<GroupError, GroupDTO[]>> => {
 
         const groups = await this.groupRepository.findGroupsByUserId(userId);
         if (!groups) return left(GroupError.CANNOT_GET_GROUPS);
@@ -43,10 +43,12 @@ export class GroupService {
         const groupsDomain = this.groupMapper.toDomain(groups);
         const groupsDto = this.groupMapper.toDTO(groupsDomain);
 
+        console.log('GROUPS: ', groupsDto);
+
         return right(groupsDto);
     }
 
-    deleteGroup = async (groupId: string): Promise<Either<GroupError, GroupEntity>> => {
+    deleteGroup = async (groupId: string): Promise<Either<GroupError, GroupDTO>> => {
         const group = await this.groupRepository.findGroupById(groupId);
         if (!group) return left(GroupError.GROUP_NOT_FOUND);
 
