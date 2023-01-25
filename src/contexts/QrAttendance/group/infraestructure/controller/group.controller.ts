@@ -39,7 +39,7 @@ export class GroupController {
         }
 
         res.status(201).json({
-            ok: false,
+            ok: true,
             groups: groups.right
         });
     }
@@ -58,7 +58,7 @@ export class GroupController {
         }
 
         res.status(201).json({
-            ok: false,
+            ok: true,
             group: group.right
         });
     }
