@@ -24,10 +24,11 @@ export class GroupRepository {
         });
     }
 
-    public async deleteGroup (groupId: string) {
+    public async deleteGroup (groupId: string, userId: string) {
         return Group.destroy({
             where: {
-                group_id: groupId
+                group_id: groupId,
+                user_id: userId
             }
         });
     }

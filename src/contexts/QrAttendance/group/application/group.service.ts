@@ -46,11 +46,11 @@ export class GroupService {
         return right(groupsDto);
     }
 
-    deleteGroup = async (groupId: string): Promise<Either<GroupError, GroupDTO>> => {
+    deleteGroup = async (groupId: string, userId: string): Promise<Either<GroupError, GroupDTO>> => {
         const group = await this.groupRepository.findGroupById(groupId);
         if (!group) return left(GroupError.GROUP_NOT_FOUND);
 
-        await this.groupRepository.deleteGroup(groupId);
+        await this.groupRepository.deleteGroup(groupId, userId);
 
         const mapped = this.groupMapper.toDomain(group);
 
