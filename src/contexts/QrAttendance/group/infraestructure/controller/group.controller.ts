@@ -9,9 +9,13 @@ export class GroupController {
     }
 
     createGroup = async (req: Request, res: Response) => {
-        const {name, userId} = req.body;
 
-        const group = await this.groupService.createGroup(name, userId);
+        if (!req.user) return res.json();
+
+        const { id } = req.user;
+        const { name } = req.body;
+
+        const group = await this.groupService.createGroup(name, id);
 
         if (isLeft(group)) {
             return res.status(400).json({
@@ -26,10 +30,12 @@ export class GroupController {
         });
     }
 
-    findGroupsByUserId  = async(req: Request, res: Response) => {
-        const { userId } = req.params;
+    getUserGroups  = async(req: Request, res: Response) => {
 
-        const groups = await this.groupService.getGroupsByUserId(userId);
+        if (!req.user) return res.json();
+
+        const { id } = req.user;
+        const groups = await this.groupService.getGroupsByUserId(id);
 
         if (isLeft(groups)) {
             return res.status(400).json({
@@ -46,8 +52,12 @@ export class GroupController {
 
     updateGroup = async(req: Request, res: Response) => {
 
-        const { id, userId, updatedFields } = req.body;
-        const groupUpdated = await this.groupService.updateGroup(id, userId, updatedFields);
+        if (!req.user) return res.json();
+
+        const { id: userId } = req.user;
+
+        const { id: groupId, updatedFields } = req.body;
+        const groupUpdated = await this.groupService.updateGroup(groupId, userId, updatedFields);
 
         if (isLeft(groupUpdated)) {
             return res.status(400).json({
@@ -64,9 +74,12 @@ export class GroupController {
 
     deleteGroup = async(req: Request, res: Response) => {
 
+        if (!req.user) return res.json();
+
+        const { id: userId } = req.user;
         const { id } = req.body;
 
-        const group = await this.groupService.deleteGroup(id);
+        const group = await this.groupService.deleteGroup(id, userId);
 
         if (isLeft(group)) {
             return res.status(400).json({
