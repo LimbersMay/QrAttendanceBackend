@@ -46,18 +46,24 @@ export class GroupService {
         return right(groupsDto);
     }
 
-    deleteGroup = async (groupId: string, userId: string): Promise<Either<GroupError, GroupDTO>> => {
+    getGroupById = async (groupId: string): Promise<Either<GroupError, GroupDTO>> => {
         const group = await this.groupRepository.findGroupById(groupId);
         if (!group) return left(GroupError.GROUP_NOT_FOUND);
-
-        await this.groupRepository.deleteGroup(groupId, userId);
 
         const mapped = this.groupMapper.toDomain(group);
 
         return right(this.groupMapper.toDTO(mapped));
     }
 
-    updateGroup = async(groupId: string, userId: string, fields: Record<string, any>): Promise<Either<GroupError, number>> => {
+    deleteGroup = async (groupId: string, userId: string): Promise<Either<GroupError, number>> => {
+        const destroyedRows = await this.groupRepository.deleteGroup(groupId, userId);
+        if (destroyedRows === 0) return left(GroupError.GROUP_NOT_FOUND);
+
+        return right(destroyedRows);
+    }
+
+    updateGroup = async(groupId: string, userId: string, fields: Record<string, any>): Promise<Either<GroupError, GroupDTO>> => {
+
         const group = await this.groupRepository.updateGroup(groupId, userId, fields);
         if (!group) return left(GroupError.GROUP_NOT_FOUND)
 
