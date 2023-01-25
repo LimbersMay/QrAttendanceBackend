@@ -10,8 +10,8 @@ export class UserMapperService extends MapperService<any, UserEntity> {
             email: entity.email,
             password: entity.password,
             lastname: entity.lastname,
-            updatedAt: entity.updated_at,
-            createdAt: entity.created_at
+            updatedAt: entity.updatedAt,
+            createdAt: entity.createdAt
         }
     }
 
@@ -22,8 +22,8 @@ export class UserMapperService extends MapperService<any, UserEntity> {
             email: entity.email,
             password: entity.password,
             lastname: entity.lastname,
-            updated_at: entity.updatedAt,
-            created_at: entity.createdAt
+            updatedAt: entity.updatedAt,
+            createdAt: entity.createdAt
         }
     }
 

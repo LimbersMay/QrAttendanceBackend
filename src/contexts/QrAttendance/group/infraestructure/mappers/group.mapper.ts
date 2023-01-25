@@ -19,8 +19,8 @@ export class GroupMapper extends MapperService<any, GroupEntity> {
             groupId: entity.group_id,
             userId: entity.user_id,
             name: entity.name,
-            createdAt: entity.created_at,
-            updatedAt: entity.updated_at
+            createdAt: entity.createdAt,
+            updatedAt: entity.updatedAt
         };
     }
 
@@ -29,8 +29,8 @@ export class GroupMapper extends MapperService<any, GroupEntity> {
             group_id: entity.groupId,
             user_id: entity.userId,
             name: entity.name,
-            created_at: entity.createdAt,
-            updated_at: entity.updatedAt
+            createdAt: entity.createdAt,
+            updatedAt: entity.updatedAt
         };
     }
 }
