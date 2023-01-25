@@ -44,6 +44,24 @@ export class GroupController {
         });
     }
 
+    updateGroup = async(req: Request, res: Response) => {
+
+        const { id, updatedFields } = req.body;
+        const groupUpdated = await this.groupService.updateGroup(id, updatedFields);
+
+        if (isLeft(groupUpdated)) {
+            return res.status(400).json({
+                ok: false,
+                msg: groupUpdated.left
+            });
+        }
+
+        res.status(201).json({
+            ok: true,
+            group: groupUpdated.right
+        })
+    }
+
     deleteGroup = async(req: Request, res: Response) => {
 
         const { id } = req.body;
