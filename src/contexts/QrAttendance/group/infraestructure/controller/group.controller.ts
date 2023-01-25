@@ -38,7 +38,7 @@ export class GroupController {
             });
         }
 
-        res.status(400).json({
+        res.status(201).json({
             ok: false,
             groups: groups.right
         });
@@ -57,7 +57,7 @@ export class GroupController {
             });
         }
 
-        res.status(400).json({
+        res.status(201).json({
             ok: false,
             group: group.right
         });
