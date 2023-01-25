@@ -17,6 +17,7 @@ const groupController = new GroupController(groupService);
 
 router.post('/create', groupController.createGroup);
 router.get('/all/:userId', groupController.findGroupsByUserId);
+router.put('/update', groupController.updateGroup);
 router.delete('/delete', groupController.deleteGroup);
 
 export default router;
