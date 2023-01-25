@@ -56,4 +56,12 @@ export class GroupService {
 
         return right(this.groupMapper.toDTO(mapped));
     }
+
+    updateGroup = async(groupId: string, userId: string, fields: Record<string, any>): Promise<Either<GroupError, number>> => {
+        const group = await this.groupRepository.updateGroup(groupId, userId, fields);
+        if (!group) return left(GroupError.GROUP_NOT_FOUND)
+
+        const domain = this.groupMapper.toDomain(group);
+        return right(this.groupMapper.toDTO(domain));
+    }
 }
