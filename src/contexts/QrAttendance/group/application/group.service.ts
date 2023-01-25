@@ -43,8 +43,6 @@ export class GroupService {
         const groupsDomain = this.groupMapper.toDomain(groups);
         const groupsDto = this.groupMapper.toDTO(groupsDomain);
 
-        console.log('GROUPS: ', groupsDto);
-
         return right(groupsDto);
     }
 
