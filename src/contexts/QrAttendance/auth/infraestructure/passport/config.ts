@@ -53,7 +53,7 @@ export class PassportLocalStrategy {
         // {id: 1, name: Juan}
         // 1 -> Serialización, pasar de un objeto a un dato muy particular
         passport.serializeUser((user, done) => {
-            done(null, user.userId);
+            done(null, user.id);
         });
 
         // 1 -> {id: 1, name: Juan}. Deserializacion Pasar del identificador al objeto

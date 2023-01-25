@@ -35,10 +35,10 @@ export class UserService {
         const userExists = await this.userRepository.findUserByEmail(email);
         if (userExists) return left(UserError.DUPLICATED_EMAIL);
 
-        const userId = this.uuidService.random();
+        const id = this.uuidService.random();
         password = await this.encryptService.hash(password);
 
-        const userValue = new UserValue({userId, name, email, password,lastname});
+        const userValue = new UserValue({id, name, email, password,lastname});
         const persistanceUser = this.userMapperService.toPersistance(userValue);
 
         await this.userRepository.createUser(persistanceUser);
