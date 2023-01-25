@@ -63,7 +63,7 @@ export class UserService {
 
     public findUserByEmail = async (email: string): Promise<Either<UserError, UserEntity>> => {
         const user = await this.userRepository.findUserByEmail(email);
-        if (!user) return left(UserError.USER_NOT_FOUND);
+        if (!user) return left(UserError.INVALID_CREDENTIALS);
 
         return right(this.userMapperService.toDomain(user))
     }

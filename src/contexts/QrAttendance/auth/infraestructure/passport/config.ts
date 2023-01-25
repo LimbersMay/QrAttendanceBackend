@@ -43,7 +43,7 @@ export class PassportLocalStrategy {
 
                     const isValidPassword = await this.hashService.compare(password, user.right.password);
 
-                    if (!isValidPassword) return done(UserError.USER_NOT_FOUND, false);
+                    if (!isValidPassword) return done(UserError.INVALID_CREDENTIALS, false);
 
                     return done(null, user.right);
                 },
