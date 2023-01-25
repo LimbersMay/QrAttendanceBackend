@@ -41,6 +41,9 @@ User.hasMany(Group, {
     foreignKey: 'user_id'
 });
 
-Group.belongsTo(User);
+Group.belongsTo(User, {
+    foreignKey: 'user_id',
+    targetKey: 'user_id'
+});
 
 export default User;
