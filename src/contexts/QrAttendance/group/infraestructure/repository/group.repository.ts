@@ -14,8 +14,14 @@ export class GroupRepository {
         });
     }
 
-    public async createGroup ({ name, userId, createdAt, updatedAt }: {name: string, userId: string, createdAt: Date, updatedAt: Date}) {
-        return Group.create({name, userId, createdAt, updatedAt});
+    public async createGroup ({ name, user_id, group_id, createdAt, updatedAt }: {name: string, user_id: string, group_id: string, createdAt: Date, updatedAt: Date}) {
+        return Group.create({
+            name,
+            group_id,
+            user_id,
+            createdAt,
+            updatedAt
+        });
     }
 
     public async deleteGroup (groupId: string) {
