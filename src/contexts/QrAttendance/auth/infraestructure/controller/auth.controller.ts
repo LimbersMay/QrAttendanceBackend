@@ -69,12 +69,12 @@ export class AuthController {
             });
         }
 
-        const mappedUser = this.userMapper.toDTO(req.user);
+        const user = req.user;
 
         return res.status(200).json({
             ok: true,
             msg: "Authenticated",
-            user: mappedUser
+            user
         });
     }
 }
