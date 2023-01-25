@@ -12,8 +12,8 @@ CREATE TABLE user
     email        varchar(25)              NOT NULL,
     password     varchar(100)             NOT NULL,
     lastname     varchar(25)              NOT NULL,
-    created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    createdAt   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updatedAt   TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 CREATE TABLE timezone
@@ -45,8 +45,8 @@ CREATE TABLE `group`
     group_id   varchar(100) PRIMARY KEY NOT NULL,
     user_id    varchar(100),
     name       varchar(25)              NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES user (user_id)
 );
 
@@ -56,8 +56,8 @@ CREATE TABLE qr_code
     group_id   varchar(100),
     name       varchar(25),
     url        varchar(255),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    udpatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (group_id) REFERENCES `group` (group_id)
 );
 
@@ -68,8 +68,8 @@ CREATE TABLE registry
     name         varchar(25)              NOT NULL,
     first_surname varchar(25)              NOT NULL,
     second_surname varchar(25)              NOT NULL,
-    created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    createdAt   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updatedAt   TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (qr_id) REFERENCES qr_code (qr_id)
 );
 
