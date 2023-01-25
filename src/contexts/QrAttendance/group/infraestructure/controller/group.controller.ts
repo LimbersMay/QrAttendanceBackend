@@ -46,8 +46,8 @@ export class GroupController {
 
     updateGroup = async(req: Request, res: Response) => {
 
-        const { id, updatedFields } = req.body;
-        const groupUpdated = await this.groupService.updateGroup(id, updatedFields);
+        const { id, userId, updatedFields } = req.body;
+        const groupUpdated = await this.groupService.updateGroup(id, userId, updatedFields);
 
         if (isLeft(groupUpdated)) {
             return res.status(400).json({
