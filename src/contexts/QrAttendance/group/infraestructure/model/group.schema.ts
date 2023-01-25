@@ -13,8 +13,7 @@ const Group = db.define('group', {
     },
     user_id: {
         type: DataTypes.STRING,
-        allowNull: false,
-        primaryKey: true
+        allowNull: false
     },
     createdAt: {
         type: DataTypes.DATE,
@@ -28,10 +27,13 @@ const Group = db.define('group', {
     freezeTableName: true,
     timestamps: true,
     underscored: true,
-    tableName: "qr_code"
+    tableName: "group"
 })
 
-Group.hasMany(QrCode, {foreignKey: 'group_id'});
+Group.hasMany(QrCode, {
+    foreignKey: 'group_id'
+});
+
 QrCode.belongsTo(Group);
 
 export default Group;
