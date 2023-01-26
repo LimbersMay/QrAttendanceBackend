@@ -4,11 +4,11 @@ import {EncryptService} from "../../shared/application/services/encrypt.service"
 import {UUIDGenerator} from "../../shared/application/services/UUIDGenerator";
 import {UserQuery} from "../domain/user.query";
 import {UserMapperService} from "../infrastructure/mappers/user.mapper";
-import {UserRepository} from "../infrastructure/repository/userRepository";
+import {UserRepository} from "../infrastructure/repository/user.repository";
 import {UserError} from "./exceptions/userError";
 import {UserEntity} from "../domain/user.entity";
-import {left, right} from "fp-ts/Either";
-import {UserDTO} from "./DTOs/userDTO";
+import { isRight, left, right} from "fp-ts/Either";
+import {UserDTO} from "./entities/userDTO";
 import {Either} from "../../../shared/types/ErrorEither";
 
 
@@ -18,53 +18,57 @@ export class UserService {
         private readonly encryptService: EncryptService,
         private readonly userMapperService: UserMapperService,
         private readonly uuidService: UUIDGenerator
-    ) {}
+    ) {
+    }
 
-    public findUserById = async (userId: string) => {
+    public findUserById = async (userId: string): Promise<Either<UserError, UserDTO>> => {
 
         const user = await this.userRepository.findUserById(userId);
-        if (!user) return null;
 
-        const mapped = this.userMapperService.toDomain(user);
-        return this.userMapperService.toDTO(mapped);
+        return isRight(user)
+            ? right(this.userMapperService.toDTO(user.right))
+            : left(UserError.NOT_FOUND);
     }
 
     public registerUser = async ({name, email, password, lastname}: { name: string, email: string, password: string, lastname: string }): Promise<Either<UserError, UserDTO>> => {
 
-        // verify if user already exists
-        const userExists = await this.userRepository.findUserByEmail(email);
-        if (userExists) return left(UserError.DUPLICATED_EMAIL);
-
-        const id = this.uuidService.random();
+        const userId = this.uuidService.random();
         password = await this.encryptService.hash(password);
 
-        const userValue = new UserValue({id, name, email, password,lastname});
-        const persistanceUser = this.userMapperService.toPersistance(userValue);
+        const userValue = UserValue.create({
+            userId,
+            name,
+            email,
+            password,
+            lastname
+        })
 
-        await this.userRepository.createUser(persistanceUser);
-        return right(this.userMapperService.toDTO(userValue))
+        const newUser = await this.userRepository.createUser(userValue);
+        return isRight(newUser)
+            ? right(this.userMapperService.toDTO(newUser.right))
+            : left(UserError.DUPLICATED_EMAIL);
     }
 
-    public updateUser = async(fields: UserQuery, userId: string) => {
-        const user = await this.userRepository.updateUser(fields, userId);
-        if (!user) return;
+    public updateUser = async (fields: UserQuery, userId: string): Promise<Either<UserError, number>> => {
+        const result = await this.userRepository.updateUser(fields, userId);
 
-        const mapped = this.userMapperService.toDomain(user);
-        return this.userMapperService.toDTO(mapped);
+        return isRight(result)
+            ? right(result.right)
+            : left(UserError.NOT_FOUND);
     }
-    public deleteUser = async(userId: string) => {
+    public deleteUser = async (userId: string): Promise<Either<UserError, number>> => {
 
-        const user = await this.userRepository.deleteUser(userId);
-        if (!user) return null;
-
-        const mapped = this.userMapperService.toDomain(user);
-        return this.userMapperService.toDTO(mapped);
+        const rowsDeleted = await this.userRepository.deleteUser(userId);
+        return isRight(rowsDeleted)
+            ? right(rowsDeleted.right)
+            : left(UserError.NOT_FOUND);
     }
 
     public findUserByEmail = async (email: string): Promise<Either<UserError, UserEntity>> => {
-        const user = await this.userRepository.findUserByEmail(email);
-        if (!user) return left(UserError.INVALID_CREDENTIALS);
 
-        return right(this.userMapperService.toDomain(user))
+        const user = await this.userRepository.findUserByEmail(email);
+        return isRight(user)
+            ? right(user.right)
+            : left(UserError.NOT_FOUND);
     }
 } 
