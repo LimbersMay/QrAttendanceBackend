@@ -1,23 +1,11 @@
 import { MapperService } from '../../../shared/infrastructure/mappers/mapper';
-import { UserEntity } from '../../domain/user.entity';
-import {UserDTO} from "../../application/DTOs/userDTO";
+import { UserEntity } from '../../domain';
+import {UserDTO} from "../../application/entities/userDTO";
 
-export class UserMapperService extends MapperService<any, UserEntity> {
+export class UserMapperService extends MapperService<UserDTO, UserEntity> {
     protected mapToDomain(entity: any): UserEntity {
         return {
-            id: entity.user_id,
-            name: entity.name,
-            email: entity.email,
-            password: entity.password,
-            lastname: entity.lastname,
-            updatedAt: entity.updatedAt,
-            createdAt: entity.createdAt
-        }
-    }
-
-    protected mapToPersistance(entity: UserEntity): any {
-        return {
-            user_id: entity.id,
+            userId: entity.id,
             name: entity.name,
             email: entity.email,
             password: entity.password,
@@ -29,7 +17,7 @@ export class UserMapperService extends MapperService<any, UserEntity> {
 
     protected mapToDTO(entity: UserEntity): UserDTO {
         return {
-            id: entity.id,
+            id: entity.userId,
             name: entity.name,
             email: entity.email,
             lastname: entity.lastname
