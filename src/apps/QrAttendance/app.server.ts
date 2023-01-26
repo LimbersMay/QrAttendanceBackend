@@ -4,7 +4,7 @@ import cors from "cors";
 
 import db from "../../contexts/shared/infrastructure/db/mysql.connection"
 import {PassportLocalStrategy} from "../../contexts/QrAttendance/auth/infrastructure/passport/config";
-import {UserRepository} from "../../contexts/QrAttendance/user/infrastructure/repository/userRepository";
+import {UserMysqlRepository} from "../../contexts/QrAttendance/user/infrastructure/repository/userMysqlRepository";
 import {BcryptAdapter} from "../../contexts/QrAttendance/user/infrastructure/adapters/bcryptAdapter";
 
 // services
@@ -34,7 +34,7 @@ export class Server {
         const encryptService = new BcryptAdapter();
         const userMapperService = new UserMapperService();
         const uuidService = new UuidAdapter();
-        const userRepository = new UserRepository();
+        const userRepository = new UserMysqlRepository();
         const userService = new UserService(userRepository, encryptService, userMapperService, uuidService);
 
         this.authService = new PassportLocalStrategy(userService, encryptService);

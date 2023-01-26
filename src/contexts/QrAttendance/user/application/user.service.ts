@@ -1,15 +1,15 @@
-import {UserValue} from '../domain/user.value';
+import {UserValue} from '../domain';
 
 import {EncryptService} from "../../shared/application/services/encrypt.service";
 import {UUIDGenerator} from "../../shared/application/services/UUIDGenerator";
 import {UserQuery} from "../domain/user.query";
 import {UserMapperService} from "../infrastructure/mappers/user.mapper";
-import {UserRepository} from "../infrastructure/repository/user.repository";
-import {UserError} from "./exceptions/userError";
-import {UserEntity} from "../domain/user.entity";
+import {UserError} from "../domain/errors/userError";
+import {UserEntity} from "../domain";
 import { isRight, left, right} from "fp-ts/Either";
 import {UserDTO} from "./entities/userDTO";
 import {Either} from "../../../shared/types/ErrorEither";
+import {UserRepository} from "../domain";
 
 
 export class UserService {
