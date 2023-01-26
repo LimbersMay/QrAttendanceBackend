@@ -2,19 +2,21 @@ import { RegistryEntity } from "./registry.entity";
 
 export class RegistryValue implements RegistryEntity {
     registryId: string;
+    qrCodeId: string;
     name: string;
-    mothersName: string;
-    fathersName: string;
-    updatedAt: Date | undefined;
-    createdAt: Date | undefined;
+    firstSurname: string;
+    secondSurname: string;
+    updatedAt: Date;
+    createdAt: Date;
     
-    constructor({registryId, name, mothersName, fathersName, createdAt, updatedAt}: RegistryEntity) {
+    constructor({registryId, qrCodeId, name, firstSurname, secondSurname, createdAt, updatedAt}: RegistryEntity) {
         this.name = name;
-        this.mothersName = mothersName;
-        this.fathersName = fathersName;
+        this.firstSurname = firstSurname;
+        this.secondSurname = secondSurname;
 
         this.registryId = registryId;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.qrCodeId = qrCodeId;
     }
 }

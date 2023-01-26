@@ -5,9 +5,10 @@ export class RegistryMapperService extends MapperService<any, RegistryEntity>{
     protected mapToDomain(entity: any): RegistryEntity {
         return {
             registryId: entity.registry_id,
+            qrCodeId: entity.qrCodeId,
             name: entity.name,
-            mothersName: entity.mothers_name,
-            fathersName: entity.fathers_name,
+            firstSurname: entity.mothers_name,
+            secondSurname: entity.fathers_name,
             createdAt: entity.created_at,
             updatedAt: entity.updated_at
         }
@@ -16,8 +17,8 @@ export class RegistryMapperService extends MapperService<any, RegistryEntity>{
         return {
             registry_id: entity.registryId,
             name: entity.name,
-            mothers_name: entity.mothersName,
-            fathers_name: entity.fathersName,
+            firstSurname: entity.firstSurname,
+            secondSurname: entity.secondSurname,
             created_at: entity.createdAt,
             updated_at: entity.updatedAt
         }
@@ -27,8 +28,8 @@ export class RegistryMapperService extends MapperService<any, RegistryEntity>{
         return {
             registryId: entity.registryId,
             name: entity.name,
-            mothersName: entity.mothersName,
-            fathersName: entity.fathersName,
+            firstSurname: entity.firstSurname,
+            secondSurname: entity.secondSurname,
             createdAt: entity.createdAt
         }
     }
