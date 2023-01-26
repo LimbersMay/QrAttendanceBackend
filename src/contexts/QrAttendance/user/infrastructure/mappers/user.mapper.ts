@@ -1,6 +1,6 @@
 import { MapperService } from '../../../shared/infrastructure/mappers/mapper';
 import { UserEntity } from '../../domain';
-import {UserDTO} from "../../application/entities/userDTO";
+import {UserDTO} from "../../application/entities/user.dto";
 
 export class UserMapperService extends MapperService<UserDTO, UserEntity> {
     protected mapToDomain(entity: any): UserEntity {
