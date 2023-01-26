@@ -7,7 +7,7 @@ export class GroupMiddleware {
     }
 
     validateGroupExists = async(req: Request, res: Response, next: NextFunction) => {
-        const {id} = req.params;
+        const {id} = req.body;
         const group = await this.groupService.getGroupById(id);
 
         if (isLeft(group)) {
