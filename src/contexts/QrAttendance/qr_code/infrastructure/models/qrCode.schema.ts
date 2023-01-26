@@ -1,38 +1,30 @@
-import { DataTypes } from "sequelize";
-import db from '../../../../shared/infrastructure/db/mysql.connection';
-import Registry from "../../../registry/infrastructure/model/registry.schema";
+import {Column, ForeignKey, Model, PrimaryKey, Table, Unique} from "sequelize-typescript";
+import {QrCodeEntity} from "../../domain/qrCode.entity";
+import Group from "../../../group/infrastructure/model/group.schema";
+import User from "../../../user/infrastructure/model/user.schema";
 
-const QrCode = db.define('qrCode', {
-    qr_id: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        primaryKey: true
-    },
-    group_id: {
-        type: DataTypes.STRING
-    },
-    name: {
-        type: DataTypes.STRING
-    },
-    url: {
-        type: DataTypes.STRING
-    },
-    createdAt: {
-        type: DataTypes.DATE,
-        field: 'created_at'
-    },
-    updatedAt: {
-        type: DataTypes.DATE,
-        field: 'updated_at'
-    }
-}, {
-    freezeTableName: true,
-    timestamps: true,
-    underscored: true,
-    tableName: "qr_code"
-});
+@Table({
+    tableName: "qrCode"
+})
+export class QrCode extends Model<QrCodeEntity> {
+    @PrimaryKey
+    @Unique
+    @Column
+    qrId!: string;
 
-QrCode.hasMany(Registry, { foreignKey: 'qr_id' });
-Registry.belongsTo(QrCode);
+    @ForeignKey(() => Group)
+    @Column
+    groupId!: string
+
+    @ForeignKey(() => User)
+    @Column
+    ownerId!: string
+
+    @Column
+    name!: string;
+
+    @Column
+    url!: string;
+}
 
 export default QrCode;
