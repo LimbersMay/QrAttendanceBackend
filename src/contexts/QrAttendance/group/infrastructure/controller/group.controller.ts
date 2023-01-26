@@ -12,10 +12,10 @@ export class GroupController {
 
         if (!req.user) return res.json();
 
-        const { id } = req.user;
+        const { userId } = req.user;
         const { name } = req.body;
 
-        const group = await this.groupService.createGroup(name, id);
+        const group = await this.groupService.createGroup(name, userId);
 
         if (isLeft(group)) {
             return res.status(400).json({
@@ -34,8 +34,8 @@ export class GroupController {
 
         if (!req.user) return res.json();
 
-        const { id } = req.user;
-        const groups = await this.groupService.getGroupsByUserId(id);
+        const { userId } = req.user;
+        const groups = await this.groupService.getGroupsByUserId(userId);
 
         if (isLeft(groups)) {
             return res.status(400).json({
@@ -54,7 +54,7 @@ export class GroupController {
 
         if (!req.user) return res.json();
 
-        const { id: userId } = req.user;
+        const { userId: userId } = req.user;
 
         const { id: groupId, updatedFields } = req.body;
         const groupUpdated = await this.groupService.updateGroup(groupId, userId, updatedFields);
@@ -76,7 +76,7 @@ export class GroupController {
 
         if (!req.user) return res.json();
 
-        const { id: userId } = req.user;
+        const { userId: userId } = req.user;
         const { id } = req.body;
 
         const group = await this.groupService.deleteGroup(id, userId);
