@@ -1,39 +1,22 @@
-import { DataTypes } from "sequelize";
-import db from '../../../../shared/infrastructure/db/mysql.connection';
-import QrCode from "../../../qr_code/infrastructure/models/qrCode.schema";
+import {Table, Column, Model, PrimaryKey, Unique, ForeignKey} from "sequelize-typescript";
+import {GroupEntity} from "../../domain/group.entity";
+import User from "../../../user/infrastructure/model/user.schema";
 
-const Group = db.define('group', {
-    group_id: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        primaryKey: true
-    },
-    name: {
-      type: DataTypes.STRING
-    },
-    user_id: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    createdAt: {
-        type: DataTypes.DATE,
-        field: 'created_at'
-    },
-    updatedAt: {
-        type: DataTypes.DATE,
-        field: 'updated_at'
-    }
-}, {
-    freezeTableName: true,
-    timestamps: true,
-    underscored: true,
+@Table({
     tableName: "group"
 })
+class Group extends Model<GroupEntity> {
+    @PrimaryKey
+    @Unique
+    @Column
+    groupId!: string;
 
-Group.hasMany(QrCode, {
-    foreignKey: 'group_id'
-});
+    @Column
+    @ForeignKey(() => User)
+    userId!: string;
 
-QrCode.belongsTo(Group);
+    @Column
+    name!: string;
+}
 
 export default Group;
