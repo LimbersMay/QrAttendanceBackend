@@ -7,7 +7,7 @@ import {UserMapperService} from "../infrastructure/mappers/user.mapper";
 import {UserError} from "../domain/errors/userError";
 import {UserEntity} from "../domain";
 import { isRight, left, right} from "fp-ts/Either";
-import {UserDTO} from "./entities/userDTO";
+import {UserDTO} from "./entities/user.dto";
 import {Either} from "../../../shared/types/ErrorEither";
 import {UserRepository} from "../domain";
 
@@ -27,7 +27,7 @@ export class UserService {
 
         return isRight(user)
             ? right(this.userMapperService.toDTO(user.right))
-            : left(UserError.NOT_FOUND);
+            : left(UserError.USER_NOT_FOUND);
     }
 
     public registerUser = async ({name, email, password, lastname}: { name: string, email: string, password: string, lastname: string }): Promise<Either<UserError, UserDTO>> => {
@@ -54,14 +54,14 @@ export class UserService {
 
         return isRight(result)
             ? right(result.right)
-            : left(UserError.NOT_FOUND);
+            : left(UserError.USER_NOT_FOUND);
     }
     public deleteUser = async (userId: string): Promise<Either<UserError, number>> => {
 
         const rowsDeleted = await this.userRepository.deleteUser(userId);
         return isRight(rowsDeleted)
             ? right(rowsDeleted.right)
-            : left(UserError.NOT_FOUND);
+            : left(UserError.USER_NOT_FOUND);
     }
 
     public findUserByEmail = async (email: string): Promise<Either<UserError, UserEntity>> => {
@@ -69,6 +69,6 @@ export class UserService {
         const user = await this.userRepository.findUserByEmail(email);
         return isRight(user)
             ? right(user.right)
-            : left(UserError.NOT_FOUND);
+            : left(UserError.USER_NOT_FOUND);
     }
 } 
