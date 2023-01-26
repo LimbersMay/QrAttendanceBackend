@@ -2,23 +2,23 @@ import { Application } from "express";
 import express from "express";
 import cors from "cors";
 
-import db from "../../contexts/shared/infraestructure/db/mysql.connection"
-import {PassportLocalStrategy} from "../../contexts/QrAttendance/auth/infraestructure/passport/config";
-import {UserRepository} from "../../contexts/QrAttendance/user/infraestructure/repository/userRepository";
-import {BcryptAdapter} from "../../contexts/QrAttendance/user/infraestructure/adapters/bcryptAdapter";
+import db from "../../contexts/shared/infrastructure/db/mysql.connection"
+import {PassportLocalStrategy} from "../../contexts/QrAttendance/auth/infrastructure/passport/config";
+import {UserRepository} from "../../contexts/QrAttendance/user/infrastructure/repository/userRepository";
+import {BcryptAdapter} from "../../contexts/QrAttendance/user/infrastructure/adapters/bcryptAdapter";
 
 // services
-import {UserMapperService} from "../../contexts/QrAttendance/user/infraestructure/mappers/user.mapper";
+import {UserMapperService} from "../../contexts/QrAttendance/user/infrastructure/mappers/user.mapper";
 
 // routes
-import authRoutes from "../../contexts/QrAttendance/auth/infraestructure/routes/auth.routes";
-import userRoutes from "../../contexts/QrAttendance/user/infraestructure/routes/user.route";
-import groupRoutes from "../../contexts/QrAttendance/group/infraestructure/routes/group.route";
+import authRoutes from "../../contexts/QrAttendance/auth/infrastructure/routes/auth.routes";
+import userRoutes from "../../contexts/QrAttendance/user/infrastructure/routes/user.route";
+import groupRoutes from "../../contexts/QrAttendance/group/infrastructure/routes/group.route";
 
 import cookieParser from "cookie-parser";
 import session from "express-session";
 import {UserService} from "../../contexts/QrAttendance/user/application/user.service";
-import {UuidAdapter} from "../../contexts/QrAttendance/user/infraestructure/adapters/uuid.adapter";
+import {UuidAdapter} from "../../contexts/QrAttendance/user/infrastructure/adapters/uuid.adapter";
 
 export class Server {
     public app: Application;

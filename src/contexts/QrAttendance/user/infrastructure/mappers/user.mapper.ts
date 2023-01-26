@@ -1,4 +1,4 @@
-import { MapperService } from '../../../shared/infraestructure/mappers/mapper';
+import { MapperService } from '../../../shared/infrastructure/mappers/mapper';
 import { UserEntity } from '../../domain/user.entity';
 import {UserDTO} from "../../application/DTOs/userDTO";
 

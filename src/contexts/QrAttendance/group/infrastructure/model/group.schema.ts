@@ -1,6 +1,6 @@
 import { DataTypes } from "sequelize";
-import db from '../../../../shared/infraestructure/db/mysql.connection';
-import QrCode from "../../../qr_code/infraestructure/models/qrCode.schema";
+import db from '../../../../shared/infrastructure/db/mysql.connection';
+import QrCode from "../../../qr_code/infrastructure/models/qrCode.schema";
 
 const Group = db.define('group', {
     group_id: {

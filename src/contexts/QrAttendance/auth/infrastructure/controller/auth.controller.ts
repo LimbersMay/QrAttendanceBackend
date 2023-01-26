@@ -1,4 +1,4 @@
-import {UserMapperService} from "../../../user/infraestructure/mappers/user.mapper";
+import {UserMapperService} from "../../../user/infrastructure/mappers/user.mapper";
 import {Request, Response} from "express";
 import passport from "passport";
 

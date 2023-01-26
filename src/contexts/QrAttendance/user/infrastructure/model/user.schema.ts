@@ -1,6 +1,6 @@
 import {DataTypes} from "sequelize";
-import db from '../../../../shared/infraestructure/db/mysql.connection';
-import Group from "../../../group/infraestructure/model/group.schema";
+import db from '../../../../shared/infrastructure/db/mysql.connection';
+import Group from "../../../group/infrastructure/model/group.schema";
 
 const User = db.define('user', {
         user_id: {

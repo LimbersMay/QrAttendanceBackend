@@ -1,5 +1,5 @@
 import { Router} from "express";
-import {UserMapperService} from "../../../user/infraestructure/mappers/user.mapper";
+import {UserMapperService} from "../../../user/infrastructure/mappers/user.mapper";
 import {AuthController} from "../controller/auth.controller";
 
 const router = Router();

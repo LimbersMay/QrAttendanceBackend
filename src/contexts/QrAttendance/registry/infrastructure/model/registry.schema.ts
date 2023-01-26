@@ -1,5 +1,5 @@
 import {DataTypes} from "sequelize";
-import db from '../../../../shared/infraestructure/db/mysql.connection';
+import db from '../../../../shared/infrastructure/db/mysql.connection';
 
 const Registry = db.define('registry', {
         registry_id: {

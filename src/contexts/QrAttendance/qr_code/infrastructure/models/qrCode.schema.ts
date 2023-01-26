@@ -1,6 +1,6 @@
 import { DataTypes } from "sequelize";
-import db from '../../../../shared/infraestructure/db/mysql.connection';
-import Registry from "../../../registry/infraestructure/model/registry.schema";
+import db from '../../../../shared/infrastructure/db/mysql.connection';
+import Registry from "../../../registry/infrastructure/model/registry.schema";
 
 const QrCode = db.define('qrCode', {
     qr_id: {

@@ -1,4 +1,4 @@
-import {MapperService} from "../../../shared/infraestructure/mappers/mapper";
+import {MapperService} from "../../../shared/infrastructure/mappers/mapper";
 import {GroupEntity} from "../../domain/group.entity";
 import {GroupDTO} from "../../application/entities/group.dto";
 import {GroupPersistance} from "../../application/entities/group.persistance";

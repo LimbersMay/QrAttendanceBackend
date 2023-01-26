@@ -1,4 +1,4 @@
-import {MapperService} from "../../../shared/infraestructure/mappers/mapper";
+import {MapperService} from "../../../shared/infrastructure/mappers/mapper";
 import {RegistryEntity} from "../../domain/registry.entity";
 import {RegistryDTO} from "../../application/DTOs/registryDTO";
 export class RegistryMapperService extends MapperService<any, RegistryEntity>{

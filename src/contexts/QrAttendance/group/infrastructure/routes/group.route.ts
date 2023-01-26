@@ -4,7 +4,7 @@ import {GroupService} from "../../application/group.service";
 import {UuidAdapter} from "../adapters";
 import {GroupMapper} from "../mappers";
 import {GroupController} from "../controller/group.controller";
-import {isAuthenticated} from "../../../auth/infraestructure/middlewares";
+import {isAuthenticated} from "../../../auth/infrastructure/middlewares";
 import {GroupMiddleware} from "../middlewares/group.middleware";
 
 const router = Router();
