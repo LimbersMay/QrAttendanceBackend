@@ -1,18 +1,15 @@
-import {UserMapperService} from "../../../user/infrastructure/mappers/user.mapper";
 import {Request, Response} from "express";
 import passport from "passport";
-import {UserService} from "../../../user/application/user.service";
 import {isRight} from "fp-ts/Either";
+import {UserCreator} from "../../../user/application/creator/user.creator";
 
 export class AuthController {
     constructor(
-        private readonly userMapper: UserMapperService,
-        private readonly userService: UserService
+        private readonly userCreator: UserCreator
     ) {
     }
 
-    public loginLocal = (req: Request, res: Response) => {
-
+    public login = (req: Request, res: Response) => {
         passport.authenticate('local', (err, user) => {
             if (err) {
                 return res.status(400).json({
@@ -36,26 +33,24 @@ export class AuthController {
                     });
                 }
 
-                const mappedUser = this.userMapper.toDTO(user);
-
                 return res.status(200).json({
                     ok: true,
                     msg: "Login",
-                    user: mappedUser
+                    user: user
                 });
             });
 
         })(req, res);
     }
 
-    public registerLocal = async(req: Request, res: Response) => {
+    public register = async(req: Request, res: Response) => {
 
         let { name, email,  password, lastname } = req.body;
 
-        const user = await this.userService.registerUser({ name, email, password, lastname });
+        const user = await this.userCreator.execute({ name, email, password, lastname });
 
         return isRight(user)
-            ? this.loginLocal(req, res)
+            ? this.login(req, res)
             : res.status(400).json({msg: user.left});
 
     }
