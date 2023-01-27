@@ -7,8 +7,12 @@ export class GroupMiddleware {
     }
 
     validateGroupExists = async(req: Request, res: Response, next: NextFunction) => {
-        const {id} = req.body;
-        const group = await this.groupService.getGroupById(id);
+
+        if (!req.user) return res.status(401).json({msg: 'Unauthorized'});
+
+        const {id: idGroup} = req.body;
+        const { userId } = req.user;
+        const group = await this.groupService.getGroupById(idGroup, userId);
 
         if (isLeft(group)) {
             return res.status(404).json(
