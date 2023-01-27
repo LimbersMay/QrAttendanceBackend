@@ -58,10 +58,10 @@ export class PassportLocalStrategy {
 
         // 1 -> {id: 1, name: Juan}. Deserializacion Pasar del identificador al objeto
         passport.deserializeUser(async (id: string, done) => {
-            const user = await this.userService.findUserById(id);
-            return (isRight(user))
-                ? done(user.right, null)
-                : done(user.left, null);
+            const result = await this.userService.findUserById(id);
+            return (isRight(result))
+                ? done(null, result.right)
+                : done(result.left, null);
         });
     }
 
