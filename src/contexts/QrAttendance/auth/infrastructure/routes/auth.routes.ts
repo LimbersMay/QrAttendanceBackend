@@ -1,26 +1,26 @@
 import { Router} from "express";
-import {UserMapperService} from "../../../user/infrastructure/mappers/user.mapper";
 import {AuthController} from "../controller/auth.controller";
-import {UserService} from "../../../user/application/user.service";
-import {BcryptAdapter} from "../../../user/infrastructure/adapters/bcryptAdapter";
-import {UuidAdapter} from "../../../user/infrastructure/adapters/uuid.adapter";
+import { BcryptAdapter, UuidAdapter } from "../../../user/infrastructure/adapters";
 import {UserMysqlRepository} from "../../../user/infrastructure/repository/user.repository";
 import {AuthMiddleware} from "../middlewares";
+import {UserCreator} from "../../../user/application/creator/user.creator";
+import {UserFinder} from "../../../user/application/find/user.find";
 
 const router = Router();
 
-const encryptService = new BcryptAdapter();
-const userMapperService = new UserMapperService();
-const uuidService = new UuidAdapter();
-const userRepository = new UserMysqlRepository();
-const userService = new UserService(userRepository, encryptService, userMapperService, uuidService);
+const userMysqlRepository = new UserMysqlRepository();
+const bcryptAdapter = new BcryptAdapter();
+const uuidAdapter = new UuidAdapter();
 
-const authController = new AuthController(userMapperService, userService);
-const authMiddleware = new AuthMiddleware(userService);
+const userCreator = new UserCreator(userMysqlRepository, uuidAdapter, bcryptAdapter);
+const userFinder = new UserFinder(userMysqlRepository);
 
-router.post("/login-local", authController.loginLocal);
+const authController = new AuthController(userCreator);
+const authMiddleware = new AuthMiddleware(userFinder);
 
-router.post("/register-local",[authMiddleware.emailExists], authController.registerLocal);
+router.post("/login-local", authController.login);
+
+router.post("/register-local",[authMiddleware.emailExists], authController.register);
 
 router.post("/logout", authController.logout);
 
