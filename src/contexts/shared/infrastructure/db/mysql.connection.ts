@@ -1,8 +1,10 @@
-import { Sequelize } from "sequelize";
 
-export default new Sequelize('QrAttendance', 'limber', '15891', {
+import { Sequelize } from 'sequelize-typescript'
+
+const sequelize = new Sequelize('QrAttendance', 'limber', '15891', {
     host: 'localhost',
     dialect: 'mariadb',
-   // logging: false
+    // logging: false
 });
 
+export default sequelize;
