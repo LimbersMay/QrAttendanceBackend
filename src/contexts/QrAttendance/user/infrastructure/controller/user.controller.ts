@@ -32,7 +32,7 @@ export class UserController {
 
         if (!req.user) return this.sendFailure(400, res, 'User not found');
 
-        const { userId } = req.user;
+        const { id: userId } = req.user;
         const {fields} = req.body;
 
         const user = await this.userService.updateUser(fields, userId);
@@ -46,7 +46,7 @@ export class UserController {
 
         if (!req.user) return this.sendFailure(400, res, 'User not found');
 
-        const { userId } = req.user;
+        const { id: userId } = req.user;
         const user = await this.userService.deleteUser(userId);
 
         return isRight(user)

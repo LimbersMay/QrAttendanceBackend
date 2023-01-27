@@ -14,7 +14,7 @@ export class GroupController {
 
         console.log('creating a group');
 
-        const { userId } = req.user;
+        const { id: userId } = req.user;
         const { name } = req.body;
 
         const group = await this.groupService.createGroup(name, userId);
@@ -28,7 +28,7 @@ export class GroupController {
 
         if (!req.user) return res.json({ERROR: 'NO USER'});
 
-        const { userId } = req.user;
+        const { id: userId } = req.user;
         const groups = await this.groupService.getGroupsByUserId(userId);
 
         return isRight(groups)
@@ -40,7 +40,7 @@ export class GroupController {
 
         if (!req.user) return res.json();
 
-        const { userId: userId } = req.user;
+        const { id: userId } = req.user;
 
         const { id: groupId, updatedFields } = req.body;
         const groupUpdated = await this.groupService.updateGroup(groupId, userId, updatedFields);
@@ -54,7 +54,7 @@ export class GroupController {
 
         if (!req.user) return res.json();
 
-        const { userId: userId } = req.user;
+        const { id: userId } = req.user;
         const { id } = req.body;
 
         const group = await this.groupService.deleteGroup(id, userId);

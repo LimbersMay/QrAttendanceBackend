@@ -11,7 +11,7 @@ export class GroupMiddleware {
         if (!req.user) return res.status(401).json({msg: 'Unauthorized'});
 
         const {id: idGroup} = req.body;
-        const { userId } = req.user;
+        const { id: userId } = req.user;
         const group = await this.groupService.getGroupById(idGroup, userId);
 
         if (isLeft(group)) {
