@@ -2,7 +2,7 @@ import {Table, Column, Model, PrimaryKey, Unique, ForeignKey } from "sequelize-t
 import {GroupEntity} from "../../domain/group.entity";
 import User from "../../../user/infrastructure/model/user.schema";
 import sequelize from "../../../../shared/infrastructure/db/mysql.connection";
-import {DataTypes} from "sequelize";
+import {DataType} from "sequelize-typescript";
 
 @Table({
     tableName: "group"
@@ -28,12 +28,12 @@ class Group extends Model<GroupEntity> {
 
 const groupAttributes = {
     groupId: {
-        type: DataTypes.STRING,
+        type: DataType.STRING,
         primaryKey: true,
         allowNull: false
     },
     userId: {
-        type: DataTypes.STRING,
+        type: DataType.STRING,
         allowNull: false,
         references: {
             model: User,
@@ -41,15 +41,15 @@ const groupAttributes = {
         }
     },
     name: {
-        type: DataTypes.STRING,
+        type: DataType.STRING,
         allowNull: false
     },
     createdAt: {
-        type: DataTypes.DATE,
+        type: DataType.DATE,
         allowNull: false
     },
     updatedAt: {
-        type: DataTypes.DATE,
+        type: DataType.DATE,
         allowNull: false
     }
 }
