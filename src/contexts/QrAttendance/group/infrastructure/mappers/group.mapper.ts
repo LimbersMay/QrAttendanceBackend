@@ -16,18 +16,8 @@ export class GroupMapper extends MapperService<any, GroupEntity> {
     // from persistance to domain
     protected mapToDomain(entity: GroupPersistance): GroupEntity {
         return {
-            groupId: entity.group_id,
-            userId: entity.user_id,
-            name: entity.name,
-            createdAt: entity.createdAt,
-            updatedAt: entity.updatedAt
-        };
-    }
-
-    protected mapToPersistance(entity: GroupEntity): GroupPersistance {
-        return {
-            group_id: entity.groupId,
-            user_id: entity.userId,
+            groupId: entity.groupId,
+            userId: entity.userId,
             name: entity.name,
             createdAt: entity.createdAt,
             updatedAt: entity.updatedAt
