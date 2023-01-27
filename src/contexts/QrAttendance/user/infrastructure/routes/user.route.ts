@@ -1,6 +1,6 @@
 
 import { Router } from "express";
-import { UserMysqlRepository } from '../repository/userMysqlRepository';
+import { UserMysqlRepository } from '../repository/user.repository';
 import { UserService } from '../../application/user.service';
 import { UserController } from '../controller/user.controller';
 import { UserMapperService } from '../mappers/user.mapper';
