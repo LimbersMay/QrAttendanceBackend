@@ -1,7 +1,6 @@
-import {Column, Model, PrimaryKey, Table, Unique} from "sequelize-typescript";
+import {Column, HasMany, Model, PrimaryKey, Table, Unique} from "sequelize-typescript";
 import {UserEntity} from "../../domain";
-import {DataType} from "sequelize-typescript";
-import sequelize from "../../../../shared/infrastructure/db/mysql.connection";
+import Group from "../../../group/infrastructure/model/group.schema";
 
 @Table
 export class User extends Model<UserEntity> {
@@ -28,35 +27,8 @@ export class User extends Model<UserEntity> {
 
     @Column
     updatedAt!: Date
+    @HasMany(() => Group)
+    groups: Group[] = []
 }
-
-sequelize.addModels([User]);
-
-User.init({
-    userId: {
-        type: DataType.STRING,
-        primaryKey: true,
-        unique: true
-    },
-    name: {
-        type: DataType.STRING
-    },
-    email: {
-        type: DataType.STRING,
-        unique: true
-    },
-    password: {
-        type: DataType.STRING
-    },
-    lastname: {
-        type: DataType.STRING
-    },
-    createdAt: {
-        type: DataType.DATE,
-    },
-    updatedAt: {
-        type: DataType.DATE,
-    }
-}, { sequelize: sequelize, tableName: "user" });
 
 export default User;
