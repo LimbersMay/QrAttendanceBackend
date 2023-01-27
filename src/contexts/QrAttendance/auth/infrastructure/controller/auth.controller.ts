@@ -1,9 +1,14 @@
 import {UserMapperService} from "../../../user/infrastructure/mappers/user.mapper";
 import {Request, Response} from "express";
 import passport from "passport";
+import {UserService} from "../../../user/application/user.service";
+import {isRight} from "fp-ts/Either";
 
 export class AuthController {
-    constructor(private readonly userMapper: UserMapperService) {
+    constructor(
+        private readonly userMapper: UserMapperService,
+        private readonly userService: UserService
+    ) {
     }
 
     public loginLocal = (req: Request, res: Response) => {
@@ -41,6 +46,18 @@ export class AuthController {
             });
 
         })(req, res);
+    }
+
+    public registerLocal = async(req: Request, res: Response) => {
+
+        let { name, email,  password, lastname } = req.body;
+
+        const user = await this.userService.registerUser({ name, email, password, lastname });
+
+        return isRight(user)
+            ? this.loginLocal(req, res)
+            : res.status(400).json({msg: user.left});
+
     }
 
     public logout = (req: Request, res: Response) => {
