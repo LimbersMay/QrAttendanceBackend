@@ -3,7 +3,7 @@ import {UUIDGenerator} from "../../shared/application/services/UUIDGenerator";
 import {Either} from "../../../shared/types/ErrorEither";
 import {GroupError} from "./errors/group.errors";
 import {GroupValue} from "../domain/group.value";
-import {left, right} from "fp-ts/Either";
+import {isRight, left, right} from "fp-ts/Either";
 import {GroupMapper} from "../infrastructure/mappers";
 import {GroupDTO} from "./entities/group.dto";
 
@@ -25,49 +25,43 @@ export class GroupService {
             updatedAt: new Date()
         });
 
-        const groupPersistance = this.groupMapper.toPersistance(group);
+        const result = await this.groupRepository.createGroup(group);
 
-        const newGroup = await this.groupRepository.createGroup(groupPersistance);
-        if (!newGroup) return left(GroupError.GROUP_NOT_CREATED);
-
-        const mapped = this.groupMapper.toDTO(group);
-
-        return right(mapped);
+        return isRight(result)
+            ? right(this.groupMapper.toDTO(result.right))
+            : left(result.left);
     }
 
     getGroupsByUserId = async (userId: string): Promise<Either<GroupError, GroupDTO[]>> => {
-
         const groups = await this.groupRepository.findGroupsByUserId(userId);
-        if (!groups) return left(GroupError.CANNOT_GET_GROUPS);
 
-        const groupsDomain = this.groupMapper.toDomain(groups);
-        const groupsDto = this.groupMapper.toDTO(groupsDomain);
-
-        return right(groupsDto);
+        return isRight(groups)
+            ? right(this.groupMapper.toDTO(groups.right))
+            : left(groups.left);
     }
 
-    getGroupById = async (groupId: string): Promise<Either<GroupError, GroupDTO>> => {
-        const group = await this.groupRepository.findGroupById(groupId);
-        if (!group) return left(GroupError.GROUP_NOT_FOUND);
+    getGroupById = async (groupId: string, userId: string): Promise<Either<GroupError, GroupDTO>> => {
+        const group = await this.groupRepository.findGroupById(groupId, userId);
 
-        const mapped = this.groupMapper.toDomain(group);
-
-        return right(this.groupMapper.toDTO(mapped));
+        return isRight(group)
+            ? right(this.groupMapper.toDTO(group.right))
+            : left(group.left);
     }
 
     deleteGroup = async (groupId: string, userId: string): Promise<Either<GroupError, number>> => {
-        const destroyedRows = await this.groupRepository.deleteGroup(groupId, userId);
-        if (destroyedRows === 0) return left(GroupError.GROUP_NOT_FOUND);
+        const result = await this.groupRepository.deleteGroup(groupId, userId);
 
-        return right(destroyedRows);
+        return isRight(result)
+            ? right(result.right)
+            : left(result.left);
     }
 
-    updateGroup = async(groupId: string, userId: string, fields: Record<string, any>): Promise<Either<GroupError, GroupDTO>> => {
+    updateGroup = async(groupId: string, userId: string, fields: Record<string, any>): Promise<Either<GroupError, number>> => {
 
-        const group = await this.groupRepository.updateGroup(groupId, userId, fields);
-        if (!group) return left(GroupError.GROUP_NOT_FOUND)
+        const result = await this.groupRepository.updateGroup(groupId, userId, fields);
 
-        const domain = this.groupMapper.toDomain(group);
-        return right(this.groupMapper.toDTO(domain));
+        return isRight(result)
+            ? right(result.right)
+            : left(result.left);
     }
 }
