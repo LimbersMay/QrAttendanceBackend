@@ -3,9 +3,9 @@ import {UserQuery} from "../../domain/user.query";
 import {Either} from "../../../../shared/types/ErrorEither";
 import {UserError} from "../../domain/errors/userError";
 import {left, right} from "fp-ts/Either";
-import {UserEntity} from "../../domain";
+import {UserEntity, UserRepository} from "../../domain";
 
-export class UserMysqlRepository {
+export class UserMysqlRepository implements UserRepository {
 
     public constructor(){}
     async findUserByEmail(email: string): Promise<Either<UserError, UserEntity>>{
@@ -65,9 +65,9 @@ export class UserMysqlRepository {
             }
         });
 
-        return (rows === 0)
-            ? left(UserError.USER_NOT_FOUND)
-            : right(rows);
+        return (rows > 0)
+            ? right(rows)
+            : left(UserError.USER_NOT_FOUND);
     }
     async updateUser(fields: UserQuery, userId: string): Promise<Either<UserError, number>> {
 
@@ -82,8 +82,8 @@ export class UserMysqlRepository {
             }
         )
 
-        return (rowsAffected[0] === 0)
-            ? left(UserError.USER_NOT_FOUND)
-            : right(rowsAffected[0]);
+        return (rowsAffected[0] > 0)
+            ? right(rowsAffected[0])
+            : left(UserError.USER_NOT_FOUND);
     }
 }
