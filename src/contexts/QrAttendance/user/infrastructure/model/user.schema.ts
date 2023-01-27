@@ -13,6 +13,7 @@ export class User extends Model<UserEntity> {
     @Column
     name!: string
 
+    @Unique
     @Column
     email!: string
 
@@ -41,7 +42,8 @@ User.init({
         type: DataType.STRING
     },
     email: {
-        type: DataType.STRING
+        type: DataType.STRING,
+        unique: true
     },
     password: {
         type: DataType.STRING
