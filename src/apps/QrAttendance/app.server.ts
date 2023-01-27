@@ -5,10 +5,7 @@ import cors from "cors";
 import db from "../../contexts/shared/infrastructure/db/mysql.connection"
 import {PassportLocalStrategy} from "../../contexts/QrAttendance/auth/infrastructure/passport/config";
 import {UserMysqlRepository} from "../../contexts/QrAttendance/user/infrastructure/repository/user.repository";
-import {BcryptAdapter} from "../../contexts/QrAttendance/user/infrastructure/adapters/bcryptAdapter";
-
-// services
-import {UserMapperService} from "../../contexts/QrAttendance/user/infrastructure/mappers/user.mapper";
+import {BcryptAdapter} from "../../contexts/QrAttendance/user/infrastructure/adapters";
 
 // routes
 import authRoutes from "../../contexts/QrAttendance/auth/infrastructure/routes/auth.routes";
@@ -17,8 +14,8 @@ import groupRoutes from "../../contexts/QrAttendance/group/infrastructure/routes
 
 import cookieParser from "cookie-parser";
 import session from "express-session";
-import {UserService} from "../../contexts/QrAttendance/user/application/user.service";
-import {UuidAdapter} from "../../contexts/QrAttendance/user/infrastructure/adapters/uuid.adapter";
+import {AuthenticateUser} from "../../contexts/QrAttendance/auth/application/authentication/auth";
+import {UserFinder} from "../../contexts/QrAttendance/user/application/find/user.find";
 
 export class Server {
     public app: Application;
@@ -31,13 +28,13 @@ export class Server {
         this.app = express();
         this.port = parseInt(process.env.PORT ?? "3000")
 
+        const userRepo = new UserMysqlRepository();
         const encryptService = new BcryptAdapter();
-        const userMapperService = new UserMapperService();
-        const uuidService = new UuidAdapter();
-        const userRepository = new UserMysqlRepository();
-        const userService = new UserService(userRepository, encryptService, userMapperService, uuidService);
 
-        this.authService = new PassportLocalStrategy(userService, encryptService);
+        const authenticateUser = new AuthenticateUser(userRepo, encryptService);
+        const userFinder = new UserFinder(userRepo);
+
+        this.authService = new PassportLocalStrategy(authenticateUser, userFinder);
         this.authService.init();
 
         // routes
