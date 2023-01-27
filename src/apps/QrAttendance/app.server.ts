@@ -15,7 +15,7 @@ import groupRoutes from "../../contexts/QrAttendance/group/infrastructure/routes
 import cookieParser from "cookie-parser";
 import session from "express-session";
 import {AuthenticateUser} from "../../contexts/QrAttendance/auth/application/authentication/auth";
-import {UserFinder} from "../../contexts/QrAttendance/user/application/find/user.find";
+import {UserFinder} from "../../contexts/QrAttendance/user/application/useCases";
 
 export class Server {
     public app: Application;

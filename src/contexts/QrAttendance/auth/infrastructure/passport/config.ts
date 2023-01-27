@@ -4,7 +4,7 @@ import passport from "passport";
 import {isRight} from "fp-ts/Either";
 import {AuthenticateUser} from "../../application/authentication/auth";
 import {UserDTO} from "../../../user/application/entities/user.dto";
-import {UserFinder} from "../../../user/application/find/user.find";
+import {UserFinder} from "../../../user/application/useCases";
 
 declare global {
     namespace Express {

@@ -3,8 +3,7 @@ import {AuthController} from "../controller/auth.controller";
 import { BcryptAdapter, UuidAdapter } from "../../../user/infrastructure/adapters";
 import {UserMysqlRepository} from "../../../user/infrastructure/repository/user.repository";
 import {AuthMiddleware} from "../middlewares";
-import {UserCreator} from "../../../user/application/creator/user.creator";
-import {UserFinder} from "../../../user/application/find/user.find";
+import {UserCreator, UserFinder} from "../../../user/application/useCases";
 
 const router = Router();
 

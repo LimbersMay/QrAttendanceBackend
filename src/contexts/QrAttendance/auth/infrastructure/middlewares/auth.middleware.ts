@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import {AuthError} from "../../application/errors/authError";
 import {isRight} from "fp-ts/Either";
-import {UserFinder} from "../../../user/application/find/user.find";
+import {UserFinder} from "../../../user/application/useCases";
 
 export const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
     if (req.isAuthenticated()) {

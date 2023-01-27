@@ -1,7 +1,7 @@
 import {Request, Response} from "express";
 import passport from "passport";
 import {isRight} from "fp-ts/Either";
-import {UserCreator} from "../../../user/application/creator/user.creator";
+import {UserCreator} from "../../../user/application/useCases";
 
 export class AuthController {
     constructor(
