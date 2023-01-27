@@ -11,7 +11,7 @@ CREATE TABLE user
 (
     userId      varchar(100) PRIMARY KEY NOT NULL UNIQUE,
     name         varchar(25)              NOT NULL,
-    email        varchar(25)              NOT NULL,
+    email        varchar(25)              NOT NULL UNIQUE,
     password     varchar(100)             NOT NULL,
     lastname     varchar(25)              NOT NULL,
     createdAt   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
