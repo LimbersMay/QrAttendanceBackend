@@ -1,42 +1,25 @@
-
 import { Router } from "express";
 import { UserMysqlRepository } from '../repository/user.repository';
-import { UserService } from '../../application/user.service';
-import { UserController } from '../controller/user.controller';
-import { UserMapperService } from '../mappers/user.mapper';
-import {BcryptAdapter, UuidAdapter } from "../adapters";
+import {UserDeleteController, UserGetController, UserUpdateController} from "../controller";
+import {UserDeleter, UserFinder} from "../../application/useCases";
+import {UserUpdater} from "../../application/useCases/user.updater";
 
 const userRouter = Router();
 
-/**
- * Iniciamos los adaptadores
- */
-const bcryptAdapter = new BcryptAdapter();
-const uuidAdapter = new UuidAdapter();
+const userMysqlRepository = new UserMysqlRepository();
 
-const userMapperService = new UserMapperService();
+// Initialize use cases
+const userDelete = new UserDeleter(userMysqlRepository);
+const userFinder = new UserFinder(userMysqlRepository);
+const userUpdate = new UserUpdater(userMysqlRepository);
 
-/**
- * Iniciamos el repositorio
- */
+// Initialize controllers
+const userDeleteController = new UserDeleteController(userDelete);
+const userGetController = new UserGetController(userFinder);
+const userUpdateController = new UserUpdateController(userUpdate);
 
-const mysqlRepository = new UserMysqlRepository();
-
-/**
- * Iniciamos casos de uso 
- */
-const userService = new UserService(mysqlRepository, bcryptAdapter, userMapperService, uuidAdapter);
-
-/**
- * Iniciamos el User controllers
- */
-const userCtrl = new UserController(userService);
-
-/**
- * 
- */
-userRouter.get('/', userCtrl.getUserById);
-userRouter.put('/update', userCtrl.updateUser);
-userRouter.delete('/delete', userCtrl.deleteUser);
+userRouter.get('/', userGetController.getUserById);
+userRouter.put('/update', userUpdateController.update);
+userRouter.delete('/delete', userDeleteController.delete);
 
 export default userRouter;
