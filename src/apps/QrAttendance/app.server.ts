@@ -4,7 +4,7 @@ import cors from "cors";
 
 import db from "../../contexts/shared/infrastructure/db/mysql.connection"
 import {PassportLocalStrategy} from "../../contexts/QrAttendance/auth/infrastructure/passport/config";
-import {UserMysqlRepository} from "../../contexts/QrAttendance/user/infrastructure/repository/userMysqlRepository";
+import {UserMysqlRepository} from "../../contexts/QrAttendance/user/infrastructure/repository/user.repository";
 import {BcryptAdapter} from "../../contexts/QrAttendance/user/infrastructure/adapters/bcryptAdapter";
 
 // services
