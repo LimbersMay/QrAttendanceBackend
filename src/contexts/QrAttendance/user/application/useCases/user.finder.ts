@@ -10,7 +10,7 @@ export class UserFinder {
     ) {
     }
 
-    execute(id: string): Promise<Either<UserError, UserResponse>> {
+    execute = (id: string): Promise<Either<UserError, UserResponse>> => {
         return this.repository.findUserById(id).then((user) => {
             return isRight(user)
                 ? right(UserResponse.fromUser(user.right))
@@ -18,7 +18,7 @@ export class UserFinder {
         });
     }
 
-    executeByEmail(email: string): Promise<Either<UserError, UserResponse>> {
+    executeByEmail = (email: string): Promise<Either<UserError, UserResponse>> => {
         return this.repository.findUserByEmail(email).then((user) => {
             return isRight(user)
                 ? right(UserResponse.fromUser(user.right))
