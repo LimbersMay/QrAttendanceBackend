@@ -1,16 +1,14 @@
 // import passport local strategy
 import {Strategy as LocalStrategy} from 'passport-local';
 import passport from "passport";
-import {EncryptService} from "../../../shared/application/services/encrypt.service";
-import {UserEntity} from "../../../user/domain";
-import {UserService} from "../../../user/application/user.service";
-
-import {isLeft, isRight} from "fp-ts/Either";
-import {UserError} from "../../../user/domain/errors/userError";
+import {isRight} from "fp-ts/Either";
+import {AuthenticateUser} from "../../application/authentication/auth";
+import {UserDTO} from "../../../user/application/entities/user.dto";
+import {UserFinder} from "../../../user/application/find/user.find";
 
 declare global {
     namespace Express {
-        interface User extends UserEntity {
+        interface User extends UserDTO {
         }
     }
 }
@@ -18,8 +16,8 @@ declare global {
 // decouple passport using dependency injection
 export class PassportLocalStrategy {
     constructor(
-        private readonly userService: UserService,
-        private readonly hashService: EncryptService
+        private readonly authenteicateUser: AuthenticateUser,
+        private readonly userFinder: UserFinder
     ) {
 
     }
@@ -34,18 +32,12 @@ export class PassportLocalStrategy {
                 },
                 async (email, password, done) => {
                     // your logic here
+                    const result = await this.authenteicateUser.execute(email, password);
 
-                    const user = await this.userService.findUserByEmail(email);
+                    return isRight(result)
+                        ? done(null, result.right)
+                        : done(result.left, false);
 
-                    if (isLeft(user)) {
-                        return done(UserError.INVALID_CREDENTIALS, false)
-                    }
-
-                    const isValidPassword = await this.hashService.compare(password, user.right.password);
-
-                    if (!isValidPassword) return done(UserError.INVALID_CREDENTIALS, false);
-
-                    return done(null, user.right);
                 },
             ),
         );
@@ -53,15 +45,17 @@ export class PassportLocalStrategy {
         // {id: 1, name: Juan}
         // 1 -> Serialización, pasar de un objeto a un dato muy particular
         passport.serializeUser((user, done) => {
-            done(null, user.userId);
+            done(null, user.id);
         });
 
         // 1 -> {id: 1, name: Juan}. Deserializacion Pasar del identificador al objeto
         passport.deserializeUser(async (id: string, done) => {
-            const result = await this.userService.findUserById(id);
-            return (isRight(result))
-                ? done(null, result.right)
-                : done(result.left, null);
+
+            const result = await this.userFinder.execute(id);
+
+            return isRight(result)
+                ? done(false, result.right)
+                : done(result.left, false);
         });
     }
 
