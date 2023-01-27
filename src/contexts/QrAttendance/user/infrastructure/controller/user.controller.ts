@@ -18,16 +18,6 @@ export class UserController {
             : this.sendFailure(400, res, user.left);
     }
 
-    public createUser = async({ body }: Request, res: Response ) => {
-        let { name, email,  password, lastname } = body;
-
-        const user = await this.userService.registerUser({ name, email, password, lastname });
-
-        return isRight(user)
-            ? this.sendSuccess(200, res, user.right)
-            : this.sendFailure(400, res, user.left);
-    }
-
     public updateUser = async(req: Request, res: Response) => {
 
         if (!req.user) return this.sendFailure(400, res, 'User not found');
