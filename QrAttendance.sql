@@ -1,3 +1,5 @@
+# noinspection SpellCheckingInspectionForFile
+
 DROP database if exists QrAttendance;
 
 CREATE database QrAttendance;
@@ -7,7 +9,7 @@ USE QrAttendance;
 # User
 CREATE TABLE user
 (
-    user_id      varchar(100) PRIMARY KEY NOT NULL UNIQUE,
+    userId      varchar(100) PRIMARY KEY NOT NULL UNIQUE,
     name         varchar(25)              NOT NULL,
     email        varchar(25)              NOT NULL,
     password     varchar(100)             NOT NULL,
@@ -31,65 +33,65 @@ CREATE TABLE language
 # User preferences
 CREATE TABLE preferences
 (
-    preference_id varchar(100) PRIMARY KEY NOT NULL,
-    user_id       varchar(100),
-    timezone_id   varchar(100),
-    language_id   varchar(100),
-    FOREIGN KEY (user_id) REFERENCES user (user_id),
-    FOREIGN KEY (timezone_id) REFERENCES timezone (timezone_id),
-    FOREIGN KEY (language_id) REFERENCES language (language_id)
+    preferenceId varchar(100) PRIMARY KEY NOT NULL,
+    userId       varchar(100),
+    timezoneId   varchar(100),
+    languageId   varchar(100),
+    FOREIGN KEY (userId) REFERENCES user (userId),
+    FOREIGN KEY (timezoneId) REFERENCES timezone (timezone_id),
+    FOREIGN KEY (languageId) REFERENCES language (language_id)
 );
 
 CREATE TABLE `group`
 (
-    group_id   varchar(100) PRIMARY KEY NOT NULL,
-    user_id    varchar(100),
+    groupId   varchar(100) PRIMARY KEY NOT NULL,
+    userId    varchar(100),
     name       varchar(25)              NOT NULL,
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES user (user_id)
+    FOREIGN KEY (userId) REFERENCES user (userId)
 );
 
-CREATE TABLE qr_code
+CREATE TABLE qrCode
 (
-    qr_id      varchar(100) PRIMARY KEY NOT NULL,
-    group_id   varchar(100),
+    qrId      varchar(100) PRIMARY KEY NOT NULL,
+    groupId   varchar(100),
     name       varchar(25),
     url        varchar(255),
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     udpatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (group_id) REFERENCES `group` (group_id)
+    FOREIGN KEY (groupId) REFERENCES `group` (groupId)
 );
 
 CREATE TABLE registry
 (
-    registry_id  varchar(100) PRIMARY KEY NOT NULL,
-    qr_id        varchar(100),
+    registryId  varchar(100) PRIMARY KEY NOT NULL,
+    qrId        varchar(100),
     name         varchar(25)              NOT NULL,
     first_surname varchar(25)              NOT NULL,
     second_surname varchar(25)              NOT NULL,
     createdAt   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updatedAt   TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (qr_id) REFERENCES qr_code (qr_id)
+    FOREIGN KEY (qrId) REFERENCES qrCode (qrId)
 );
 
 
 /*
 # ASIGNACIÓN DE VALORES DENTRO DE LA BASE DE DATOS
 # --- REGISTRAR USUARIOS DENTRO DE LA DB ----
-INSERT INTO user(user_id, name, email, password, mothers_name, fathers_name, created_at, updated_at)
+INSERT INTO user(userId, name, email, password, mothers_name, fathers_name, created_at, updated_at)
 VALUES ('93945', 'Juan', 'Juan12@gmail.com', 'Juan1233', 'Dzul', 'Hau', UTC_DATE, UTC_DATE);
 
-INSERT INTO user(user_id, name, email, password, mothers_name, fathers_name, created_at, updated_at)
+INSERT INTO user(userId, name, email, password, mothers_name, fathers_name, created_at, updated_at)
 VALUES ('94356', 'Alejandro', 'Alejandro12@gmail.com', 'Alejandro1223', 'May', 'Chimal', UTC_DATE, UTC_DATE);
 
-INSERT INTO user(user_id, name, email, password, mothers_name, fathers_name, created_at, updated_at)
+INSERT INTO user(userId, name, email, password, mothers_name, fathers_name, created_at, updated_at)
 VALUES ('45624', 'Carla', 'Carla12@gmail.com', 'Carla123', 'Soliz', 'Manzanero', UTC_DATE, UTC_DATE);
 
 # --- REGISTRAR LOS GRUPOS DE LOS USUARIOS
-INSERT INTO `group`(group_id, user_id, name, created_at, updated_at)
+INSERT INTO `group`(group_id, userId, name, created_at, updated_at)
 VALUES ('12345', '93945', 'Grupo 1', UTC_DATE, UTC_DATE);
-INSERT INTO `group`(group_id, user_id, name, created_at, updated_at)
+INSERT INTO `group`(group_id, userId, name, created_at, updated_at)
 VALUES ('12346', '93945', 'Grupo 2', UTC_DATE, UTC_DATE);
 
 # --- REGISTRAR QR'S ASOCIADOS A LOS GRUPOS
@@ -116,6 +118,6 @@ INSERT INTO timezone(timezone_id, timezone)
 VALUES ('2753', 'UTC-6');
 
 # LE INDICAMOS LAS PREFERENCIAS A UN USUARIO
-INSERT INTO preferences(preference_id, user_id, timezone_id, language_id)
+INSERT INTO preferences(preference_id, userId, timezone_id, language_id)
 VALUES ('1635', '93945', '1256', '2985');
 /*
