@@ -1,7 +1,7 @@
 
 export interface GroupPersistance {
-    group_id: string,
-    user_id: string,
+    groupId: string,
+    userId: string,
     name: string,
     createdAt: Date,
     updatedAt: Date
