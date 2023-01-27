@@ -21,12 +21,12 @@ export class UserService {
     ) {
     }
 
-    public findUserById = async (userId: string): Promise<Either<UserError, UserDTO>> => {
+    public findUserById = async (userId: string): Promise<Either<UserError, UserEntity>> => {
 
         const user = await this.userRepository.findUserById(userId);
 
         return isRight(user)
-            ? right(this.userMapperService.toDTO(user.right))
+            ? right(user.right)
             : left(UserError.USER_NOT_FOUND);
     }
 
