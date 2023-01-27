@@ -1,6 +1,6 @@
 import {GroupService} from "../../application/group.service";
 import {Request, Response} from "express";
-import {isLeft} from "fp-ts/Either";
+import {isRight} from "fp-ts/Either";
 
 export class GroupController {
     constructor(
@@ -12,42 +12,28 @@ export class GroupController {
 
         if (!req.user) return res.json();
 
+        console.log('creating a group');
+
         const { userId } = req.user;
         const { name } = req.body;
 
         const group = await this.groupService.createGroup(name, userId);
 
-        if (isLeft(group)) {
-            return res.status(400).json({
-                ok: false,
-                msg: group.left
-            })
-        }
-
-        res.status(201).json({
-            ok: true,
-            group: group.right
-        });
+        return isRight(group)
+            ? this.sendGroupOrGroupsSucess(200, res, group.right)
+            : this.sendFailure(400, res, group.left);
     }
 
     getUserGroups  = async(req: Request, res: Response) => {
 
-        if (!req.user) return res.json();
+        if (!req.user) return res.json({ERROR: 'NO USER'});
 
         const { userId } = req.user;
         const groups = await this.groupService.getGroupsByUserId(userId);
 
-        if (isLeft(groups)) {
-            return res.status(400).json({
-                ok: false,
-                msg: groups.left
-            });
-        }
-
-        res.status(201).json({
-            ok: true,
-            groups: groups.right
-        });
+        return isRight(groups)
+            ? this.sendGroupOrGroupsSucess(200, res, groups.right)
+            : this.sendFailure(400, res, groups.left);
     }
 
     updateGroup = async(req: Request, res: Response) => {
@@ -59,17 +45,9 @@ export class GroupController {
         const { id: groupId, updatedFields } = req.body;
         const groupUpdated = await this.groupService.updateGroup(groupId, userId, updatedFields);
 
-        if (isLeft(groupUpdated)) {
-            return res.status(400).json({
-                ok: false,
-                msg: groupUpdated.left
-            });
-        }
-
-        res.status(201).json({
-            ok: true,
-            group: groupUpdated.right
-        })
+        return isRight(groupUpdated)
+            ? this.sendGroupOrGroupsSucess(200, res, groupUpdated.right)
+            : this.sendFailure(400, res, groupUpdated.left);
     }
 
     deleteGroup = async(req: Request, res: Response) => {
@@ -81,16 +59,27 @@ export class GroupController {
 
         const group = await this.groupService.deleteGroup(id, userId);
 
-        if (isLeft(group)) {
-            return res.status(400).json({
-                ok: false,
-                msg: group.left
+        return isRight(group)
+            ? this.sendGroupOrGroupsSucess(200, res, group.right)
+            : this.sendFailure(400, res, group.left);
+    }
+
+    public sendGroupOrGroupsSucess = (status: number = 200, res: Response, groups: any) => {
+
+        if (Array.isArray(groups)) {
+            return res.status(status).json({
+                groups
             });
         }
 
-        res.status(201).json({
-            ok: true,
-            group: group.right
+        return res.status(status).json({
+            group: groups
+        });
+    }
+
+    public sendFailure = (status: number = 400, res: Response, msg: string) => {
+        return res.status(status).json({
+            msg
         });
     }
 }
