@@ -25,6 +25,8 @@ export class QrCode extends Model<QrCodeEntity> {
 
     @Column
     url!: string;
+    @Column
+    enabled!: boolean;
 }
 
 export default QrCode;
