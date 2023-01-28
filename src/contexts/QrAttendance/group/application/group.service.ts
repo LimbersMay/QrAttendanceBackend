@@ -1,4 +1,3 @@
-import {GroupRepository} from "../infrastructure/repository";
 import {UUIDGenerator} from "../../shared/application/services/UUIDGenerator";
 import {Either} from "../../../shared/types/ErrorEither";
 import {GroupError} from "./errors/group.errors";
@@ -6,6 +5,7 @@ import {GroupValue} from "../domain/group.value";
 import {isRight, left, right} from "fp-ts/Either";
 import {GroupMapper} from "../infrastructure/mappers";
 import {GroupDTO} from "./entities/group.dto";
+import {GroupRepository} from "../domain/group.repository";
 
 export class GroupService {
 

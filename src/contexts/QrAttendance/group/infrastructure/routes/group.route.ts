@@ -1,5 +1,5 @@
 import {Router} from "express";
-import {GroupRepository} from "../repository";
+import {GroupMysqlRepository} from "../repository";
 import {GroupService} from "../../application/group.service";
 import {UuidAdapter} from "../adapters";
 import {GroupMapper} from "../mappers";
@@ -9,7 +9,7 @@ import {GroupMiddleware} from "../middlewares/group.middleware";
 
 const router = Router();
 
-const groupRepository = new GroupRepository();
+const groupRepository = new GroupMysqlRepository();
 const uuidGenerator = new UuidAdapter();
 const groupMapper = new GroupMapper();
 
