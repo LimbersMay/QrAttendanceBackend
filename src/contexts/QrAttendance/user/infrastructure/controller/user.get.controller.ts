@@ -1,18 +1,41 @@
 import {UserFinder} from "../../application/useCases";
 import {Request, Response} from "express";
-import {isRight} from "fp-ts/Either";
+import {fold} from "fp-ts/Either";
+import {UserError} from "../../domain/errors/userError";
+import {UserResponse} from "../../application/responses/user.response";
+import {ResponseEntity} from "../../../../shared/infrastructure/entities/response.entity";
 
 export class UserGetController {
     constructor(
         private userFinder: UserFinder
-    ){}
+    ) {
+    }
 
-    public getUserById = async({ query }: Request, res: Response) => {
-        const { userId = '' } = query;
-        const user = await this.userFinder.execute(`${userId}`);
+    public getUserById = async ({query}: Request, res: Response) => {
+        const {userId = ''} = query;
 
-        return isRight(user)
-            ? res.status(200).json({ user: user.right })
-            : res.status(400).json({ msg: user.left });
+        return this.userFinder.execute(`${userId}`).then(user => {
+            return fold(
+                (error: UserError) => {
+                    switch (error) {
+                        case UserError.USER_NOT_FOUND:
+                            return ResponseEntity
+                                .status(404)
+                                .body({msg: error})
+                                .send(res);
+
+                        default:
+                            return ResponseEntity
+                                .status(500)
+                                .body({error: 'Internal server error'})
+                                .send(res);
+                    }
+                },
+                (user: UserResponse) => ResponseEntity
+                    .ok()
+                    .body(user)
+                    .send(res)
+            )(user);
+        })
     }
 }
