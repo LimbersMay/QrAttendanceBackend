@@ -12,7 +12,7 @@ export class GroupDeleter {
     execute = (id: string, userId: string): Promise<Either<GroupError, number>> => {
         return this.groupRepository.deleteGroup(id, userId).then(group => {
             return fold(
-                (error: GroupError) => left(error),
+                () => left(GroupError.GROUP_NOT_FOUND),
                 (group: number) => right(group)
             )(group);
 
