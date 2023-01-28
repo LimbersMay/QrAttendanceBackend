@@ -7,8 +7,8 @@ export class RegistryValue implements RegistryEntity {
     name: string;
     firstSurname: string;
     secondSurname: string;
-    updatedAt: Date;
-    createdAt: Date;
+    updatedAt?: Date;
+    createdAt?: Date;
     
     constructor({registryId, qrCodeId, ownerId, name, firstSurname, secondSurname, createdAt, updatedAt}: RegistryEntity) {
         this.name = name;
@@ -22,7 +22,16 @@ export class RegistryValue implements RegistryEntity {
         this.qrCodeId = qrCodeId;
     }
 
-    static fromRegistry(registry: RegistryEntity): RegistryValue {
-        return new RegistryValue(registry);
+    static create({registryId, qrCodeId, ownerId, name, firstSurname, secondSurname, createdAt, updatedAt}: RegistryEntity): RegistryValue {
+        return new RegistryValue({
+            registryId,
+            qrCodeId,
+            ownerId,
+            name,
+            firstSurname,
+            secondSurname,
+            createdAt,
+            updatedAt
+        });
     }
 }
