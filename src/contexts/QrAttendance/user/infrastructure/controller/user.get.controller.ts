@@ -1,8 +1,7 @@
 import {UserFinder} from "../../application/useCases";
 import {Request, Response} from "express";
-import {fold} from "fp-ts/Either";
+import {isRight} from "fp-ts/Either";
 import {UserError} from "../../domain/errors/userError";
-import {UserResponse} from "../../application/responses/user.response";
 import {ResponseEntity} from "../../../../shared/infrastructure/entities/response.entity";
 
 export class UserGetController {
@@ -14,28 +13,28 @@ export class UserGetController {
     public getUserById = async ({query}: Request, res: Response) => {
         const {userId = ''} = query;
 
-        return this.userFinder.execute(`${userId}`).then(user => {
-            return fold(
-                (error: UserError) => {
-                    switch (error) {
-                        case UserError.USER_NOT_FOUND:
-                            return ResponseEntity
-                                .status(404)
-                                .body({msg: error})
-                                .send(res);
+        const user = await this.userFinder.execute(`${userId}`);
 
-                        default:
-                            return ResponseEntity
-                                .status(500)
-                                .body({error: 'Internal server error'})
-                                .send(res);
-                    }
-                },
-                (user: UserResponse) => ResponseEntity
-                    .ok()
-                    .body(user)
-                    .send(res)
-            )(user);
-        })
+        if (isRight(user)) return ResponseEntity.ok().body(user.right).send(res);
+
+        switch (user.left) {
+            case UserError.USER_NOT_FOUND:
+                return ResponseEntity
+                    .status(404)
+                    .body(user.left)
+                    .send(res);
+
+            case UserError.USER_CANNOT_BE_FOUND:
+                return ResponseEntity
+                    .status(500)
+                    .body(user.left)
+                    .send(res);
+
+            default:
+                return ResponseEntity
+                    .status(500)
+                    .body('INTERNAL_SERVER_ERROR')
+                    .send(res);
+        }
     }
 }
