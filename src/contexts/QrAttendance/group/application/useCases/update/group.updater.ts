@@ -12,7 +12,7 @@ export class GroupUpdater {
     execute = (groupId: string, userId: string, fields: GroupQuery): Promise<Either<GroupError, number>> => {
         return this.groupRepository.updateGroup(groupId, userId, fields).then(group => {
             return fold(
-                (error: GroupError) => left(error),
+                () => left(GroupError.GROUP_NOT_FOUND),
                 (group: number) => right(group)
             )(group);
 
