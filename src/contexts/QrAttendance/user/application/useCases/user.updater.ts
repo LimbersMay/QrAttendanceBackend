@@ -12,10 +12,10 @@ export class UserUpdater {
 
    execute = (fields: UserQuery, userId: string): Promise<Either<UserError, number>> => {
         return this.userRepository.updateUser(fields, userId).then((result) => {
-
             return isRight(result)
                 ? right(result.right)
-                : left(result.left);
-        });
+                : left(UserError.USER_NOT_FOUND);
+
+        }).catch(() => left(UserError.USER_CANNOT_BE_UPDATED));
     }
 }

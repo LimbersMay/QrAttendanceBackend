@@ -15,7 +15,7 @@ export class UserFinder {
                 ? right(UserResponse.fromUser(user.right))
                 : left(UserError.USER_NOT_FOUND);
 
-        }).catch(() => left(UserError.UNEXPECTED_ERROR));
+        }).catch(() => left(UserError.USER_CANNOT_BE_FOUND));
     }
 
     executeByEmail = (email: string): Promise<Either<UserError, UserResponse>> => {
@@ -23,6 +23,7 @@ export class UserFinder {
             return isRight(user)
                 ? right(UserResponse.fromUser(user.right))
                 : left(UserError.USER_NOT_FOUND);
-        });
+
+        }).catch(() => left(UserError.USER_CANNOT_BE_FOUND));
     }
 }

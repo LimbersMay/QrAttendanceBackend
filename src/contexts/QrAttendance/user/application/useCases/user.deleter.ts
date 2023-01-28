@@ -13,6 +13,7 @@ export class UserDeleter {
             return isRight(result)
                 ? right(result.right)
                 : left(result.left);
-        })
+
+        }).catch(() => left(UserError.USER_CANNOT_BE_DELETED))
     }
 }
