@@ -56,23 +56,27 @@ CREATE TABLE qrCode
 (
     qrId      varchar(100) PRIMARY KEY NOT NULL,
     groupId   varchar(100),
+    ownerId  varchar(100)             NOT NULL,
     name       varchar(25),
     url        varchar(255),
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     udpatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (groupId) REFERENCES `group` (groupId) ON DELETE CASCADE
+    FOREIGN KEY (groupId) REFERENCES `group` (groupId) ON DELETE CASCADE,
+    FOREIGN KEY (ownerId) REFERENCES user (userId)
 );
 
 CREATE TABLE registry
 (
     registryId  varchar(100) PRIMARY KEY NOT NULL,
-    qrId        varchar(100),
+    qrId        varchar(100)             NOT NULL,
+    ownderId    varchar(100)            NOT NULL,
     name         varchar(25)              NOT NULL,
     first_surname varchar(25)              NOT NULL,
     second_surname varchar(25)              NOT NULL,
     createdAt   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updatedAt   TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (qrId) REFERENCES qrCode (qrId) ON DELETE CASCADE
+    FOREIGN KEY (qrId) REFERENCES qrCode (qrId) ON DELETE CASCADE,
+    FOREIGN KEY (ownderId) REFERENCES user (userId)
 );
 
 
