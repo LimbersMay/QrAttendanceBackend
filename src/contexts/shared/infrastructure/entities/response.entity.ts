@@ -2,6 +2,7 @@ import {Response} from "express";
 
 export class ResponseEntity {
     private static code: number;
+    private static data: any;
 
     public static ok = () => {
         this.code = 200;
@@ -14,11 +15,11 @@ export class ResponseEntity {
     }
 
     public static body = (body: any) => {
-        this.body = body;
+        this.data = body;
         return this;
     }
 
     public static send = (res: Response) => {
-        return res.status(this.code).json({body: this.body});
+        return res.status(this.code).json({body: this.data});
     }
 }
