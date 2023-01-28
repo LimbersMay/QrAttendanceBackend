@@ -13,7 +13,7 @@ export class GroupFinder {
     execute = (groupId: string, userId: string): Promise<Either<GroupError, GroupResponse>> => {
         return this.groupRepository.findGroupById(groupId, userId).then(group => {
             return fold(
-                (error: GroupError) => left(error),
+                () => left(GroupError.GROUP_NOT_FOUND),
                 (group: GroupEntity) => right(GroupResponse.fromGroup(group))
             )(group);
 
@@ -23,7 +23,7 @@ export class GroupFinder {
     executeByUserId = (userId: string): Promise<Either<GroupError, GroupResponse[]>> => {
         return this.groupRepository.findGroupsByUserId(userId).then(groups => {
             return fold(
-                (error: GroupError) => left(error),
+                () => left(GroupError.GROUP_NOT_FOUND),
                 (groups: GroupEntity[]) => right(GroupResponse.fromGroups(groups))
             )(groups);
 
