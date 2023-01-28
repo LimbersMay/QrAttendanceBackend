@@ -3,7 +3,7 @@ import {GroupError} from "../../errors/group.errors";
 import {Either} from "../../../../../shared/types/ErrorEither";
 import {GroupRepository} from "../../../domain/group.repository";
 import {GroupResponse} from "../../responses/group.response";
-import {isRight, left, right} from "fp-ts/Either";
+import { left, right, fold} from "fp-ts/Either";
 
 export class GroupCreator {
     constructor(
@@ -12,9 +12,10 @@ export class GroupCreator {
 
     execute = (group: GroupEntity): Promise<Either<GroupError, GroupResponse>> => {
         return this.groupRepository.createGroup(group).then(group => {
-            return isRight(group)
-                ? right(GroupResponse.fromGroup(group.right))
-                : left(GroupError.GROUP_NOT_FOUND);
+            return fold(
+                (error: GroupError) => left(error),
+                (group: GroupEntity) => right(GroupResponse.fromGroup(group))
+            )(group);
 
         }).catch(() => left(GroupError.GROUP_CANNOT_BE_CREATED));
     }
