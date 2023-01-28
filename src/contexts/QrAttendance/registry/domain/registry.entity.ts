@@ -1,9 +1,10 @@
 
 export interface RegistryEntity {
     registryId: string,
+    qrCodeId: string,
     name: string,
-    mothersName: string,
-    fathersName: string,
-    createdAt: Date | undefined,
-    updatedAt: Date | undefined
+    firstSurname: string,
+    secondSurname: string,
+    createdAt: Date,
+    updatedAt: Date
 }
