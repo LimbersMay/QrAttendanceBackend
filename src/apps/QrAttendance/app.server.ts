@@ -2,22 +2,20 @@ import { Application } from "express";
 import express from "express";
 import cors from "cors";
 
-import db from "../../contexts/shared/infraestructure/db/mysql.connection"
-import {PassportLocalStrategy} from "../../contexts/QrAttendance/auth/infraestructure/passport/config";
-import {UserRepository} from "../../contexts/QrAttendance/user/infraestructure/repository/userRepository";
-import {BcryptAdapter} from "../../contexts/QrAttendance/user/infraestructure/adapters/bcryptAdapter";
-
-// services
-import {UserMapperService} from "../../contexts/QrAttendance/user/infraestructure/mappers/user.mapper";
+import db from "../../contexts/shared/infrastructure/db/mysql.connection"
+import {PassportLocalStrategy} from "../../contexts/QrAttendance/auth/infrastructure/passport/config";
+import {UserMysqlRepository} from "../../contexts/QrAttendance/user/infrastructure/repository/user.repository";
+import {BcryptAdapter} from "../../contexts/QrAttendance/user/infrastructure/adapters";
 
 // routes
-import authRoutes from "../../contexts/QrAttendance/auth/infraestructure/routes/auth.routes";
-import userRoutes from "../../contexts/QrAttendance/user/infraestructure/routes/user.route";
+import authRoutes from "../../contexts/QrAttendance/auth/infrastructure/routes/auth.routes";
+import userRoutes from "../../contexts/QrAttendance/user/infrastructure/routes/user.route";
+import groupRoutes from "../../contexts/QrAttendance/group/infrastructure/routes/group.route";
 
 import cookieParser from "cookie-parser";
 import session from "express-session";
-import {UserService} from "../../contexts/QrAttendance/user/application/user.service";
-import {UuidAdapter} from "../../contexts/QrAttendance/user/infraestructure/adapters/uuid.adapter";
+import {AuthenticateUser} from "../../contexts/QrAttendance/auth/application/authentication/auth";
+import {UserFinder} from "../../contexts/QrAttendance/user/application/useCases";
 
 export class Server {
     public app: Application;
@@ -30,19 +28,20 @@ export class Server {
         this.app = express();
         this.port = parseInt(process.env.PORT ?? "3000")
 
+        const userRepo = new UserMysqlRepository();
         const encryptService = new BcryptAdapter();
-        const userMapperService = new UserMapperService();
-        const uuidService = new UuidAdapter();
-        const userRepository = new UserRepository();
-        const userService = new UserService(userRepository, encryptService, userMapperService, uuidService);
 
-        this.authService = new PassportLocalStrategy(userService, encryptService);
+        const authenticateUser = new AuthenticateUser(userRepo, encryptService);
+        const userFinder = new UserFinder(userRepo);
+
+        this.authService = new PassportLocalStrategy(authenticateUser, userFinder);
         this.authService.init();
 
         // routes
         this.appRoutes = {
             auth: '/api/auth',
             user: '/api/user',
+            group: '/api/group'
         }
 
         // DB connection
@@ -86,6 +85,7 @@ export class Server {
     public routes() {
         this.app.use(this.appRoutes.auth, authRoutes);
         this.app.use(this.appRoutes.user, userRoutes);
+        this.app.use(this.appRoutes.group, groupRoutes);
     }
 
     public listen() {

@@ -2,7 +2,7 @@
 export interface RegistryDTO {
     registryId: string,
     name: string,
-    mothersName: string,
-    fathersName: string,
+    firstSurname: string,
+    secondSurname: string,
     createdAt: Date
 }

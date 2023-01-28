@@ -19,4 +19,8 @@ export class UserValue implements UserEntity {
         this.createdAt = createdAt;
         this.userId = userId;
     }
+
+    public static create(user: UserEntity): UserValue {
+        return new UserValue(user);
+    }
 }
