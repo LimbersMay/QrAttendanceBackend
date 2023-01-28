@@ -1,10 +1,10 @@
 import {GroupEntity} from "./group.entity";
 
 export class GroupValue implements GroupEntity{
-    createdAt: Date;
+    createdAt?: Date;
     groupId: string;
     name: string;
-    updatedAt: Date;
+    updatedAt?: Date;
     userId: string;
 
     constructor({groupId, userId, name, createdAt, updatedAt}: GroupEntity) {
