@@ -4,7 +4,7 @@ import {QrCodeError} from "./errors/qrCode.errors";
 
 export interface QrCodeRepository {
     createQrCode(qrCode: QrCodeEntity): Promise<QrCodeEntity>;
-    updateQrCode(fields: any, qrCodeId: string): Promise<Either<QrCodeError, number>>;
+    updateQrCode(fields: any, qrCodeId: string, userId: string): Promise<Either<QrCodeError, number>>;
     deleteQrCode(qrCodeId: string, userId: string): Promise<Either<QrCodeError, number>>;
     findQrCodeById(qrCodeId: string, userId: string): Promise<Either<QrCodeError, QrCodeEntity>>
     findQrCodeByUserId(userId: string): Promise<Either<QrCodeError, QrCodeEntity[]>>

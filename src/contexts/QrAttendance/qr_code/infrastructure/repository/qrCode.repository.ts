@@ -82,7 +82,7 @@ export class QrCodeMysqlRepository implements QrCodeRepository{
             : left(QrCodeError.QR_CODE_NOT_FOUND);
     }
 
-    async updateQrCode(fields: any, qrCodeId: string): Promise<Either<QrCodeError, number>> {
+    async updateQrCode(fields: any, qrCodeId: string, userId: string): Promise<Either<QrCodeError, number>> {
 
         const rowsUpdated = await QrCode.update(
             {
@@ -90,7 +90,8 @@ export class QrCodeMysqlRepository implements QrCodeRepository{
         },
             {
             where: {
-                qrId: qrCodeId
+                qrId: qrCodeId,
+                ownerId: userId
             }
         });
 
