@@ -13,16 +13,6 @@ export class RegistryMapperService extends MapperService<any, RegistryEntity>{
             updatedAt: entity.updated_at
         }
     }
-    protected mapToPersistance(entity: RegistryEntity): any {
-        return {
-            registry_id: entity.registryId,
-            name: entity.name,
-            firstSurname: entity.firstSurname,
-            secondSurname: entity.secondSurname,
-            created_at: entity.createdAt,
-            updated_at: entity.updatedAt
-        }
-    }
 
     protected mapToDTO(entity: RegistryEntity): RegistryDTO {
         return {

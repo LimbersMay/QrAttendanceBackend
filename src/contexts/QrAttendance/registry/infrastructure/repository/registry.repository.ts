@@ -1,18 +1,12 @@
 import {IRegistryRepository} from "../../domain/registry.repository";
 import {RegistryEntity} from "../../domain/registry.entity";
-import {RegistryMapperService} from "../mappers/registry.mapper";
-
-import Registry from "../model/registry.schema";
 
 export class RegistryRepository implements IRegistryRepository {
 
-    constructor( private RegistryMapperService: RegistryMapperService ) {}
+    constructor() {}
 
     async createRegistry(registry: RegistryEntity): Promise<RegistryEntity | null> {
-        const mappedRegistry = this.RegistryMapperService.toPersistance(registry);
-        const registryCreated = await Registry.create(mappedRegistry);
-
-        return this.RegistryMapperService.toDomain(registryCreated);
+        throw new Error('Not implemented');
     }
 
     deleteRegistry(registryId: string): Promise<RegistryEntity | null> {
