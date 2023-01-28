@@ -24,7 +24,7 @@ export class RegistryFinder {
     async findRegistriesByUserId(userId: string): Promise<Either<RegistryError, RegistryResponse[]>> {
         return this.registryRepository.findRegistriesByUserId(userId).then(registries => {
             return E.fold(
-                () => E.left(RegistryError.REGISTRIES_CANNOT_BE_FOUND),
+                () => E.left(RegistryError.REGISTRIES_NOT_FOUND),
                 (registries: RegistryEntity[]) => E.right(RegistryResponse.fromRegistries(registries))
             )(registries)
 
