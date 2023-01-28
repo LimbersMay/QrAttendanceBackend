@@ -11,6 +11,7 @@ import {BcryptAdapter} from "../../contexts/QrAttendance/user/infrastructure/ada
 import authRoutes from "../../contexts/QrAttendance/auth/infrastructure/routes/auth.routes";
 import userRoutes from "../../contexts/QrAttendance/user/infrastructure/routes/user.route";
 import groupRoutes from "../../contexts/QrAttendance/group/infrastructure/routes/group.route";
+import qrCodeRoutes from "../../contexts/QrAttendance/qr_code/infrastructure/routes/qrCode.router";
 
 import cookieParser from "cookie-parser";
 import session from "express-session";
@@ -41,7 +42,8 @@ export class Server {
         this.appRoutes = {
             auth: '/api/auth',
             user: '/api/user',
-            group: '/api/group'
+            group: '/api/group',
+            qrCode: '/api/qrCode'
         }
 
         // DB connection
@@ -86,6 +88,7 @@ export class Server {
         this.app.use(this.appRoutes.auth, authRoutes);
         this.app.use(this.appRoutes.user, userRoutes);
         this.app.use(this.appRoutes.group, groupRoutes);
+        this.app.use(this.appRoutes.qrCode, qrCodeRoutes);
     }
 
     public listen() {
