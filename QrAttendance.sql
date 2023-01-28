@@ -59,6 +59,7 @@ CREATE TABLE qrCode
     ownerId  varchar(100)             NOT NULL,
     name       varchar(25),
     url        varchar(255),
+    enabled    boolean DEFAULT TRUE,
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     udpatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (groupId) REFERENCES `group` (groupId) ON DELETE CASCADE,
