@@ -28,7 +28,8 @@ export class UserCreator {
             return isRight(user)
                 ? right(UserResponse.fromUser(user.right))
                 : left(UserError.DUPLICATED_EMAIL);
-        });
+
+        }).catch(() => left(UserError.USER_CANNOT_BE_CREATED));
     }
 }
 
