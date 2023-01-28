@@ -3,7 +3,7 @@ import {RegistryQuery} from "./entities/registry.query";
 import {Either} from "../../../shared/types/ErrorEither";
 import {RegistryError} from "./errors/registry.error";
 
-export interface IRegistryRepository {
+export interface RegistryRepository {
     createRegistry(registry: RegistryEntity): Promise<RegistryEntity>;
     deleteRegistry(registryId: string, userId: string): Promise<Either<RegistryError, number>>;
     updateRegistry(fields: RegistryQuery, registryId: string, userId: string): Promise<Either<RegistryError, number>>;
