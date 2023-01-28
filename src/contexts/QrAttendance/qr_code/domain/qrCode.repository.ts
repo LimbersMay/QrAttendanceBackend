@@ -1,8 +1,11 @@
 import {QrCodeEntity} from "./qrCode.entity";
+import {Either} from "../../../shared/types/ErrorEither";
+import {QrCodeError} from "./errors/qrCode.errors";
 
 export interface QrCodeRepository {
-    createQrCode(qrCode: QrCodeEntity): Promise<QrCodeEntity | null>;
-    updateQrCode(fields: any, qrCodeId: string): Promise<QrCodeEntity | null>;
-    deleteQrCode(qrCodeId: string): Promise<QrCodeEntity | null>;
-    findQrCodeById(qrCodeId: string): Promise<QrCodeEntity | null>
+    createQrCode(qrCode: QrCodeEntity): Promise<QrCodeEntity>;
+    updateQrCode(fields: any, qrCodeId: string): Promise<Either<QrCodeError, number>>;
+    deleteQrCode(qrCodeId: string, userId: string): Promise<Either<QrCodeError, number>>;
+    findQrCodeById(qrCodeId: string, userId: string): Promise<Either<QrCodeError, QrCodeEntity>>
+    findQrCodeByUserId(userId: string): Promise<Either<QrCodeError, QrCodeEntity[]>>
 }
