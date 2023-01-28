@@ -20,4 +20,8 @@ export class QrCodeValue implements QrCodeEntity {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
+
+    public static create = (qrCodeEntity: QrCodeEntity): QrCodeValue => {
+        return new QrCodeValue(qrCodeEntity);
+    }
 }
