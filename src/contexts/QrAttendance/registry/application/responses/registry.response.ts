@@ -3,12 +3,12 @@ import {RegistryEntity} from "../../domain/registry.entity";
 export class RegistryResponse {
     id: string;
     qrCodeId: string;
-    date: Date;
+    date?: Date;
     name: string;
     firstSurname: string;
     secondSurname: string;
 
-    constructor(id: string, qrCodeId: string, date: Date, name: string, firstSurname: string, secondSurname: string) {
+    constructor({id, qrCodeId, date, name, firstSurname, secondSurname}: { id: string, qrCodeId: string, date?: Date, name: string, firstSurname: string, secondSurname: string }) {
         this.id = id;
         this.qrCodeId = qrCodeId;
         this.date = date;
@@ -17,19 +17,19 @@ export class RegistryResponse {
         this.secondSurname = secondSurname;
     }
 
-    static fromRegistryEntity(registryEntity: RegistryEntity): RegistryResponse {
-        return new RegistryResponse(
-            registryEntity.registryId,
-            registryEntity.qrCodeId,
-            registryEntity.createdAt,
-            registryEntity.name,
-            registryEntity.firstSurname,
-            registryEntity.secondSurname
-        );
+    static fromRegistry(registryEntity: RegistryEntity): RegistryResponse {
+        return new RegistryResponse({
+            id: registryEntity.registryId,
+            qrCodeId: registryEntity.qrCodeId,
+            date: registryEntity.createdAt,
+            name: registryEntity.name,
+            firstSurname: registryEntity.firstSurname,
+            secondSurname: registryEntity.secondSurname
+        });
     }
 
-    static fromRegistryEntities(registryEntities: RegistryEntity[]): RegistryResponse[] {
-        return registryEntities.map(registryEntity => RegistryResponse.fromRegistryEntity(registryEntity));
+    static fromRegistries(registryEntities: RegistryEntity[]): RegistryResponse[] {
+        return registryEntities.map(registryEntity => RegistryResponse.fromRegistry(registryEntity));
     }
 }
 
