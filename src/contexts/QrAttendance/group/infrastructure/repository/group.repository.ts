@@ -9,7 +9,6 @@ export class GroupMysqlRepository implements GroupRepository {
 
     public async findGroupById(groupId: string, userId: string): Promise<Either<GroupError, GroupEntity>> {
 
-
         const group = await Group.findOne({
             where: {
                 groupId,
@@ -48,17 +47,17 @@ export class GroupMysqlRepository implements GroupRepository {
         })));
     }
 
-    public async createGroup(user: GroupEntity): Promise<Either<GroupError, GroupEntity>> {
+    public async createGroup(user: GroupEntity): Promise<GroupEntity> {
 
         const groupCreated = await Group.create(user);
 
-        return right({
+        return {
             groupId: groupCreated.groupId,
             name: groupCreated.name,
             userId: groupCreated.userId,
             createdAt: groupCreated.createdAt,
             updatedAt: groupCreated.updatedAt
-        });
+        };
     }
 
     public async deleteGroup(groupId: string, userId: string): Promise<Either<GroupError, number>> {
