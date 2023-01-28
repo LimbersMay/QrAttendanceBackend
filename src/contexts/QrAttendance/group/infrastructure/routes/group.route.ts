@@ -1,35 +1,40 @@
 import {Router} from "express";
 import {GroupMysqlRepository} from "../repository";
-import {GroupService} from "../../application/group.service";
 import {UuidAdapter} from "../adapters";
-import {GroupMapper} from "../mappers";
-import {GroupController} from "../controller/group.controller";
 import {isAuthenticated} from "../../../auth/infrastructure/middlewares";
 import {GroupMiddleware} from "../middlewares/group.middleware";
+import {GroupCreateController, GroupDeleteController, GroupGetController, GroupUpdateController} from "../controller";
+import {GroupCreator, GroupDeleter, GroupFinder, GroupUpdater} from "../../application/useCases";
 
 const router = Router();
 
 const groupRepository = new GroupMysqlRepository();
-const uuidGenerator = new UuidAdapter();
-const groupMapper = new GroupMapper();
+const uuidAdapter = new UuidAdapter();
 
-const groupService = new GroupService(groupRepository, uuidGenerator, groupMapper);
+const groupCreator = new GroupCreator(groupRepository, uuidAdapter);
+const groupUpdater = new GroupUpdater(groupRepository);
+const groupDeleter = new GroupDeleter(groupRepository);
+const groupFinder = new GroupFinder(groupRepository);
 
-const groupController = new GroupController(groupService);
-const groupMiddleware = new GroupMiddleware(groupService);
+const groupCreateController = new GroupCreateController(groupCreator);
+const groupDeleteController = new GroupDeleteController(groupDeleter);
+const groupUpdateController = new GroupUpdateController(groupUpdater);
+const groupGetController = new GroupGetController(groupFinder);
 
-router.post('/create', isAuthenticated, groupController.createGroup);
+const groupMiddleware = new GroupMiddleware(groupFinder);
 
-router.get('/all', isAuthenticated, groupController.getUserGroups);
+router.post('/create', isAuthenticated, groupCreateController.create);
+
+router.get('/all', isAuthenticated, groupGetController.getGroups);
 
 router.put('/update', [
     isAuthenticated,
     groupMiddleware.validateGroupExists
-], groupController.updateGroup);
+], groupUpdateController.update);
 
 router.delete('/delete', [
     isAuthenticated,
     groupMiddleware.validateGroupExists
-], groupController.deleteGroup);
+], groupDeleteController.delete);
 
 export default router;
