@@ -8,7 +8,7 @@ export class RegistryDeleter {
         private readonly registryRepository: RegistryRepository,
     ){}
 
-    async deleteRegistry(registryId: string, userId: string): Promise<Either<RegistryError, number>> {
+    execute = async(registryId: string, userId: string): Promise<Either<RegistryError, number>> => {
         return this.registryRepository.deleteRegistry(registryId, userId).then(registry => {
             return E.fold(
                 () => E.left(RegistryError.REGISTRY_NOT_FOUND),

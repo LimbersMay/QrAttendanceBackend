@@ -8,7 +8,7 @@ export class RegistryUpdater {
         private readonly registryRepository: RegistryRepository
     ) {}
 
-    async update(fields: RegistryQuery, registryId: string, userId: string): Promise<E.Either<RegistryError, number>> {
+    execute = async(fields: RegistryQuery, registryId: string, userId: string): Promise<E.Either<RegistryError, number>> => {
         return this.registryRepository.updateRegistry(fields, registryId, userId).then(result => {
             return E.fold(
                 () => E.left(RegistryError.REGISTRY_NOT_FOUND),

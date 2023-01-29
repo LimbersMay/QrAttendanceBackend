@@ -11,7 +11,7 @@ export class RegistryFinder {
     ) {
     }
 
-    async findRegistryById(registryId: string, userId: string): Promise<Either<RegistryError, RegistryResponse>> {
+    async execute(registryId: string, userId: string): Promise<Either<RegistryError, RegistryResponse>> {
         return this.registryRepository.findRegistryById(registryId, userId).then(registry => {
             return E.fold(
                 () => E.left(RegistryError.REGISTRY_NOT_FOUND),
@@ -21,7 +21,7 @@ export class RegistryFinder {
         }).catch(() => E.left(RegistryError.REGISTRY_CANNOT_BE_FOUND));
     }
 
-    async findRegistriesByUserId(userId: string): Promise<Either<RegistryError, RegistryResponse[]>> {
+    executeByUserId = async(userId: string): Promise<Either<RegistryError, RegistryResponse[]>> => {
         return this.registryRepository.findRegistriesByUserId(userId).then(registries => {
             return E.fold(
                 () => E.left(RegistryError.REGISTRIES_NOT_FOUND),

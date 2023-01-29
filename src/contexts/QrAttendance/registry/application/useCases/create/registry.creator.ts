@@ -13,7 +13,7 @@ export class RegistryCreator {
         private readonly uuidGenerator: UUIDGenerator
     ){}
 
-    async createRegistry(qrCodeId: string, ownerId: string, name: string, firstSurname: string, secondSurname: string): Promise<Either<RegistryError, RegistryResponse>> {
+    async execute(qrCodeId: string, ownerId: string, name: string, firstSurname: string, secondSurname: string): Promise<Either<RegistryError, RegistryResponse>> {
 
         const registry = RegistryValue.create({
             registryId: this.uuidGenerator.random(),
