@@ -2,17 +2,11 @@ import {Router} from "express";
 import {QrCodeCreator, QrCodeDeleter, QrCodeFinder, QrCodeUpdater} from "../../application/useCases";
 import {QrCodeMysqlRepository} from "../repository/qrCode.repository";
 import {UuidAdapter} from "../adapters";
-import {
-    QrCodeCreateController,
-    QrCodeDeleteController,
-    QrCodeFindController,
-    QrCodeUpdateController
-} from "../controllers";
+import { QrCodeController } from "../controllers";
 
 const router = Router();
 
 // inicializamos casos de uso
-
 const qrCodeMysqlRepository = new QrCodeMysqlRepository();
 const uuidAdapter = new UuidAdapter();
 
@@ -22,15 +16,12 @@ const qrCodeDeleter = new QrCodeDeleter(qrCodeMysqlRepository);
 const qrCodeCreator = new QrCodeCreator(qrCodeMysqlRepository, uuidAdapter);
 
 // inicializamos controladores
-const qrCodeFindController = new QrCodeFindController(qrCodeFinder);
-const qrCodeUpdateController = new QrCodeUpdateController(qrCodeUpdater);
-const qrCodeDeleteController = new QrCodeDeleteController(qrCodeDeleter);
-const qrCodeCreateController = new QrCodeCreateController(qrCodeCreator);
+const qrCodeController = new QrCodeController(qrCodeFinder, qrCodeUpdater, qrCodeDeleter, qrCodeCreator);
 
 // definimos rutas
-router.get('/all', qrCodeFindController.findByUserId);
-router.post('/create', qrCodeCreateController.create);
-router.put('/update', qrCodeUpdateController.update);
-router.delete('/delete', qrCodeDeleteController.delete);
+router.get('/all', qrCodeController.findByUserId);
+router.post('/create', qrCodeController.create);
+router.put('/update', qrCodeController.update);
+router.delete('/delete', qrCodeController.delete);
 
 export default router;
