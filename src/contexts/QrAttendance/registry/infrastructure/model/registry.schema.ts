@@ -1,4 +1,4 @@
-import {Column, ForeignKey, Model, PrimaryKey, Table, Unique} from "sequelize-typescript";
+import {BelongsTo, Column, ForeignKey, Model, PrimaryKey, Table, Unique} from "sequelize-typescript";
 import {RegistryEntity} from "../../domain/registry.entity";
 import QrCode from "../../../qr_code/infrastructure/models/qrCode.schema";
 import User from "../../../user/infrastructure/model/user.schema";
@@ -15,6 +15,8 @@ export class Registry extends Model<RegistryEntity> {
     @ForeignKey(() => QrCode)
     @Column
     qrCodeId!: string;
+    @BelongsTo(() => QrCode, {onDelete: "cascade"})
+    qrCode!: QrCode;
 
     @ForeignKey(() => User)
     @Column
@@ -28,6 +30,10 @@ export class Registry extends Model<RegistryEntity> {
 
     @Column
     secondSurname!: string;
+    @Column
+    createdAt!: Date;
+    @Column
+    updatedAt!: Date;
 }
 
 export default Registry;
