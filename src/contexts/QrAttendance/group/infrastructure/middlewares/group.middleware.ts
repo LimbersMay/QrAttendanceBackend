@@ -1,6 +1,7 @@
 import {NextFunction, Request, Response} from "express";
 import {isLeft} from "fp-ts/Either";
 import {GroupFinder} from "../../application/useCases";
+import {ResponseEntity} from "../../../../shared/infrastructure/entities/response.entity";
 
 export class GroupMiddleware {
     constructor(private readonly groupFinder: GroupFinder) {
@@ -8,16 +9,17 @@ export class GroupMiddleware {
 
     validateGroupExists = async(req: Request, res: Response, next: NextFunction) => {
 
-        if (!req.user) return res.status(401).json({msg: 'Unauthorized'});
+        if (!req.user) return ResponseEntity.status(401).body("NOT-AUTHENTICATED").send(res);
 
         const {id: idGroup} = req.body;
         const { id: userId } = req.user;
         const group = await this.groupFinder.execute(idGroup, userId);
 
         if (isLeft(group)) {
-            return res.status(404).json(
-                {msg: group.left}
-            );
+            return ResponseEntity
+                .status(404)
+                .body(group.left)
+                .send(res);
         }
 
         next();

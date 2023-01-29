@@ -1,6 +1,7 @@
-import {Table, Column, Model, PrimaryKey, Unique, ForeignKey, BelongsTo} from "sequelize-typescript";
+import {Table, Column, Model, PrimaryKey, Unique, ForeignKey, BelongsTo, HasMany} from "sequelize-typescript";
 import {GroupEntity} from "../../domain/group.entity";
 import User from "../../../user/infrastructure/model/user.schema";
+import QrCode from "../../../qr_code/infrastructure/models/qrCode.schema";
 
 @Table({
     tableName: "group"
@@ -22,6 +23,9 @@ class Group extends Model<GroupEntity> {
     createdAt!: Date;
     @BelongsTo(() => User, {onDelete: 'cascade'})
     user!: User;
+
+    @HasMany(() => QrCode)
+    qrCodes: QrCode[] = []
 }
 
 export default Group;
