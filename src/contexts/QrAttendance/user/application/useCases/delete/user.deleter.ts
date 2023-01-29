@@ -1,11 +1,14 @@
+import {inject, injectable} from "inversify";
+import {isRight, left, right} from "fp-ts/Either";
+import {TYPES} from "../../../../../../apps/QrAttendance/dependency-injection/user/types";
 import {UserRepository} from "../../../domain";
 import {Either} from "../../../../../shared/types/ErrorEither";
 import {UserError} from "../../../domain/errors/userError";
-import {isRight, left, right} from "fp-ts/Either";
 
+@injectable()
 export class UserDeleter {
     constructor(
-        private readonly userRepository: UserRepository
+        @inject(TYPES.UserRepository) private userRepository: UserRepository
     ) {}
 
     execute = (id: string): Promise<Either<UserError, number>> => {

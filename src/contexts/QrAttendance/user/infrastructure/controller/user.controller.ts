@@ -3,7 +3,9 @@ import {Request, Response} from "express";
 import {isRight} from "fp-ts/Either";
 import {ResponseEntity} from "../../../../shared/infrastructure/entities/response.entity";
 import {UserError} from "../../domain/errors/userError";
+import {injectable} from "inversify";
 
+@injectable()
 export class UserController {
     constructor(
         private readonly userFinder: UserFinder,
