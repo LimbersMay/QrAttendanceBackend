@@ -1,6 +1,6 @@
-import {UserRepository} from "../../domain";
-import {Either} from "../../../../shared/types/ErrorEither";
-import {UserError} from "../../domain/errors/userError";
+import {UserRepository} from "../../../domain";
+import {Either} from "../../../../../shared/types/ErrorEither";
+import {UserError} from "../../../domain/errors/userError";
 import {isRight, left, right} from "fp-ts/Either";
 
 export class UserDeleter {

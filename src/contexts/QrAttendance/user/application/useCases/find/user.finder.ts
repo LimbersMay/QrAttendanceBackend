@@ -1,7 +1,7 @@
-import {UserRepository} from "../../domain";
-import {UserResponse} from "../responses/user.response";
-import {Either} from "../../../../shared/types/ErrorEither";
-import {UserError} from "../../domain/errors/userError";
+import {UserRepository} from "../../../domain";
+import {UserResponse} from "../../responses/user.response";
+import {Either} from "../../../../../shared/types/ErrorEither";
+import {UserError} from "../../../domain/errors/userError";
 import {isRight, left, right} from "fp-ts/Either";
 
 export class UserFinder {

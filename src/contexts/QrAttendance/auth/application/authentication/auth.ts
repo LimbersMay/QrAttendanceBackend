@@ -22,6 +22,6 @@ export class AuthenticateUser {
             if (!isPasswordCorrect) return left(AuthError.INVALID_CREDENTIALS);
 
             return right(UserResponse.fromUser(user.right));
-        });
+        }).catch(() => left(AuthError.CANNOT_AUTHENTICATE_USER));
     }
 }
