@@ -2,6 +2,8 @@ import {Request, Response} from "express";
 import passport from "passport";
 import {isRight} from "fp-ts/Either";
 import {UserCreator} from "../../../user/application/useCases";
+import {ResponseEntity} from "../../../../shared/infrastructure/entities/response.entity";
+import {AuthError} from "../../application/errors/authError";
 
 export class AuthController {
     constructor(
@@ -12,25 +14,25 @@ export class AuthController {
     public login = (req: Request, res: Response) => {
         passport.authenticate('local', (err, user) => {
             if (err) {
-                return res.status(400).json({
-                    ok: false,
-                    msg: err
-                });
+                return ResponseEntity
+                    .status(400)
+                    .body(err)
+                    .send(res);
             }
 
             if (!user) {
-                return res.status(400).json({
-                    ok: false,
-                    msg: "Invalid credentials"
-                });
+                return ResponseEntity
+                    .status(400)
+                    .body(AuthError.INVALID_CREDENTIALS)
+                    .send(res);
             }
 
             req.logIn(user, (err) => {
                 if (err) {
-                    return res.status(400).json({
-                        ok: false,
-                        msg: "Error logging in"
-                    });
+                    return ResponseEntity
+                        .status(400)
+                        .body(err)
+                        .send(res);
                 }
 
                 return res.status(200).json({
@@ -58,27 +60,27 @@ export class AuthController {
     public logout = (req: Request, res: Response) => {
         req.logout((err) => {
             if (err) {
-                return res.status(400).json({
-                    ok: false,
-                    msg: "Error logging out"
-                });
+                return ResponseEntity
+                    .status(400)
+                    .body(err)
+                    .send(res);
             }
         });
 
-        return res.status(200).json({
-            ok: true,
-            msg: "Logout"
-        });
+        return ResponseEntity
+            .status(200)
+            .body("logout")
+            .send(res);
     }
 
     public isAuthenticated = (req: Request, res: Response) => {
         const isAuthenticated = req.isAuthenticated();
 
         if (!isAuthenticated) {
-            return res.status(200).json({
-                ok: false,
-                msg: "Not authenticated"
-            });
+            return ResponseEntity
+                .status(401)
+                .body(AuthError.INVALID_CREDENTIALS)
+                .send(res);
         }
 
         const user = req.user;
