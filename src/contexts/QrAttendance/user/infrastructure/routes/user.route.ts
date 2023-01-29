@@ -1,8 +1,7 @@
 import { Router } from "express";
 import { UserMysqlRepository } from '../repository/user.repository';
-import {UserDeleteController, UserGetController, UserUpdateController} from "../controller";
-import {UserDeleter, UserFinder} from "../../application/useCases";
-import {UserUpdater} from "../../application/useCases/update/user.updater";
+import {UserDeleter, UserFinder, UserUpdater} from "../../application/useCases";
+import {UserController} from "../controller";
 
 const userRouter = Router();
 
@@ -14,12 +13,10 @@ const userFinder = new UserFinder(userMysqlRepository);
 const userUpdate = new UserUpdater(userMysqlRepository);
 
 // Initialize controllers
-const userDeleteController = new UserDeleteController(userDelete);
-const userGetController = new UserGetController(userFinder);
-const userUpdateController = new UserUpdateController(userUpdate);
+const userController = new UserController(userFinder, userUpdate, userDelete);
 
-userRouter.get('/', userGetController.getUserById);
-userRouter.put('/update', userUpdateController.update);
-userRouter.delete('/delete', userDeleteController.delete);
+userRouter.get('/', userController.getUserById);
+userRouter.put('/update', userController.update);
+userRouter.delete('/delete', userController.delete);
 
 export default userRouter;
