@@ -19,7 +19,7 @@ const registryController = new RegistryController(registryCreator, registryFinde
 
 router.post("/create", registryController.create);
 router.get("/find", registryController.find);
-router.get("/findByUserId", registryController.findByUserId);
+router.get("/all", registryController.findByUserId);
 router.put("/update", registryController.update);
 router.delete("/delete", registryController.delete);
 
