@@ -1,3 +1,4 @@
-export * from "./create/user.creator";
-export * from "./find/user.finder";
-export * from "./delete/user.deleter";
+export * from "./create";
+export * from "./find";
+export * from "./delete";
+export * from "./update";
