@@ -75,7 +75,7 @@ export class RegistryMysqlRepository implements RegistryRepository {
 
     toDomain(registry: Registry): RegistryEntity {
         return {
-            qrCodeId: registry.qrCodeId,
+            qrId: registry.qrId,
             registryId: registry.registryId,
             name: registry.name,
             firstSurname: registry.firstSurname,

@@ -118,7 +118,7 @@ const registryAttributes = {
         unique: true,
         allowNull: false
     },
-    qrCodeId: {
+    qrId: {
         type: DataType.STRING,
         allowNull: false,
         references: {

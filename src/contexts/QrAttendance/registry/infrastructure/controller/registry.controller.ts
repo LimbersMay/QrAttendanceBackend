@@ -14,7 +14,7 @@ export class RegistryController {
     ) {
     }
 
-    async create(req: Request, res: Response) {
+    create = async (req: Request, res: Response) => {
         if (!req.user) return ResponseEntity.status(401).body("NOT-AUTHENTICATED").send(res);
 
         const {id: userId} = req.user;
@@ -31,7 +31,7 @@ export class RegistryController {
         return this.handleErrors(res, registry.left);
     }
 
-    async find(req: Request, res: Response) {
+    find = async(req: Request, res: Response) => {
         if (!req.user) return ResponseEntity.status(401).body("NOT-AUTHENTICATED").send(res);
 
         const {id: userId} = req.user;
@@ -48,8 +48,8 @@ export class RegistryController {
         return this.handleErrors(res, registry.left);
     }
 
-    async findByUserId(req: Request, res: Response) {
-        if (!req.user) return ResponseEntity.status(401).body("NOT-AUTHENTICATED").send(res);
+    findByUserId = async (req: Request, res: Response) => {
+       if (!req.user) return ResponseEntity.status(401).body("NOT-AUTHENTICATED").send(res);
 
         const {id: userId} = req.user;
         const registries = await this.registryFinder.executeByUserId(userId);
@@ -63,7 +63,7 @@ export class RegistryController {
         return this.handleErrors(res, registries.left);
     }
 
-    async update(req: Request, res: Response) {
+    update = async(req: Request, res: Response) => {
         if (!req.user) return ResponseEntity.status(401).body("NOT-AUTHENTICATED").send(res);
 
         const {id: userId} = req.user;
@@ -87,7 +87,7 @@ export class RegistryController {
         return this.handleErrors(res, registry.left);
     }
 
-    async delete(req: Request, res: Response) {
+    delete = async(req: Request, res: Response) => {
         if (!req.user) return ResponseEntity.status(401).body("NOT-AUTHENTICATED").send(res);
 
         const {id: userId} = req.user;

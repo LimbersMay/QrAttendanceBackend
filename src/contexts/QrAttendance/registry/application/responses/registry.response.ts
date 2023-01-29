@@ -20,7 +20,7 @@ export class RegistryResponse {
     static fromRegistry(registryEntity: RegistryEntity): RegistryResponse {
         return new RegistryResponse({
             id: registryEntity.registryId,
-            qrCodeId: registryEntity.qrCodeId,
+            qrCodeId: registryEntity.qrId,
             date: registryEntity.createdAt,
             name: registryEntity.name,
             firstSurname: registryEntity.firstSurname,

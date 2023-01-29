@@ -78,7 +78,7 @@ export class AuthController {
 
         if (!isAuthenticated) {
             return ResponseEntity
-                .status(401)
+                .status(200)
                 .body(AuthError.INVALID_CREDENTIALS)
                 .send(res);
         }
