@@ -13,11 +13,11 @@ export class RegistryCreator {
         private readonly uuidGenerator: UUIDGenerator
     ){}
 
-    async execute(qrCodeId: string, ownerId: string, name: string, firstSurname: string, secondSurname: string): Promise<Either<RegistryError, RegistryResponse>> {
+    async execute(qrId: string, ownerId: string, name: string, firstSurname: string, secondSurname: string): Promise<Either<RegistryError, RegistryResponse>> {
 
         const registry = RegistryValue.create({
             registryId: this.uuidGenerator.random(),
-            qrCodeId,
+            qrId,
             ownerId,
             name,
             firstSurname,
@@ -26,6 +26,9 @@ export class RegistryCreator {
 
         return this.registryRepository.createRegistry(registry).then(registry => {
             return E.right(RegistryResponse.fromRegistry(registry))
-        }).catch(() => E.left(RegistryError.REGISTRY_CANNOT_BE_CREATED));
+        }).catch((error) => {
+            console.log(error)
+            return E.left(RegistryError.REGISTRY_CANNOT_BE_CREATED)
+        });
     }
 }

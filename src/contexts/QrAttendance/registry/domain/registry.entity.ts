@@ -1,7 +1,7 @@
 
 export interface RegistryEntity {
     registryId: string,
-    qrCodeId: string,
+    qrId: string,
     ownerId: string,
     name: string,
     firstSurname: string,

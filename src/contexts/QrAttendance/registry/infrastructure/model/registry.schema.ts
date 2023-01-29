@@ -14,7 +14,7 @@ export class Registry extends Model<RegistryEntity> {
 
     @ForeignKey(() => QrCode)
     @Column
-    qrCodeId!: string;
+    qrId!: string;
     @BelongsTo(() => QrCode, {onDelete: "cascade"})
     qrCode!: QrCode;
 

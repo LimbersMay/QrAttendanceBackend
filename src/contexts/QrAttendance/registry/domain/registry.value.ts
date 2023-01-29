@@ -2,7 +2,7 @@ import { RegistryEntity } from "./registry.entity";
 
 export class RegistryValue implements RegistryEntity {
     registryId: string;
-    qrCodeId: string;
+    qrId: string;
     ownerId: string;
     name: string;
     firstSurname: string;
@@ -10,7 +10,7 @@ export class RegistryValue implements RegistryEntity {
     updatedAt?: Date;
     createdAt?: Date;
     
-    constructor({registryId, qrCodeId, ownerId, name, firstSurname, secondSurname, createdAt, updatedAt}: RegistryEntity) {
+    constructor({registryId, qrId, ownerId, name, firstSurname, secondSurname, createdAt, updatedAt}: RegistryEntity) {
         this.name = name;
         this.firstSurname = firstSurname;
         this.secondSurname = secondSurname;
@@ -19,13 +19,13 @@ export class RegistryValue implements RegistryEntity {
         this.ownerId = ownerId;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.qrCodeId = qrCodeId;
+        this.qrId = qrId;
     }
 
-    static create({registryId, qrCodeId, ownerId, name, firstSurname, secondSurname, createdAt, updatedAt}: RegistryEntity): RegistryValue {
+    static create({registryId, qrId, ownerId, name, firstSurname, secondSurname, createdAt, updatedAt}: RegistryEntity): RegistryValue {
         return new RegistryValue({
             registryId,
-            qrCodeId,
+            qrId,
             ownerId,
             name,
             firstSurname,
