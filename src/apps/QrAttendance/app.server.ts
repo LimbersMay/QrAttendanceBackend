@@ -12,6 +12,7 @@ import authRoutes from "../../contexts/QrAttendance/auth/infrastructure/routes/a
 import userRoutes from "../../contexts/QrAttendance/user/infrastructure/routes/user.route";
 import groupRoutes from "../../contexts/QrAttendance/group/infrastructure/routes/group.route";
 import qrCodeRoutes from "../../contexts/QrAttendance/qr_code/infrastructure/routes/qrCode.router";
+import registryRoutes from "../../contexts/QrAttendance/registry/infrastructure/routes/registry.router";
 
 import cookieParser from "cookie-parser";
 import session from "express-session";
@@ -43,7 +44,8 @@ export class Server {
             auth: '/api/auth',
             user: '/api/user',
             group: '/api/group',
-            qrCode: '/api/qrCode'
+            qrCode: '/api/qrCode',
+            registry: '/api/registry'
         }
 
         // DB connection
@@ -89,6 +91,7 @@ export class Server {
         this.app.use(this.appRoutes.user, userRoutes);
         this.app.use(this.appRoutes.group, groupRoutes);
         this.app.use(this.appRoutes.qrCode, qrCodeRoutes);
+        this.app.use(this.appRoutes.registry, registryRoutes);
     }
 
     public listen() {
