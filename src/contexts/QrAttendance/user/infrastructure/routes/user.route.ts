@@ -2,7 +2,7 @@ import { Router } from "express";
 import { UserMysqlRepository } from '../repository/user.repository';
 import {UserDeleteController, UserGetController, UserUpdateController} from "../controller";
 import {UserDeleter, UserFinder} from "../../application/useCases";
-import {UserUpdater} from "../../application/useCases/user.updater";
+import {UserUpdater} from "../../application/useCases/update/user.updater";
 
 const userRouter = Router();
 

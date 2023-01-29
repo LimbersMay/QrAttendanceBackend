@@ -1,4 +1,4 @@
-import {UserUpdater} from "../../application/useCases/user.updater";
+import {UserUpdater} from "../../application/useCases/update/user.updater";
 import {Request, Response} from "express";
 import {isRight} from "fp-ts/Either";
 import {ResponseEntity} from "../../../../shared/infrastructure/entities/response.entity";
