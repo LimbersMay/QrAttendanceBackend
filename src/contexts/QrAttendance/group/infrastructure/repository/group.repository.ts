@@ -4,7 +4,9 @@ import {Either} from "../../../../shared/types/ErrorEither";
 import {GroupError} from "../../application/errors/group.errors";
 import {left, right} from "fp-ts/Either";
 import {GroupRepository} from "../../domain/group.repository";
+import {injectable} from "inversify";
 
+@injectable()
 export class GroupMysqlRepository implements GroupRepository {
 
     public async findGroupById(groupId: string, userId: string): Promise<Either<GroupError, GroupEntity>> {
