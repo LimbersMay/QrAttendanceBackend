@@ -1,12 +1,15 @@
+import {inject, injectable} from "inversify";
+import {isRight, left, right} from "fp-ts/Either";
+import {TYPES} from "../../../../../../apps/QrAttendance/dependency-injection/qrCode/types";
 import {QrCodeRepository} from "../../../domain/qrCode.repository";
 import {Either} from "../../../../../shared/types/ErrorEither";
 import {QrCodeError} from "../../../domain/errors/qrCode.errors";
 import {GroupQuery} from "../../../../group/domain/group.query";
-import {isRight, left, right} from "fp-ts/Either";
 
+@injectable()
 export class QrCodeUpdater {
     constructor(
-        private readonly qrCodeRepository: QrCodeRepository,
+        @inject(TYPES.QrCodeRepository) private qrCodeRepository: QrCodeRepository,
     ) {}
 
     public execute = async(fields: GroupQuery, qrCodeId: string, userId: string): Promise<Either<QrCodeError, number>> => {

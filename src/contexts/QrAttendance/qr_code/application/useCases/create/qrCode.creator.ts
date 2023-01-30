@@ -1,15 +1,18 @@
+import {inject, injectable} from "inversify";
+import {left, right} from "fp-ts/Either";
+import {TYPES} from "../../../../../../apps/QrAttendance/dependency-injection/qrCode/types";
 import {QrCodeRepository} from "../../../domain/qrCode.repository";
 import {Either} from "../../../../../shared/types/ErrorEither";
 import {QrCodeError} from "../../../domain/errors/qrCode.errors";
 import {QrCodeResponse} from "../../responses/qrCode.response";
 import {QrCodeValue} from "../../../domain/qrCode.value";
 import {UUIDGenerator} from "../../../../shared/application/services/UUIDGenerator";
-import {left, right} from "fp-ts/Either";
 
+@injectable()
 export class QrCodeCreator {
     constructor(
-        private readonly qrCodeRepository: QrCodeRepository,
-        private readonly uuidGenerator: UUIDGenerator
+        @inject(TYPES.QrCodeRepository) private qrCodeRepository: QrCodeRepository,
+        @inject(TYPES.QrCodeUUIDGenerator) private readonly uuidGenerator: UUIDGenerator
     ){}
 
     public execute = (name: string, groupId: string, userId: string, enabled: boolean): Promise<Either<QrCodeError, QrCodeResponse>> => {
