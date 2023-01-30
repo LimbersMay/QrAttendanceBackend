@@ -1,5 +1,6 @@
-import {TYPES} from "../../../../../../apps/QrAttendance/dependency-injection/user/types";
 import {inject, injectable} from "inversify";
+import {TYPES} from "../../../../../../apps/QrAttendance/dependency-injection/user/types";
+
 import {isRight, left, right} from "fp-ts/Either";
 import {Either} from "../../../../../shared/types/ErrorEither";
 import {UUIDGenerator} from "../../../../shared/application/services/UUIDGenerator";
@@ -12,7 +13,7 @@ import {UserResponse} from "../../responses/user.response";
 export class UserCreator {
     constructor(
         @inject(TYPES.UserRepository) private userRepository: UserRepository,
-        @inject(TYPES.UUIDGenerator) private UUIDGenerator: UUIDGenerator,
+        @inject(TYPES.UserUUIDGenerator) private UUIDGenerator: UUIDGenerator,
         @inject(TYPES.PasswordHasher) private passwordHasher: PasswordHasher,
     ) {
     }
