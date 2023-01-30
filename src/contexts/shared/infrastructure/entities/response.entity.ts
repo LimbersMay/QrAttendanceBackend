@@ -1,4 +1,5 @@
 import {Response} from "express";
+import {HttpError} from "routing-controllers";
 
 export class ResponseEntity {
     private static code: number;
@@ -21,5 +22,15 @@ export class ResponseEntity {
 
     public static send = (res: Response) => {
         return res.status(this.code).json({body: this.data});
+    }
+
+    public static buildError = () => {
+        return new HttpError(this.code, this.data);
+    }
+
+    public static buid = () => {
+        return {
+            body: this.data
+        }
     }
 }
