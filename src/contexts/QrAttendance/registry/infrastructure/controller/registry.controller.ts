@@ -1,10 +1,12 @@
-import {RegistryCreator, RegistryDeleter, RegistryFinder, RegistryUpdater} from "../../application/useCases";
 import {Request, Response} from "express";
-import {ResponseEntity} from "../../../../shared/infrastructure/entities/response.entity";
-
+import {injectable} from "inversify";
 import * as E from 'fp-ts/lib/Either';
+
+import {RegistryCreator, RegistryDeleter, RegistryFinder, RegistryUpdater} from "../../application/useCases";
+import {ResponseEntity} from "../../../../shared/infrastructure/entities/response.entity";
 import {RegistryError} from "../../domain/errors/registry.error";
 
+@injectable()
 export class RegistryController {
     constructor(
         private readonly registryCreator: RegistryCreator,
