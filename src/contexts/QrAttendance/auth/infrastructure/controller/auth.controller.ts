@@ -1,10 +1,12 @@
 import {Request, Response} from "express";
-import passport from "passport";
+import {injectable} from "inversify";
 import {isRight} from "fp-ts/Either";
+import passport from "passport";
 import {UserCreator} from "../../../user/application/useCases";
 import {ResponseEntity} from "../../../../shared/infrastructure/entities/response.entity";
 import {AuthError} from "../../application/errors/authError";
 
+@injectable()
 export class AuthController {
     constructor(
         private readonly userCreator: UserCreator
@@ -50,10 +52,14 @@ export class AuthController {
         let { name, email,  password, lastname } = req.body;
 
         const user = await this.userCreator.execute({ name, email, password, lastname });
+        console.log(user);
 
         return isRight(user)
             ? this.login(req, res)
-            : res.status(400).json({msg: user.left});
+                : ResponseEntity
+                    .status(400)
+                    .body(user.left)
+                    .send(res);
 
     }
 
