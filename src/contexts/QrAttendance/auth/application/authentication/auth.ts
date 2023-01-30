@@ -1,14 +1,17 @@
+import {inject, injectable} from "inversify";
+import {isLeft, left, right} from "fp-ts/Either";
 import {UserRepository} from "../../../user/domain";
 import {PasswordHasher} from "../../../shared/application/services/encrypt.service";
 import {Either} from "../../../../shared/types/ErrorEither";
 import {AuthError} from "../errors/authError";
-import {isLeft, left, right} from "fp-ts/Either";
 import {UserResponse} from "../../../user/application/responses/user.response";
+import {TYPES} from "../../../../../apps/QrAttendance/dependency-injection/user/types";
 
+@injectable()
 export class AuthenticateUser {
     constructor (
-        private readonly repository: UserRepository,
-        private readonly encryptService: PasswordHasher
+        @inject(TYPES.UserRepository) private repository: UserRepository,
+        @inject(TYPES.PasswordHasher) private encryptService: PasswordHasher
     ){}
 
     execute(email: string, password: string): Promise<Either<AuthError, UserResponse>> {
