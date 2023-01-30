@@ -1,6 +1,6 @@
 
 export const TYPES = {
     UserRepository: Symbol.for("UserRepository"),
-    UUIDGenerator: Symbol.for("UUIDGenerator"),
+    UserUUIDGenerator: Symbol.for("UserUUIDGenerator"),
     PasswordHasher: Symbol.for("PasswordHasher"),
 }
