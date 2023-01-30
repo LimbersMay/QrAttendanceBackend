@@ -3,7 +3,9 @@ import {Request, Response} from "express";
 import {ResponseEntity} from "../../../../shared/infrastructure/entities/response.entity";
 import {isRight} from "fp-ts/Either";
 import {QrCodeError} from "../../domain/errors/qrCode.errors";
+import {injectable} from "inversify";
 
+@injectable()
 export class QrCodeController {
     constructor(
         private qrCodeFinder: QrCodeFinder,
