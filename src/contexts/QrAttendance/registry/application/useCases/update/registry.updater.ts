@@ -2,10 +2,13 @@ import * as E from 'fp-ts/lib/Either';
 import {RegistryError} from "../../../domain/errors/registry.error";
 import {RegistryRepository} from "../../../domain/registry.repository";
 import {RegistryQuery} from "../../../domain/entities/registry.query";
+import {inject, injectable} from "inversify";
+import {TYPES} from "../../../../../../apps/QrAttendance/dependency-injection/registry/types";
 
+@injectable()
 export class RegistryUpdater {
     constructor(
-        private readonly registryRepository: RegistryRepository
+        @inject(TYPES.RegistryRepository) private registryRepository: RegistryRepository
     ) {}
 
     execute = async(fields: RegistryQuery, registryId: string, userId: string): Promise<E.Either<RegistryError, number>> => {

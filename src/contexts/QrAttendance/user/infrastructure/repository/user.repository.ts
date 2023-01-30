@@ -1,10 +1,13 @@
 import User from '../model/user.schema';
+import {injectable} from "inversify";
+import {left, right} from "fp-ts/Either";
+
 import {UserQuery} from "../../domain/user.query";
 import {Either} from "../../../../shared/types/ErrorEither";
 import {UserError} from "../../domain/errors/userError";
-import {left, right} from "fp-ts/Either";
 import {UserEntity, UserRepository} from "../../domain";
 
+@injectable()
 export class UserMysqlRepository implements UserRepository {
 
     public constructor(){}

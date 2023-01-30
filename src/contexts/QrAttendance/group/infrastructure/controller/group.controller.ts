@@ -3,7 +3,9 @@ import {Request, Response} from "express";
 import {isRight} from "fp-ts/Either";
 import {ResponseEntity} from "../../../../shared/infrastructure/entities/response.entity";
 import {GroupError} from "../../application/errors/group.errors";
+import {injectable} from "inversify";
 
+@injectable()
 export class GroupController {
     constructor(
         private groupCreator: GroupCreator,

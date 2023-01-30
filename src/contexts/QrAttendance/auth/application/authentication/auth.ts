@@ -1,5 +1,5 @@
 import {UserRepository} from "../../../user/domain";
-import {EncryptService} from "../../../shared/application/services/encrypt.service";
+import {PasswordHasher} from "../../../shared/application/services/encrypt.service";
 import {Either} from "../../../../shared/types/ErrorEither";
 import {AuthError} from "../errors/authError";
 import {isLeft, left, right} from "fp-ts/Either";
@@ -8,7 +8,7 @@ import {UserResponse} from "../../../user/application/responses/user.response";
 export class AuthenticateUser {
     constructor (
         private readonly repository: UserRepository,
-        private readonly encryptService: EncryptService
+        private readonly encryptService: PasswordHasher
     ){}
 
     execute(email: string, password: string): Promise<Either<AuthError, UserResponse>> {

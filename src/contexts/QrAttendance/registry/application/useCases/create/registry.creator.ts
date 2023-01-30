@@ -1,4 +1,4 @@
-
+import {inject, injectable} from "inversify";
 import * as E from 'fp-ts/lib/Either';
 import {RegistryRepository} from "../../../domain/registry.repository";
 import {RegistryError} from "../../../domain/errors/registry.error";
@@ -6,11 +6,13 @@ import {RegistryResponse} from "../../responses/registry.response";
 import {Either} from "../../../../../shared/types/ErrorEither";
 import {RegistryValue} from "../../../domain/registry.value";
 import {UUIDGenerator} from "../../../../shared/application/services/UUIDGenerator";
+import {TYPES} from "../../../../../../apps/QrAttendance/dependency-injection/registry/types";
 
+@injectable()
 export class RegistryCreator {
     constructor(
-        private readonly registryRepository: RegistryRepository,
-        private readonly uuidGenerator: UUIDGenerator
+        @inject(TYPES.RegistryRepository) private registryRepository: RegistryRepository,
+        @inject(TYPES.RegistryUUIDGenerator) private uuidGenerator: UUIDGenerator
     ){}
 
     async execute(qrId: string, ownerId: string, name: string, firstSurname: string, secondSurname: string): Promise<Either<RegistryError, RegistryResponse>> {

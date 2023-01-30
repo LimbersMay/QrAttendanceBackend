@@ -1,19 +1,7 @@
 import { Router } from "express";
-import { UserMysqlRepository } from '../repository/user.repository';
-import {UserDeleter, UserFinder, UserUpdater} from "../../application/useCases";
-import {UserController} from "../controller";
+import {UserControllerInjected as userController} from "../../../../../apps/QrAttendance/dependency-injection/container";
 
 const userRouter = Router();
-
-const userMysqlRepository = new UserMysqlRepository();
-
-// Initialize use cases
-const userDelete = new UserDeleter(userMysqlRepository);
-const userFinder = new UserFinder(userMysqlRepository);
-const userUpdate = new UserUpdater(userMysqlRepository);
-
-// Initialize controllers
-const userController = new UserController(userFinder, userUpdate, userDelete);
 
 userRouter.get('/', userController.getUserById);
 userRouter.put('/update', userController.update);
