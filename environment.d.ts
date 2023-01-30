@@ -1,3 +1,5 @@
+import "reflect-metadata";
+
 declare global {
     namespace NodeJS {
         interface ProcessEnv {

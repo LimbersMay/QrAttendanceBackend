@@ -1,2 +1,2 @@
-export * from "./bcryptAdapter";
+export * from "./bcrypt.adapter";
 export * from "./uuid.adapter";
