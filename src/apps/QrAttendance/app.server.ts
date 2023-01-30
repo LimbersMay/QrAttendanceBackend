@@ -8,12 +8,14 @@ import db from "../../contexts/shared/infrastructure/db/mysql.connection"
 
 // routes
 import authRoutes from "../../contexts/QrAttendance/auth/infrastructure/routes/auth.routes";
-import userRoutes from "../../contexts/QrAttendance/user/infrastructure/routes/user.route";
 import groupRoutes from "../../contexts/QrAttendance/group/infrastructure/routes/group.route";
 import qrCodeRoutes from "../../contexts/QrAttendance/qr_code/infrastructure/routes/qrCode.router";
 import registryRoutes from "../../contexts/QrAttendance/registry/infrastructure/routes/registry.router";
 
-import {AuthPassportStrategyInjected as PassportLocalStrategy} from "./dependency-injection/container";
+import {AuthPassportStrategyInjected as PassportLocalStrategy, container} from "./dependency-injection/container";
+import {createExpressServer, useContainer} from "routing-controllers";
+
+import {UserController} from "../../contexts/QrAttendance/user/infrastructure/controller";
 
 export class Server {
     public app: Application;
@@ -22,7 +24,17 @@ export class Server {
 
     constructor() {
 
-        this.app = express();
+        useContainer(container);
+
+        this.app = createExpressServer({
+            routePrefix: "/api",
+            controllers: [UserController],
+            cors: {
+                origin: "http://localhost:5173",
+                credentials: true
+            }
+        });
+
         this.port = parseInt(process.env.PORT ?? "3000")
 
         PassportLocalStrategy.init();
@@ -51,7 +63,6 @@ export class Server {
     }
 
     public middlewares() {
-        this.app.use(cors({credentials: true, origin: 'http://localhost:5173'}));
         this.app.use(express.json());
         this.app.use(cookieParser(process.env.COOKIE_SECRET));
 
@@ -75,11 +86,10 @@ export class Server {
     }
 
     public routes() {
-        this.app.use(this.appRoutes.auth, authRoutes);
-        this.app.use(this.appRoutes.user, userRoutes);
-        this.app.use(this.appRoutes.group, groupRoutes);
-        this.app.use(this.appRoutes.qrCode, qrCodeRoutes);
-        this.app.use(this.appRoutes.registry, registryRoutes);
+        //this.app.use(this.appRoutes.auth, authRoutes);
+        //this.app.use(this.appRoutes.group, groupRoutes);
+        //this.app.use(this.appRoutes.qrCode, qrCodeRoutes);
+        //this.app.use(this.appRoutes.registry, registryRoutes);
     }
 
     public listen() {
