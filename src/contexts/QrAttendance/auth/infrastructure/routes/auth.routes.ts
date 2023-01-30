@@ -1,21 +1,11 @@
 import { Router} from "express";
-import {AuthController} from "../controller/auth.controller";
-import { BcryptAdapter, UuidAdapter } from "../../../user/infrastructure/adapters";
-import {UserMysqlRepository} from "../../../user/infrastructure/repository/user.repository";
-import {AuthMiddleware} from "../middlewares";
-import {UserCreator, UserFinder} from "../../../user/application/useCases";
+
+import {
+    AuthControllerInjected as authController,
+    AuthMiddlewareInjected as authMiddleware
+} from "../../../../../apps/QrAttendance/dependency-injection/container";
 
 const router = Router();
-
-const userMysqlRepository = new UserMysqlRepository();
-const bcryptAdapter = new BcryptAdapter();
-const uuidAdapter = new UuidAdapter();
-
-const userCreator = new UserCreator(userMysqlRepository, uuidAdapter, bcryptAdapter);
-const userFinder = new UserFinder(userMysqlRepository);
-
-const authController = new AuthController(userCreator);
-const authMiddleware = new AuthMiddleware(userFinder);
 
 router.post("/login-local", authController.login);
 
