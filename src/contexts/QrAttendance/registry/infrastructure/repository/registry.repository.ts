@@ -1,11 +1,13 @@
+import {injectable} from "inversify";
+import * as E from "fp-ts/Either";
+import Registry from "../model/registry.schema";
 import {RegistryRepository} from "../../domain/registry.repository";
 import {RegistryEntity} from "../../domain/registry.entity";
 import {Either} from "../../../../shared/types/ErrorEither";
 import {RegistryError} from "../../domain/errors/registry.error";
 import {RegistryQuery} from "../../domain/entities/registry.query";
-import Registry from "../model/registry.schema";
-import * as E from "fp-ts/Either";
 
+@injectable()
 export class RegistryMysqlRepository implements RegistryRepository {
 
     constructor() {}
