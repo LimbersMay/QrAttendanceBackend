@@ -1,7 +1,9 @@
 import { Request, Response, NextFunction } from "express";
-import {AuthError} from "../../application/errors/authError";
+import {injectable} from "inversify";
 import {isRight} from "fp-ts/Either";
+import {AuthError} from "../../application/errors/authError";
 import {UserFinder} from "../../../user/application/useCases";
+import {ResponseEntity} from "../../../../shared/infrastructure/entities/response.entity";
 
 export const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
     if (req.isAuthenticated()) {
@@ -14,6 +16,7 @@ export const isAuthenticated = (req: Request, res: Response, next: NextFunction)
     })
 }
 
+@injectable()
 export class AuthMiddleware {
 
     constructor(
@@ -26,7 +29,7 @@ export class AuthMiddleware {
         const exists = await this.userFinder.executeByEmail(email);
 
         return isRight(exists)
-            ? res.status(400).json({msg: AuthError.DUPLICATED_EMAIL})
+            ? ResponseEntity.status(400).body(AuthError.DUPLICATED_EMAIL).send(res)
             : next();
     }
 }
