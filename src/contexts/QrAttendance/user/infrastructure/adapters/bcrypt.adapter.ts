@@ -1,5 +1,8 @@
-import {EncryptService} from "../../../shared/application/services/encrypt.service";
+import {injectable} from "inversify";
 import bcryptjs from 'bcryptjs';
+import {EncryptService} from "../../../shared/application/services/encrypt.service";
+
+@injectable()
 export class BcryptAdapter implements EncryptService {
     async hash(text:string): Promise<string>{
         const salt = await bcryptjs.genSalt();
