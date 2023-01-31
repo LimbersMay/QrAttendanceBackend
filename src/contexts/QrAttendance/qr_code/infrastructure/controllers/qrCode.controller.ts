@@ -55,7 +55,7 @@ export class QrCodeController {
 
     @Post('/create')
     @UseBefore(IsAuthenticated)
-    public async create (@Body() { name, groupId, enabled}: {name: string, groupId: string, enabled: boolean}, req: Request) {
+    public async create (@Body() { name, groupId, enabled}: {name: string, groupId: string, enabled: boolean}, @Req() req: Request) {
 
         // @ts-ignore
         const { id: idUser } = req.user;
@@ -73,11 +73,10 @@ export class QrCodeController {
 
     @Put('/update')
     @UseBefore(IsAuthenticated)
-    public async update (@Req() req: Request) {
+    public async update (@Body() { id, updatedFields }: {id: string, updatedFields: any}, @Req() req: Request) {
 
         // @ts-ignore
         const { id: idUser } = req.user;
-        const { id, updatedFields } = req.body;
 
         const result = await this.qrCodeUpdater.execute(updatedFields, id, idUser);
 
@@ -90,7 +89,7 @@ export class QrCodeController {
         return this.handleError(result.left)
     }
 
-    @Delete('/delete/:id([0-9]+)')
+    @Delete('/delete/:id')
     @UseBefore(IsAuthenticated)
     public async delete (@Param("id") id: string, @Req() req: Request) {
 
