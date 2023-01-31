@@ -29,7 +29,6 @@ export class Authenticate implements ExpressMiddlewareInterface {
                     return next(new UnauthorizedError(AuthError.INVALID_CREDENTIALS));
                 }
 
-                req.user = user;
                 return next();
             })
 
