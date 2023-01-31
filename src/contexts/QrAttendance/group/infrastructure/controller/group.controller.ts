@@ -17,11 +17,12 @@ export class GroupController {
         private groupDeleter: GroupDeleter,
     ) {}
 
-    @Get('/:id')
+    @Get('/:id([0-9]+)')
     @UseBefore(IsAuthenticated)
     public async getGroup (@Param("id") id: string, @Req() req: Request) {
 
-        const { id: userId } = req.authenticatedUser;
+        // @ts-ignore
+        const { id: userId } = req.user;
 
         const group = await this.groupFinder.execute(id, userId);
         if (isRight(group))
@@ -35,10 +36,13 @@ export class GroupController {
 
     @Get('/all')
     @UseBefore(IsAuthenticated)
-    public async getGroups (req: Request) {
-        const { id: userId } = req.authenticatedUser;
+    public async getGroups (@Req() req: Request) {
+
+        // @ts-ignore
+        const { id: userId } = req.user;
 
         const groups = await this.groupFinder.executeByUserId(userId);
+
         if (isRight(groups))
             return ResponseEntity
                 .ok()
@@ -49,9 +53,11 @@ export class GroupController {
     }
 
     @Post('/create')
-    public async create (@BodyParam("name") name: string, req: Request) {
+    @UseBefore(IsAuthenticated)
+    public async create (@BodyParam("name") name: string, @Req() req: Request) {
 
-        const { id: userId } = req.authenticatedUser;
+        // @ts-ignore
+        const { id: userId } = req.user;
 
         const group = await this.groupCreator.execute(name, userId);
 
@@ -66,9 +72,10 @@ export class GroupController {
 
     @Put('/update')
     @UseBefore(IsAuthenticated)
-    public async update (req: Request, @BodyParam("id") id: string, @BodyParam("updatedFields") updatedFields: any) {
+    public async update (@Req() req: Request, @BodyParam("id") id: string, @BodyParam("updatedFields") updatedFields: any) {
 
-        const { id: userId } = req.authenticatedUser;
+        // @ts-ignore
+        const { id: userId } = req.user;
 
         const expectedFields = {
             name: updatedFields.name
@@ -86,9 +93,10 @@ export class GroupController {
 
     @Delete('/delete/:id')
     @UseBefore(IsAuthenticated)
-    public async delete (@Param("id") id: string, req: Request) {
+    public async delete (@Param("id") id: string, @Req() req: Request) {
 
-        const { id: userId } = req.authenticatedUser;
+        // @ts-ignore
+        const { id: userId } = req.user;
         const group = await this.groupDeleter.execute(id, userId);
 
         if (isRight(group))
