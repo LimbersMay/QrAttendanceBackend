@@ -1,10 +1,17 @@
-// import passport local strategy
 import {Strategy as LocalStrategy} from 'passport-local';
 import {injectable} from "inversify";
 import passport from "passport";
 import {isRight} from "fp-ts/Either";
 import {AuthenticateUser} from "../../application/authentication/auth";
 import {UserFinder} from "../../../user/application/useCases";
+import {UserDTO} from "../../../user/application/entities/user.dto";
+
+declare global {
+    namespace Express {
+        interface User extends UserDTO {
+        }
+    }
+}
 
 @injectable()
 // decouple passport using dependency injection
