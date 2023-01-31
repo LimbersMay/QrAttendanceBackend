@@ -12,6 +12,7 @@ import {useContainer, useExpressServer} from "routing-controllers";
 import {UserController} from "../../contexts/QrAttendance/user/infrastructure/controller";
 import {AuthController} from "../../contexts/QrAttendance/auth/infrastructure/controller/auth.controller";
 import bodyParser from "body-parser";
+import {GroupController} from "../../contexts/QrAttendance/group/infrastructure/controller/group.controller";
 
 export class Server {
     public app: Application;
@@ -78,7 +79,7 @@ export class Server {
                 origin: "http://localhost:5173",
                 defaultErrorHandler: false
             },
-            controllers: [UserController, AuthController]
+            controllers: [UserController, AuthController, GroupController]
         });
     }
 
