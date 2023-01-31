@@ -22,4 +22,10 @@ export class ResponseEntity {
     public static send = (res: Response) => {
         return res.status(this.code).json({body: this.data});
     }
+
+    public static buid = () => {
+        return {
+            body: this.data
+        }
+    }
 }

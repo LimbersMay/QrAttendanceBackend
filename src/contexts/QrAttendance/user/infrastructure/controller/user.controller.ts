@@ -4,7 +4,10 @@ import {isRight} from "fp-ts/Either";
 import {ResponseEntity} from "../../../../shared/infrastructure/entities/response.entity";
 import {UserError} from "../../domain/errors/userError";
 import {injectable} from "inversify";
+import {Body, Delete, Get, JsonController, Put, QueryParam, Req, Res, UseBefore} from "routing-controllers";
+import {IsAuthenticated} from "../../../auth/infrastructure/middlewares";
 
+@JsonController('/user')
 @injectable()
 export class UserController {
     constructor(
@@ -13,34 +16,41 @@ export class UserController {
         private readonly userDeleter: UserDeleter
     ) {}
 
-    public getUserById = async ({query}: Request, res: Response) => {
-        const {userId = ''} = query;
+    @Get('/')
+    public async getUserById (@Res() res: Response, @QueryParam("userId", {required: true}) userId: string) {
 
-        const user = await this.userFinder.execute(`${userId}`);
+        const user = await this.userFinder.execute(userId);
 
-        if (isRight(user)) return ResponseEntity.ok().body(user.right).send(res);
+        if (isRight(user))
+            return ResponseEntity
+                .body(user.right)
+                .buid();
 
-        return this.handleError(res, user.left);
+        return this.handleError(user.left, res);
     }
 
-    public delete = async(req: Request, res: Response) => {
+    @Delete('/delete')
+    @UseBefore(IsAuthenticated)
+    public async delete (@Req() req: Request, @Res() res: Response) {
 
-        if (!req.user) return res.status(400).json({ msg: 'NOT_AUTHENTICATED' });
-
+        // @ts-ignore
         const { id: userId } = req.user;
         const user = await this.userDeleter.execute(userId);
 
-        if (isRight(user)) return ResponseEntity.ok().body(user.right).send(res);
+        if (isRight(user))
+            return ResponseEntity
+                .body(user.right)
+                .buid();
 
-        return this.handleError(res, user.left);
+        return this.handleError(user.left, res);
     }
 
-    public update = async(req: Request, res: Response) => {
+    @Put('/update')
+    @UseBefore(IsAuthenticated)
+    public async update(@Req() req: Request, @Res() res: Response, @Body() {fields}: any) {
 
-        if (!req.user) return res.status(400).json({ msg: 'NOT_AUTHENTICATED' });
-
+        // @ts-ignore
         const { id: userId = '' } = req.user;
-        const {fields} = req.body;
 
         const expectedFields = {
             name: fields.name,
@@ -50,12 +60,15 @@ export class UserController {
         }
 
         const user = await this.userUpdater.execute(expectedFields, userId);
-        if (isRight(user)) return ResponseEntity.ok().body(user.right).send(res);
+        if (isRight(user))
+            return ResponseEntity
+                .body(user.right)
+                .buid();
 
-       return this.handleError(res, user.left);
+       return this.handleError(user.left, res);
     }
 
-    private handleError = (res: Response, error: UserError) => {
+    private handleError (error: UserError, res: Response) {
         switch (error) {
             case UserError.USER_NOT_FOUND:
                 return ResponseEntity
@@ -86,10 +99,11 @@ export class UserController {
                     .status(500)
                     .body(error)
                     .send(res);
+
             default:
                 return ResponseEntity
                     .status(500)
-                    .body('INTERNAL_SERVER_ERROR')
+                    .body(error)
                     .send(res);
         }
     }

@@ -5,7 +5,20 @@ import * as E from 'fp-ts/lib/Either';
 import {RegistryCreator, RegistryDeleter, RegistryFinder, RegistryUpdater} from "../../application/useCases";
 import {ResponseEntity} from "../../../../shared/infrastructure/entities/response.entity";
 import {RegistryError} from "../../domain/errors/registry.error";
+import {
+    Body,
+    BodyParam,
+    Controller,
+    Delete,
+    Get,
+    Param,
+    Post,
+    Put,
+    Req, Res, UseBefore
+} from "routing-controllers";
+import {IsAuthenticated} from "../../../auth/infrastructure/middlewares";
 
+@Controller('/registry')
 @injectable()
 export class RegistryController {
     constructor(
@@ -16,11 +29,13 @@ export class RegistryController {
     ) {
     }
 
-    create = async (req: Request, res: Response) => {
-        if (!req.user) return ResponseEntity.status(401).body("NOT-AUTHENTICATED").send(res);
+    @Post('/create')
+    @UseBefore(IsAuthenticated)
+    public async create (@Req() req: Request, @Res() res: Response, @Body() body: any) {
 
+        // @ts-ignore
         const {id: userId} = req.user;
-        const {qrId, name, firstSurname, secondSurname} = req.body;
+        const {qrId, name, firstSurname, secondSurname} = body;
 
         const registry = await this.registryCreator.execute(qrId, userId, name, firstSurname, secondSurname);
 
@@ -28,16 +43,17 @@ export class RegistryController {
             return ResponseEntity
                 .status(201)
                 .body(registry.right)
-                .send(res);
+                .buid();
 
-        return this.handleErrors(res, registry.left);
+        return this.handleErrors(registry.left, res);
     }
 
-    find = async(req: Request, res: Response) => {
-        if (!req.user) return ResponseEntity.status(401).body("NOT-AUTHENTICATED").send(res);
+    @Get('/find')
+    @UseBefore(IsAuthenticated)
+    public async find (@Req() req: Request, @Res() res: Response, @BodyParam('registryId') registryId: string) {
 
+        // @ts-ignore
         const {id: userId} = req.user;
-        const {registryId} = req.body;
 
         const registry = await this.registryFinder.execute(registryId, userId);
 
@@ -45,14 +61,16 @@ export class RegistryController {
             return ResponseEntity
                 .status(200)
                 .body(registry.right)
-                .send(res);
+                .buid();
 
-        return this.handleErrors(res, registry.left);
+        return this.handleErrors(registry.left, res);
     }
 
-    findByUserId = async (req: Request, res: Response) => {
-       if (!req.user) return ResponseEntity.status(401).body("NOT-AUTHENTICATED").send(res);
+    @Get('/all')
+    @UseBefore(IsAuthenticated)
+    public async findByUserId(@Req() req: Request, @Res() res: Response) {
 
+        // @ts-ignore
         const {id: userId} = req.user;
         const registries = await this.registryFinder.executeByUserId(userId);
 
@@ -60,16 +78,18 @@ export class RegistryController {
             return ResponseEntity
                 .status(200)
                 .body(registries.right)
-                .send(res);
+                .buid();
 
-        return this.handleErrors(res, registries.left);
+        return this.handleErrors(registries.left, res);
     }
 
-    update = async(req: Request, res: Response) => {
-        if (!req.user) return ResponseEntity.status(401).body("NOT-AUTHENTICATED").send(res);
+    @Put('/update')
+    @UseBefore(IsAuthenticated)
+    public async update (@Req() req: Request, @Res() res: Response, @Body() body: any) {
 
+        // @ts-ignore
         const {id: userId} = req.user;
-        const {id, updatedFields} = req.body;
+        const {id, updatedFields} = body;
 
         const expectedFields = {
             name: updatedFields.name,
@@ -84,29 +104,31 @@ export class RegistryController {
             return ResponseEntity
                 .status(200)
                 .body(registry.right)
-                .send(res);
+                .buid();
 
-        return this.handleErrors(res, registry.left);
+        return this.handleErrors(registry.left, res);
     }
 
-    delete = async(req: Request, res: Response) => {
-        if (!req.user) return ResponseEntity.status(401).body("NOT-AUTHENTICATED").send(res);
+    @Delete('/delete/:id')
+    @UseBefore(IsAuthenticated)
+    public async delete (@Req() req: Request, @Res() res: Response, @Param('id') id: string) {
 
+        // @ts-ignore
         const {id: userId} = req.user;
-        const {registryId} = req.body;
 
-        const registry = await this.registryDeleter.execute(registryId, userId);
+        const registry = await this.registryDeleter.execute(id, userId);
 
         if (E.isRight(registry))
             return ResponseEntity
                 .status(200)
                 .body(registry.right)
-                .send(res);
+                .buid();
 
-        return this.handleErrors(res, registry.left);
+        return this.handleErrors(registry.left, res);
     }
 
-    private handleErrors = (res: Response, error: RegistryError) => {
+    private handleErrors = (error: RegistryError, res: Response) => {
+        console.log(error);
         switch (error) {
             case RegistryError.REGISTRY_NOT_FOUND:
                 return ResponseEntity

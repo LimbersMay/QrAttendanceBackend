@@ -1,11 +1,10 @@
-// import passport local strategy
 import {Strategy as LocalStrategy} from 'passport-local';
 import {injectable} from "inversify";
 import passport from "passport";
 import {isRight} from "fp-ts/Either";
 import {AuthenticateUser} from "../../application/authentication/auth";
-import {UserDTO} from "../../../user/application/entities/user.dto";
 import {UserFinder} from "../../../user/application/useCases";
+import {UserDTO} from "../../../user/application/entities/user.dto";
 
 declare global {
     namespace Express {
@@ -21,7 +20,7 @@ export class PassportLocalStrategy {
         private readonly authenteicateUser: AuthenticateUser,
         private readonly userFinder: UserFinder
     ) {
-
+        this.init();
     }
 
     // configure passport local strategy

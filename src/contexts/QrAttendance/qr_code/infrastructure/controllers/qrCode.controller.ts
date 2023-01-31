@@ -4,7 +4,10 @@ import {ResponseEntity} from "../../../../shared/infrastructure/entities/respons
 import {isRight} from "fp-ts/Either";
 import {QrCodeError} from "../../domain/errors/qrCode.errors";
 import {injectable} from "inversify";
+import {Body, Controller, Delete, Get, Param, Post, Put, Req, Res, UseBefore} from "routing-controllers";
+import {IsAuthenticated} from "../../../auth/infrastructure/middlewares";
 
+@Controller('/qrCode')
 @injectable()
 export class QrCodeController {
     constructor(
@@ -14,12 +17,12 @@ export class QrCodeController {
         private qrCodeCreator: QrCodeCreator
     ) {}
 
-    public find = async(req: Request, res: Response) => {
+    @Get('/:id([0-9]+)')
+    @UseBefore(IsAuthenticated)
+    public async find (@Param("id") id: string, @Req() req: Request, @Res() res: Response) {
 
-        if (!req.user) return ResponseEntity.status(401).body('NOT-AUTHENTICATED').send(res);
-
+        // @ts-ignore
         const { id: userId } = req.user;
-        const { id } = req.body;
 
         const qrCode = await this.qrCodeFinder.execute(id, userId);
 
@@ -27,15 +30,16 @@ export class QrCodeController {
             return ResponseEntity
                 .status(200)
                 .body(qrCode.right)
-                .send(res);
+                .buid();
 
         return this.handleError(qrCode.left, res);
     }
 
-    public findByUserId = async(req: Request, res: Response) => {
+    @Get('/all')
+    @UseBefore(IsAuthenticated)
+    public async findByUserId (@Req() req: Request, @Res() res: Response) {
 
-        if (!req.user) return ResponseEntity.status(401).body('NOT-AUTHENTICATED').send(res);
-
+        // @ts-ignore
         const { id: userId } = req.user;
 
         const qrCode = await this.qrCodeFinder.executeByUserId(userId);
@@ -44,16 +48,17 @@ export class QrCodeController {
             return ResponseEntity
                 .status(200)
                 .body(qrCode.right)
-                .send(res);
+                .buid();
 
        return this.handleError(qrCode.left, res);
     }
 
-    public create = async(req: Request, res: Response) => {
-        if (!req.user) return ResponseEntity.status(401).body('NOT-AUTHENTICATED').send(res);
+    @Post('/create')
+    @UseBefore(IsAuthenticated)
+    public async create (@Req() req: Request, @Res() res: Response, @Body() { name, groupId, enabled}: {name: string, groupId: string, enabled: boolean}) {
 
+        // @ts-ignore
         const { id: idUser } = req.user;
-        const { name, groupId, enabled } = req.body;
 
         const result = await this.qrCodeCreator.execute(name, groupId, idUser, enabled);
 
@@ -61,17 +66,17 @@ export class QrCodeController {
             return ResponseEntity
                 .status(200)
                 .body(result.right)
-                .send(res);
+                .buid();
 
         return this.handleError(result.left, res);
     }
 
-    public update = async(req: Request, res: Response) => {
+    @Put('/update')
+    @UseBefore(IsAuthenticated)
+    public async update (@Req() req: Request, @Res() res: Response ,@Body() { id, updatedFields }: {id: string, updatedFields: any}) {
 
-        if (!req.user) return ResponseEntity.status(401).body('NOT-AUTHENTICATED').send(res);
-
+        // @ts-ignore
         const { id: idUser } = req.user;
-        const { id, updatedFields } = req.body;
 
         const result = await this.qrCodeUpdater.execute(updatedFields, id, idUser);
 
@@ -79,17 +84,17 @@ export class QrCodeController {
             return ResponseEntity
                 .status(200)
                 .body(result.right)
-                .send(res);
+                .buid();
 
-        return this.handleError(result.left, res)
+        return this.handleError(result.left, res);
     }
 
-    public delete = async(req: Request, res: Response) => {
+    @Delete('/delete/:id')
+    @UseBefore(IsAuthenticated)
+    public async delete ( @Req() req: Request, @Res() res: Response, @Param("id") id: string) {
 
-        if (!req.user) return ResponseEntity.status(400).body('NOT-AUTHENTICATED').send(res);
-
+        // @ts-ignore
         const { id: userId } = req.user;
-        const { id } = req.body;
 
         const result = await this.qrCodeDeleter.execute(id, userId);
 
@@ -97,7 +102,7 @@ export class QrCodeController {
             return ResponseEntity
                 .status(200)
                 .body(result.right)
-                .send(res);
+                .buid();
 
         return this.handleError(result.left, res);
     }
