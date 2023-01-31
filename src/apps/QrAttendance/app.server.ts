@@ -13,6 +13,7 @@ import {UserController} from "../../contexts/QrAttendance/user/infrastructure/co
 import {AuthController} from "../../contexts/QrAttendance/auth/infrastructure/controller/auth.controller";
 import {GroupController} from "../../contexts/QrAttendance/group/infrastructure/controller/group.controller";
 import {QrCodeController} from "../../contexts/QrAttendance/qr_code/infrastructure/controllers";
+import {RegistryController} from "../../contexts/QrAttendance/registry/infrastructure/controller/registry.controller";
 
 export class Server {
     public app: Application;
@@ -79,7 +80,7 @@ export class Server {
                 origin: "http://localhost:5173",
                 defaultErrorHandler: false
             },
-            controllers: [UserController, AuthController, GroupController, QrCodeController]
+            controllers: [UserController, AuthController, GroupController, QrCodeController, RegistryController]
         });
     }
 
