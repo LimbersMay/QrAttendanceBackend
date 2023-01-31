@@ -2,17 +2,17 @@ import {Application} from "express";
 import session from "express-session";
 import express from "express";
 import cookieParser from "cookie-parser";
+import bodyParser from "body-parser";
 
-import db from "../../contexts/shared/infrastructure/db/mysql.connection"
-
-// routes
-import {AuthPassportStrategyInjected as PassportLocalStrategy, container} from "./dependency-injection/container";
 import {useContainer, useExpressServer} from "routing-controllers";
+import db from "../../contexts/shared/infrastructure/db/mysql.connection"
+// routes
 
+import {AuthPassportStrategyInjected as PassportLocalStrategy, container} from "./dependency-injection/container";
 import {UserController} from "../../contexts/QrAttendance/user/infrastructure/controller";
 import {AuthController} from "../../contexts/QrAttendance/auth/infrastructure/controller/auth.controller";
-import bodyParser from "body-parser";
 import {GroupController} from "../../contexts/QrAttendance/group/infrastructure/controller/group.controller";
+import {QrCodeController} from "../../contexts/QrAttendance/qr_code/infrastructure/controllers";
 
 export class Server {
     public app: Application;
@@ -79,7 +79,7 @@ export class Server {
                 origin: "http://localhost:5173",
                 defaultErrorHandler: false
             },
-            controllers: [UserController, AuthController, GroupController]
+            controllers: [UserController, AuthController, GroupController, QrCodeController]
         });
     }
 
