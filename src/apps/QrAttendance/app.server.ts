@@ -1,21 +1,17 @@
-import { Application } from "express";
+import {Application} from "express";
 import session from "express-session";
 import express from "express";
-import cors from "cors";
 import cookieParser from "cookie-parser";
 
 import db from "../../contexts/shared/infrastructure/db/mysql.connection"
 
 // routes
-import authRoutes from "../../contexts/QrAttendance/auth/infrastructure/routes/auth.routes";
-import groupRoutes from "../../contexts/QrAttendance/group/infrastructure/routes/group.route";
-import qrCodeRoutes from "../../contexts/QrAttendance/qr_code/infrastructure/routes/qrCode.router";
-import registryRoutes from "../../contexts/QrAttendance/registry/infrastructure/routes/registry.router";
-
 import {AuthPassportStrategyInjected as PassportLocalStrategy, container} from "./dependency-injection/container";
-import {createExpressServer, useContainer} from "routing-controllers";
+import {useContainer, useExpressServer} from "routing-controllers";
 
 import {UserController} from "../../contexts/QrAttendance/user/infrastructure/controller";
+import {AuthController} from "../../contexts/QrAttendance/auth/infrastructure/controller/auth.controller";
+import bodyParser from "body-parser";
 
 export class Server {
     public app: Application;
@@ -26,18 +22,9 @@ export class Server {
 
         useContainer(container);
 
-        this.app = createExpressServer({
-            routePrefix: "/api",
-            controllers: [UserController],
-            cors: {
-                origin: "http://localhost:5173",
-                credentials: true
-            }
-        });
+        this.app = express();
 
         this.port = parseInt(process.env.PORT ?? "3000")
-
-        PassportLocalStrategy.init();
 
         // routes
         this.appRoutes = {
@@ -53,9 +40,6 @@ export class Server {
 
         // Middlewares
         this.middlewares();
-
-        // routes
-        this.routes();
     }
 
     public async connectDB() {
@@ -70,6 +54,9 @@ export class Server {
             extended: true
         }));
 
+        this.app.use(bodyParser.json());
+        this.app.use(bodyParser.urlencoded({extended: true}));
+
         this.app.use(session({
             secret: process.env.COOKIE_SECRET ?? "secret",
             resave: false,
@@ -83,16 +70,20 @@ export class Server {
         // passport
         this.app.use(PassportLocalStrategy.initialize());
         this.app.use(PassportLocalStrategy.session());
-    }
 
-    public routes() {
-        //this.app.use(this.appRoutes.auth, authRoutes);
-        //this.app.use(this.appRoutes.group, groupRoutes);
-        //this.app.use(this.appRoutes.qrCode, qrCodeRoutes);
-        //this.app.use(this.appRoutes.registry, registryRoutes);
+        useExpressServer(this.app, {
+            routePrefix: "/api",
+            cors: {
+                credentials: true,
+                origin: "http://localhost:5173",
+                defaultErrorHandler: false
+            },
+            controllers: [UserController, AuthController]
+        });
     }
 
     public listen() {
+
         this.app.listen(this.port, () => {
             console.log(`Server running on port: ${this.port}`);
         });
