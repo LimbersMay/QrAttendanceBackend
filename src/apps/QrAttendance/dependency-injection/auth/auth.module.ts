@@ -1,7 +1,7 @@
 import {Container} from "inversify";
 import {AuthController} from "../../../../contexts/QrAttendance/auth/infrastructure/controller/auth.controller";
 import {
-    AuthMiddleware, EmailExists,
+    EmailExists,
     IsAuthenticated,
     Logout
 } from "../../../../contexts/QrAttendance/auth/infrastructure/middlewares";
@@ -26,8 +26,8 @@ export const authModule = (container: Container) => {
     container.bind<Authenticate>(Authenticate).toSelf();
 
     container.bind<AuthController>(AuthController).toSelf();
-    container.bind<AuthMiddleware>(AuthMiddleware).toSelf();
-
     container.bind<PassportLocalStrategy>(PassportLocalStrategy).toSelf();
+
+    // use cases
     container.bind<AuthenticateUser>(AuthenticateUser).toSelf();
 }
