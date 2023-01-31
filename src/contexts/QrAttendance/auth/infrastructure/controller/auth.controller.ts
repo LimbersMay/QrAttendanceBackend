@@ -6,7 +6,6 @@ import {ResponseEntity} from "../../../../shared/infrastructure/entities/respons
 import {EmailExists, Logout} from "../middlewares";
 import {Authenticate, InvalidCredentialsHandler} from "../middlewares/providers.middleware";
 import {isRight} from "fp-ts/Either";
-import {AuthError} from "../../application/errors/authError";
 import {UserError} from "../../../user/domain/errors/userError";
 
 @Controller('/auth')
@@ -59,7 +58,7 @@ export class AuthController {
 
         if (!req.isAuthenticated()) return ResponseEntity
             .status(200)
-            .body(AuthError.NOT_AUTHENTICATED)
+            .body(null)
             .buid()
 
 
