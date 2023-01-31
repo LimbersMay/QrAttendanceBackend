@@ -5,7 +5,10 @@ import * as E from 'fp-ts/lib/Either';
 import {RegistryCreator, RegistryDeleter, RegistryFinder, RegistryUpdater} from "../../application/useCases";
 import {ResponseEntity} from "../../../../shared/infrastructure/entities/response.entity";
 import {RegistryError} from "../../domain/errors/registry.error";
+import {Body, BodyParam, Controller, Delete, Get, Post, Put, Req, UseBefore} from "routing-controllers";
+import {IsAuthenticated} from "../../../auth/infrastructure/middlewares";
 
+@Controller('/registries')
 @injectable()
 export class RegistryController {
     constructor(
@@ -16,11 +19,13 @@ export class RegistryController {
     ) {
     }
 
-    create = async (req: Request, res: Response) => {
-        if (!req.user) return ResponseEntity.status(401).body("NOT-AUTHENTICATED").send(res);
+    @Post('/create')
+    @UseBefore(IsAuthenticated)
+    public async create (@Req() req: Request, @Body() body: any) {
 
+        // @ts-ignore
         const {id: userId} = req.user;
-        const {qrId, name, firstSurname, secondSurname} = req.body;
+        const {qrId, name, firstSurname, secondSurname} = body;
 
         const registry = await this.registryCreator.execute(qrId, userId, name, firstSurname, secondSurname);
 
@@ -28,16 +33,17 @@ export class RegistryController {
             return ResponseEntity
                 .status(201)
                 .body(registry.right)
-                .send(res);
+                .buid();
 
-        return this.handleErrors(res, registry.left);
+        return this.handleErrors(registry.left);
     }
 
-    find = async(req: Request, res: Response) => {
-        if (!req.user) return ResponseEntity.status(401).body("NOT-AUTHENTICATED").send(res);
+    @Get('/find')
+    @UseBefore(IsAuthenticated)
+    public async find (@Req() req: Request, @BodyParam('registryId') registryId: string) {
 
+        // @ts-ignore
         const {id: userId} = req.user;
-        const {registryId} = req.body;
 
         const registry = await this.registryFinder.execute(registryId, userId);
 
@@ -45,14 +51,16 @@ export class RegistryController {
             return ResponseEntity
                 .status(200)
                 .body(registry.right)
-                .send(res);
+                .buid();
 
-        return this.handleErrors(res, registry.left);
+        return this.handleErrors(registry.left);
     }
 
-    findByUserId = async (req: Request, res: Response) => {
-       if (!req.user) return ResponseEntity.status(401).body("NOT-AUTHENTICATED").send(res);
+    @Get('/all')
+    @UseBefore(IsAuthenticated)
+    public async findByUserId(@Req() req: Request, res: Response){
 
+        // @ts-ignore
         const {id: userId} = req.user;
         const registries = await this.registryFinder.executeByUserId(userId);
 
@@ -62,14 +70,16 @@ export class RegistryController {
                 .body(registries.right)
                 .send(res);
 
-        return this.handleErrors(res, registries.left);
+        return this.handleErrors(registries.left);
     }
 
-    update = async(req: Request, res: Response) => {
-        if (!req.user) return ResponseEntity.status(401).body("NOT-AUTHENTICATED").send(res);
+    @Put('/update')
+    @UseBefore(IsAuthenticated)
+    public async update (@Req() req: Request, @Body() body: any) {
 
+        // @ts-ignore
         const {id: userId} = req.user;
-        const {id, updatedFields} = req.body;
+        const {id, updatedFields} = body;
 
         const expectedFields = {
             name: updatedFields.name,
@@ -84,16 +94,17 @@ export class RegistryController {
             return ResponseEntity
                 .status(200)
                 .body(registry.right)
-                .send(res);
+                .buid();
 
-        return this.handleErrors(res, registry.left);
+        return this.handleErrors(registry.left);
     }
 
-    delete = async(req: Request, res: Response) => {
-        if (!req.user) return ResponseEntity.status(401).body("NOT-AUTHENTICATED").send(res);
+    @Delete('/delete')
+    @UseBefore(IsAuthenticated)
+    public async delete (@Req() req: Request, @BodyParam("registryId") registryId: string) {
 
+        // @ts-ignore
         const {id: userId} = req.user;
-        const {registryId} = req.body;
 
         const registry = await this.registryDeleter.execute(registryId, userId);
 
@@ -101,54 +112,54 @@ export class RegistryController {
             return ResponseEntity
                 .status(200)
                 .body(registry.right)
-                .send(res);
+                .buid();
 
-        return this.handleErrors(res, registry.left);
+        return this.handleErrors(registry.left);
     }
 
-    private handleErrors = (res: Response, error: RegistryError) => {
+    private handleErrors = (error: RegistryError) => {
         switch (error) {
             case RegistryError.REGISTRY_NOT_FOUND:
                 return ResponseEntity
                     .status(404)
                     .body(error)
-                    .send(res);
+                    .buildError();
 
             case RegistryError.REGISTRIES_NOT_FOUND:
                 return ResponseEntity
                     .status(404)
                     .body(error)
-                    .send(res);
+                    .buildError();
 
             case RegistryError.REGISTRY_CANNOT_BE_FOUND:
                 return ResponseEntity
                     .status(400)
                     .body(error)
-                    .send(res);
+                    .buildError();
 
             case RegistryError.REGISTRY_CANNOT_BE_CREATED:
                 return ResponseEntity
                     .status(500)
                     .body(error)
-                    .send(res);
+                    .buildError();
 
             case RegistryError.REGISTRIES_CANNOT_BE_FOUND:
                 return ResponseEntity
                     .status(500)
                     .body(error)
-                    .send(res);
+                    .buildError();
 
             case RegistryError.REGISTRY_CANNOT_BE_UPDATED:
                 return ResponseEntity
                     .status(500)
                     .body(error)
-                    .send(res);
+                    .buildError();
 
             case RegistryError.REGISTRY_CANNOT_BE_DELETED:
                 return ResponseEntity
                     .status(500)
                     .body(error)
-                    .send(res);
+                    .buildError();
         }
     }
 }
