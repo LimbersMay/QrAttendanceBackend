@@ -1,4 +1,5 @@
 import "reflect-metadata";
+import {UserDTO} from "./src/contexts/QrAttendance/user/application/entities/user.dto";
 
 declare global {
     namespace NodeJS {
@@ -6,6 +7,16 @@ declare global {
             PORT: string;
             COOKIE_SECRET: string;
             SESSION_SECRET: string;
+        }
+    }
+}
+
+declare global {
+    namespace Express {
+        interface User extends UserDTO {
+        }
+        interface Request{
+            authenticatedUser: User;
         }
     }
 }
