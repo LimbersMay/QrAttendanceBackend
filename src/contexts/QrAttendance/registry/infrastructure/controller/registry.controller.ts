@@ -152,7 +152,7 @@ export class RegistryController {
                 return ResponseEntity
                     .status(500)
                     .body(error)
-                    .buildError();
+                    .send(res);
 
             case RegistryError.REGISTRIES_CANNOT_BE_FOUND:
                 return ResponseEntity
