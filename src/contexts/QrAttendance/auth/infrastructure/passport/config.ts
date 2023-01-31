@@ -21,7 +21,7 @@ export class PassportLocalStrategy {
         private readonly authenteicateUser: AuthenticateUser,
         private readonly userFinder: UserFinder
     ) {
-
+        this.init();
     }
 
     // configure passport local strategy
