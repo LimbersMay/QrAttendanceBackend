@@ -80,7 +80,7 @@ export class Server {
                 origin: "http://localhost:5173",
                 defaultErrorHandler: false
             },
-            controllers: [UserController, AuthController, GroupController, QrCodeController, RegistryController]
+            controllers: [UserController, AuthController, GroupController, QrCodeController, RegistryController],
         });
     }
 
