@@ -4,15 +4,7 @@ import {injectable} from "inversify";
 import passport from "passport";
 import {isRight} from "fp-ts/Either";
 import {AuthenticateUser} from "../../application/authentication/auth";
-import {UserDTO} from "../../../user/application/entities/user.dto";
 import {UserFinder} from "../../../user/application/useCases";
-
-declare global {
-    namespace Express {
-        interface User extends UserDTO {
-        }
-    }
-}
 
 @injectable()
 // decouple passport using dependency injection
