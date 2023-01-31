@@ -1,14 +1,14 @@
-import {Request, Response} from "express";
+import {Request} from "express";
 import {injectable} from "inversify";
 import * as E from 'fp-ts/lib/Either';
 
 import {RegistryCreator, RegistryDeleter, RegistryFinder, RegistryUpdater} from "../../application/useCases";
 import {ResponseEntity} from "../../../../shared/infrastructure/entities/response.entity";
 import {RegistryError} from "../../domain/errors/registry.error";
-import {Body, BodyParam, Controller, Delete, Get, Post, Put, Req, UseBefore} from "routing-controllers";
+import {Body, BodyParam, Controller, Delete, Get, Param, Post, Put, Req, UseBefore} from "routing-controllers";
 import {IsAuthenticated} from "../../../auth/infrastructure/middlewares";
 
-@Controller('/registries')
+@Controller('/registry')
 @injectable()
 export class RegistryController {
     constructor(
@@ -58,7 +58,7 @@ export class RegistryController {
 
     @Get('/all')
     @UseBefore(IsAuthenticated)
-    public async findByUserId(@Req() req: Request, res: Response){
+    public async findByUserId(@Req() req: Request){
 
         // @ts-ignore
         const {id: userId} = req.user;
@@ -68,7 +68,7 @@ export class RegistryController {
             return ResponseEntity
                 .status(200)
                 .body(registries.right)
-                .send(res);
+                .buid();
 
         return this.handleErrors(registries.left);
     }
@@ -99,14 +99,14 @@ export class RegistryController {
         return this.handleErrors(registry.left);
     }
 
-    @Delete('/delete')
+    @Delete('/delete/:id')
     @UseBefore(IsAuthenticated)
-    public async delete (@Req() req: Request, @BodyParam("registryId") registryId: string) {
+    public async delete (@Req() req: Request, @Param('id') id: string) {
 
         // @ts-ignore
         const {id: userId} = req.user;
 
-        const registry = await this.registryDeleter.execute(registryId, userId);
+        const registry = await this.registryDeleter.execute(id, userId);
 
         if (E.isRight(registry))
             return ResponseEntity
