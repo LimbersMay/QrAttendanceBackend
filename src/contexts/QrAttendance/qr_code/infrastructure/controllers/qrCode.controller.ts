@@ -1,10 +1,10 @@
 import {QrCodeCreator, QrCodeDeleter, QrCodeFinder, QrCodeUpdater} from "../../application/useCases";
-import {Request} from "express";
+import {Request, Response} from "express";
 import {ResponseEntity} from "../../../../shared/infrastructure/entities/response.entity";
 import {isRight} from "fp-ts/Either";
 import {QrCodeError} from "../../domain/errors/qrCode.errors";
 import {injectable} from "inversify";
-import {Body, Controller, Delete, Get, Param, Post, Put, Req, UseBefore} from "routing-controllers";
+import {Body, Controller, Delete, Get, Param, Post, Put, Req, Res, UseBefore} from "routing-controllers";
 import {IsAuthenticated} from "../../../auth/infrastructure/middlewares";
 
 @Controller('/qrCode')
@@ -19,7 +19,7 @@ export class QrCodeController {
 
     @Get('/:id([0-9]+)')
     @UseBefore(IsAuthenticated)
-    public async find (@Param("id") id: string, @Req() req: Request) {
+    public async find (@Param("id") id: string, @Req() req: Request, @Res() res: Response) {
 
         // @ts-ignore
         const { id: userId } = req.user;
@@ -32,12 +32,12 @@ export class QrCodeController {
                 .body(qrCode.right)
                 .buid();
 
-        return this.handleError(qrCode.left);
+        return this.handleError(qrCode.left, res);
     }
 
     @Get('/all')
     @UseBefore(IsAuthenticated)
-    public async findByUserId (@Req() req: Request) {
+    public async findByUserId (@Req() req: Request, @Res() res: Response) {
 
         // @ts-ignore
         const { id: userId } = req.user;
@@ -50,12 +50,12 @@ export class QrCodeController {
                 .body(qrCode.right)
                 .buid();
 
-       return this.handleError(qrCode.left);
+       return this.handleError(qrCode.left, res);
     }
 
     @Post('/create')
     @UseBefore(IsAuthenticated)
-    public async create (@Body() { name, groupId, enabled}: {name: string, groupId: string, enabled: boolean}, @Req() req: Request) {
+    public async create (@Req() req: Request, @Res() res: Response, @Body() { name, groupId, enabled}: {name: string, groupId: string, enabled: boolean}) {
 
         // @ts-ignore
         const { id: idUser } = req.user;
@@ -68,12 +68,12 @@ export class QrCodeController {
                 .body(result.right)
                 .buid();
 
-        return this.handleError(result.left);
+        return this.handleError(result.left, res);
     }
 
     @Put('/update')
     @UseBefore(IsAuthenticated)
-    public async update (@Body() { id, updatedFields }: {id: string, updatedFields: any}, @Req() req: Request) {
+    public async update (@Req() req: Request, @Res() res: Response ,@Body() { id, updatedFields }: {id: string, updatedFields: any}) {
 
         // @ts-ignore
         const { id: idUser } = req.user;
@@ -86,12 +86,12 @@ export class QrCodeController {
                 .body(result.right)
                 .buid();
 
-        return this.handleError(result.left)
+        return this.handleError(result.left, res);
     }
 
     @Delete('/delete/:id')
     @UseBefore(IsAuthenticated)
-    public async delete (@Param("id") id: string, @Req() req: Request) {
+    public async delete ( @Req() req: Request, @Res() res: Response, @Param("id") id: string) {
 
         // @ts-ignore
         const { id: userId } = req.user;
@@ -104,46 +104,46 @@ export class QrCodeController {
                 .body(result.right)
                 .buid();
 
-        return this.handleError(result.left);
+        return this.handleError(result.left, res);
     }
 
-    private handleError = (result: QrCodeError) => {
+    private handleError = (result: QrCodeError, res: Response) => {
         switch (result) {
             case QrCodeError.QR_CODE_NOT_FOUND:
                 return ResponseEntity
                     .status(404)
                     .body(result)
-                    .buildError();
+                    .send(res);
 
             case QrCodeError.QR_CODE_CANNOT_BE_FOUND:
                 return ResponseEntity
                     .status(500)
                     .body(result)
-                    .buildError();
+                    .send(res);
 
             case QrCodeError.QR_CODE_CANNOT_BE_CREATED:
                 return ResponseEntity
                     .status(500)
                     .body(result)
-                    .buildError();
+                    .send(res);
 
             case QrCodeError.QR_CODE_CANNOT_BE_UPDATED:
                 return ResponseEntity
                     .status(500)
                     .body(result)
-                    .buildError();
+                    .send(res);
 
             case QrCodeError.QR_CODE_CANNOT_BE_DELETED:
                 return ResponseEntity
                     .status(500)
                     .body(result)
-                    .buildError();
+                    .send(res);
 
             default:
                 return ResponseEntity
                     .status(500)
                     .body(result)
-                    .buildError();
+                    .send(res);
         }
     }
 }
