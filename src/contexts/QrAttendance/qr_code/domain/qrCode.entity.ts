@@ -6,6 +6,7 @@ export interface QrCodeEntity {
     name: string,
     url: string,
     enabled: boolean,
+    manualRegistrationDate?: Date | undefined,
     createdAt?: Date | undefined,
     updatedAt?: Date | undefined
 }

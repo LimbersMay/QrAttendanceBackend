@@ -33,6 +33,10 @@ export class QrCode extends Model<QrCodeEntity> {
     url!: string;
     @Column
     enabled!: boolean;
+
+    @Column
+    manualRegistrationDate!: Date;
+
     @Column
     createdAt!: Date
 

@@ -40,8 +40,6 @@ export class AuthController {
                     .body(result.left)
                     .buid()
         }
-
-        return res.redirect('/auth/login');
     }
 
     @Post('/logout')

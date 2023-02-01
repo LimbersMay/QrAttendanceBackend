@@ -60,6 +60,7 @@ CREATE TABLE qrCode
     name       varchar(25),
     url        varchar(255),
     enabled    boolean DEFAULT TRUE,
+    manualRegistrationDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (groupId) REFERENCES `group` (groupId) ON DELETE CASCADE,
@@ -76,6 +77,7 @@ CREATE TABLE registry
     secondSurname varchar(25)              NOT NULL,
     createdAt   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updatedAt   TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    checkin_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (ownerId) REFERENCES user (userId),
     FOREIGN KEY (qrId) REFERENCES qrCode (qrId) ON DELETE CASCADE
 );

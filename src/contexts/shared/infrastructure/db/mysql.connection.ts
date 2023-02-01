@@ -103,6 +103,9 @@ const qrCodeAttributes = {
         type: DataType.BOOLEAN,
         allowNull: false
     },
+    manualRegistrationDate: {
+        type: DataType.DATE
+    },
     createdAt: {
         type: DataType.DATE
     },

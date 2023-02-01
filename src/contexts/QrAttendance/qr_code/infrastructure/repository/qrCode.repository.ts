@@ -12,17 +12,7 @@ export class QrCodeMysqlRepository implements QrCodeRepository{
 
         const createdQrCode = await QrCode.create(qrCode);
 
-        return {
-            qrId: createdQrCode.qrId,
-            groupId: createdQrCode.groupId,
-            ownerId: createdQrCode.ownerId,
-            name: createdQrCode.name,
-            url: createdQrCode.url,
-            enabled: createdQrCode.enabled,
-            createdAt: createdQrCode.createdAt,
-            updatedAt: createdQrCode.updatedAt
-        }
-
+        return this.toDomain(createdQrCode);
     }
 
     async deleteQrCode(qrCodeId: string, userId: string): Promise<Either<QrCodeError, number>> {
@@ -48,16 +38,7 @@ export class QrCodeMysqlRepository implements QrCodeRepository{
         });
 
         return (qrCode)
-            ? right({
-                qrId: qrCode.qrId,
-                groupId: qrCode.groupId,
-                ownerId: qrCode.ownerId,
-                name: qrCode.name,
-                url: qrCode.url,
-                enabled: qrCode.enabled,
-                createdAt: qrCode.createdAt,
-                updatedAt: qrCode.updatedAt
-            })
+            ? right(this.toDomain(qrCode))
             : left(QrCodeError.QR_CODE_NOT_FOUND);
     }
 
@@ -70,16 +51,7 @@ export class QrCodeMysqlRepository implements QrCodeRepository{
 
         return (qrCodes)
             ? right(qrCodes.map(qrCode => {
-                return {
-                    qrId: qrCode.qrId,
-                    groupId: qrCode.groupId,
-                    ownerId: qrCode.ownerId,
-                    name: qrCode.name,
-                    url: qrCode.url,
-                    enabled: qrCode.enabled,
-                    createdAt: qrCode.createdAt,
-                    updatedAt: qrCode.updatedAt
-                }
+                return this.toDomain(qrCode);
             }))
             : left(QrCodeError.QR_CODE_NOT_FOUND);
     }
@@ -101,5 +73,19 @@ export class QrCodeMysqlRepository implements QrCodeRepository{
             ? right(rowsUpdated[0])
             : left(QrCodeError.QR_CODE_NOT_FOUND);
 
+    }
+
+    private toDomain(qrCode: QrCode): QrCodeEntity {
+        return {
+            qrId: qrCode.qrId,
+            groupId: qrCode.groupId,
+            ownerId: qrCode.ownerId,
+            name: qrCode.name,
+            url: qrCode.url,
+            enabled: qrCode.enabled,
+            manualRegistrationDate: qrCode.manualRegistrationDate,
+            createdAt: qrCode.createdAt,
+            updatedAt: qrCode.updatedAt
+        }
     }
 }
