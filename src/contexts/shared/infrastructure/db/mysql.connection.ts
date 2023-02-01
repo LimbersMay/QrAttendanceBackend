@@ -149,6 +149,9 @@ const registryAttributes = {
         type: DataType.STRING,
         allowNull: false
     },
+    checkinTime: {
+        type: DataType.DATE
+    },
     createdAt: {
         type: DataType.DATE
     },

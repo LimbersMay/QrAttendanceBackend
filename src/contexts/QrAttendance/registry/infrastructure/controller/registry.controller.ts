@@ -95,7 +95,7 @@ export class RegistryController {
             name: updatedFields.name,
             firstSurname: updatedFields.firstSurname,
             secondSurname: updatedFields.secondSurname,
-            updatedAt: updatedFields.updatedAt
+            checkinTime: updatedFields.checkinTime
         }
 
         const registry = await this.registryUpdater.execute(expectedFields, id, userId);

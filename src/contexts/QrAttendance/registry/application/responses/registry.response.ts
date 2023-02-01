@@ -3,15 +3,15 @@ import {RegistryEntity} from "../../domain/registry.entity";
 export class RegistryResponse {
     id: string;
     qrCodeId: string;
-    date?: Date;
+    checkinTime?: Date;
     name: string;
     firstSurname: string;
     secondSurname: string;
 
-    constructor({id, qrCodeId, date, name, firstSurname, secondSurname}: { id: string, qrCodeId: string, date?: Date, name: string, firstSurname: string, secondSurname: string }) {
+    constructor({id, qrCodeId, checkinTime, name, firstSurname, secondSurname}: { id: string, qrCodeId: string, checkinTime?: Date, name: string, firstSurname: string, secondSurname: string }) {
         this.id = id;
         this.qrCodeId = qrCodeId;
-        this.date = date;
+        this.checkinTime = checkinTime;
         this.name = name;
         this.firstSurname = firstSurname;
         this.secondSurname = secondSurname;
@@ -21,7 +21,7 @@ export class RegistryResponse {
         return new RegistryResponse({
             id: registryEntity.registryId,
             qrCodeId: registryEntity.qrId,
-            date: registryEntity.createdAt,
+            checkinTime: registryEntity.checkinTime,
             name: registryEntity.name,
             firstSurname: registryEntity.firstSurname,
             secondSurname: registryEntity.secondSurname
