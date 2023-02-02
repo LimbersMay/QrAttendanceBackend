@@ -99,6 +99,9 @@ const qrCodeAttributes = {
         type: DataType.STRING,
         allowNull: false
     },
+    formId: {
+        type: DataType.STRING,
+    },
     enabled: {
         type: DataType.BOOLEAN,
         allowNull: false

@@ -59,6 +59,7 @@ CREATE TABLE qrCode
     ownerId  varchar(100)             NOT NULL,
     name       varchar(25),
     url        varchar(255),
+    formId    varchar(100),
     enabled    boolean DEFAULT TRUE,
     manualRegistrationDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

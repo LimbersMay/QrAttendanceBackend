@@ -6,17 +6,19 @@ export class QrCodeValue implements QrCodeEntity {
     ownerId: string;
     name: string;
     url: string;
+    formId: string;
     enabled: boolean;
     manualRegistrationDate: Date | undefined;
     createdAt: Date | undefined;
     updatedAt: Date | undefined;
 
-    constructor({qrId, groupId, ownerId, name, url, manualRegistrationDate, createdAt, updatedAt, enabled}: QrCodeEntity) {
+    constructor({qrId, groupId, ownerId, name, url, formId, manualRegistrationDate, createdAt, updatedAt, enabled}: QrCodeEntity) {
         this.qrId = qrId;
         this.groupId = groupId;
         this.ownerId = ownerId;
         this.name = name;
         this.url = url;
+        this.formId = formId;
         this.enabled = enabled;
         this.manualRegistrationDate = manualRegistrationDate;
         this.createdAt = createdAt;

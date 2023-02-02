@@ -55,12 +55,12 @@ export class QrCodeController {
 
     @Post('/create')
     @UseBefore(IsAuthenticated)
-    public async create (@Req() req: Request, @Res() res: Response, @Body() { name, groupId, enabled}: {name: string, groupId: string, enabled: boolean}) {
+    public async create (@Req() req: Request, @Res() res: Response, @Body() { name, groupId, enabled, url}: {name: string, groupId: string, enabled: boolean, url: string}) {
 
         // @ts-ignore
         const { id: idUser } = req.user;
 
-        const result = await this.qrCodeCreator.execute(name, groupId, idUser, enabled);
+        const result = await this.qrCodeCreator.execute(name, groupId, idUser, enabled, url);
 
         if (isRight(result))
             return ResponseEntity

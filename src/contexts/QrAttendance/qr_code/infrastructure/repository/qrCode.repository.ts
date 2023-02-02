@@ -82,6 +82,7 @@ export class QrCodeMysqlRepository implements QrCodeRepository{
             ownerId: qrCode.ownerId,
             name: qrCode.name,
             url: qrCode.url,
+            formId: qrCode.formId,
             enabled: qrCode.enabled,
             manualRegistrationDate: qrCode.manualRegistrationDate,
             createdAt: qrCode.createdAt,
