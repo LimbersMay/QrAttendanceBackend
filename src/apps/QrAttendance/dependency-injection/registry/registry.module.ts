@@ -9,9 +9,15 @@ import {
 import {
     RegistryController
 } from "../../../../contexts/QrAttendance/registry/infrastructure/controller/registry.controller";
+import {
+    RegistrySocketController
+} from "../../../../contexts/QrAttendance/registry/infrastructure/sockets/Registrysocket.controller";
 
 export const registryModule = (container: Container) => {
     container.bind<RegistryController>(RegistryController).toSelf();
+
+    // websockets
+    container.bind<RegistrySocketController>(RegistrySocketController).toSelf();
 
     container.bind<RegistryCreator>(RegistryCreator).toSelf();
     container.bind<RegistryFinder>(RegistryFinder).toSelf();
