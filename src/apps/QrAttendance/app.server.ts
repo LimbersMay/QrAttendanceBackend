@@ -8,40 +8,52 @@ import {useContainer, useExpressServer} from "routing-controllers";
 import db from "../../contexts/shared/infrastructure/db/mysql.connection"
 // routes
 
-import {AuthPassportStrategyInjected as PassportLocalStrategy, container} from "./dependency-injection/container";
+import {
+    AuthPassportStrategyInjected as PassportLocalStrategy,
+    RegistrySocketControllerInjected as RegistrySocketController,
+    container
+} from "./dependency-injection/container";
 import {UserController} from "../../contexts/QrAttendance/user/infrastructure/controller";
 import {AuthController} from "../../contexts/QrAttendance/auth/infrastructure/controller/auth.controller";
 import {GroupController} from "../../contexts/QrAttendance/group/infrastructure/controller/group.controller";
 import {QrCodeController} from "../../contexts/QrAttendance/qr_code/infrastructure/controllers";
 import {RegistryController} from "../../contexts/QrAttendance/registry/infrastructure/controller/registry.controller";
 
+import {createServer} from "http";
+import {SocketControllers} from "socket-controllers";
+import {Socket} from "socket.io";
+import { Server as SocketServer } from "socket.io";
+
 export class Server {
     public app: Application;
     public port: number;
-    public appRoutes: Record<string, string>;
+    public httpServer: any;
+    public io: any;
 
     constructor() {
 
         useContainer(container);
 
         this.app = express();
+        this.httpServer = createServer(this.app);
+        this.io = new SocketServer(this.httpServer, {
+            cors: {
+                origin: "http://localhost:5173",
+                methods: ["GET", "POST", "PUT", "DELETE"],
+                credentials: true
+            }
+        });
 
         this.port = parseInt(process.env.PORT ?? "3000")
-
-        // routes
-        this.appRoutes = {
-            auth: '/api/auth',
-            user: '/api/user',
-            group: '/api/group',
-            qrCode: '/api/qrCode',
-            registry: '/api/registry'
-        }
 
         // DB connection
         this.connectDB().then();
 
         // Middlewares
         this.middlewares();
+
+        // websockets
+        this.websockets();
     }
 
     public async connectDB() {
@@ -84,9 +96,23 @@ export class Server {
         });
     }
 
+    public websockets() {
+        this.io.on("connection", (socket: Socket) => {
+            console.log("Client connected");
+
+            socket.on("disconnect", () => {
+                console.log("Client disconnected");
+            });
+
+            RegistrySocketController.onConnection(socket);
+        });
+
+        new SocketControllers({io: this.io, container: container});
+    }
+
     public listen() {
 
-        this.app.listen(this.port, () => {
+        this.httpServer.listen(this.port, () => {
             console.log(`Server running on port: ${this.port}`);
         });
     }
