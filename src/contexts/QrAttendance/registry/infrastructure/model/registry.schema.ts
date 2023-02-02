@@ -30,6 +30,10 @@ export class Registry extends Model<RegistryEntity> {
 
     @Column
     secondSurname!: string;
+
+    @Column
+    checkinTime!: Date;
+
     @Column
     createdAt!: Date;
     @Column

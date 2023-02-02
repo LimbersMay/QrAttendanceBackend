@@ -31,7 +31,9 @@ export class AuthController {
     public async register (@Body() { name, email, password, lastname}: { name: string, email: string, password: string, lastname: string}, @Res() res: Response) {
         const result = await this.userCreator.execute({ name, email, password, lastname });
 
-        if (isRight(result)) return res.redirect('/auth/login');
+        if (isRight(result)) return ResponseEntity
+            .ok()
+            .buid()
 
         switch (result.left) {
             case UserError.USER_CANNOT_BE_CREATED:
@@ -40,8 +42,6 @@ export class AuthController {
                     .body(result.left)
                     .buid()
         }
-
-        return res.redirect('/auth/login');
     }
 
     @Post('/logout')

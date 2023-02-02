@@ -83,6 +83,7 @@ export class RegistryMysqlRepository implements RegistryRepository {
             firstSurname: registry.firstSurname,
             secondSurname: registry.secondSurname,
             ownerId: registry.ownerId,
+            checkinTime: registry.checkinTime,
             createdAt: registry.createdAt,
             updatedAt: registry.updatedAt
         };

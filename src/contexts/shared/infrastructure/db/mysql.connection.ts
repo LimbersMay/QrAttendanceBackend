@@ -99,9 +99,15 @@ const qrCodeAttributes = {
         type: DataType.STRING,
         allowNull: false
     },
+    formId: {
+        type: DataType.STRING,
+    },
     enabled: {
         type: DataType.BOOLEAN,
         allowNull: false
+    },
+    manualRegistrationDate: {
+        type: DataType.DATE
     },
     createdAt: {
         type: DataType.DATE
@@ -145,6 +151,9 @@ const registryAttributes = {
     secondSurname: {
         type: DataType.STRING,
         allowNull: false
+    },
+    checkinTime: {
+        type: DataType.DATE
     },
     createdAt: {
         type: DataType.DATE

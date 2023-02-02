@@ -6,6 +6,7 @@ export interface RegistryEntity {
     name: string,
     firstSurname: string,
     secondSurname: string,
+    checkinTime?: Date
     createdAt?: Date,
     updatedAt?: Date
 }
