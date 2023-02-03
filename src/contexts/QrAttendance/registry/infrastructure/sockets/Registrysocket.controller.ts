@@ -3,6 +3,8 @@ import { injectable } from "inversify";
 import {RegistryCreator} from "../../application/useCases";
 import {QrCodeFindByFormId} from "../../../qr_code/application/useCases/find/qrCodeFindByFormId";
 import {isLeft} from "fp-ts/Either";
+import {RateLimiterMemory} from "rate-limiter-flexible";
+import {RegistryError} from "../../domain/errors/registry.error";
 
 @injectable()
 export class RegistrySocketController {
@@ -13,27 +15,34 @@ export class RegistrySocketController {
         private readonly registryCreator: RegistryCreator
     ) {}
 
-    public onConnection(socket: Socket) {
+    public onConnection(socket: Socket, rateLimiter: RateLimiterMemory) {
         socket.on("register-attendance", async(data: any) => {
 
-            const { name, firstSurname, secondSurname, formId } = data;
-            const qrCode = await this.qrCodeFinder.execute(formId);
+            try {
+                await rateLimiter.consume(socket.handshake.address);
 
-            // if the qrCode creation fails
-            if (isLeft(qrCode))
-                return socket.emit("register-attendance-error", qrCode.left);
+                const { name, firstSurname, secondSurname, formId } = data;
+                const qrCode = await this.qrCodeFinder.execute(formId);
 
-            const { id, ownerId } = qrCode.right;
+                // if the qrCode creation fails
+                if (isLeft(qrCode))
+                    return socket.emit("register-attendance-error", qrCode.left);
 
-            const registry = await this.registryCreator.execute(id, ownerId, name, firstSurname, secondSurname);
+                const { id, ownerId } = qrCode.right;
 
-            // if the registry creation fails
-            if (isLeft(registry))
-                return socket.emit("register-attendance-error", registry.left);
+                const registry = await this.registryCreator.execute(id, ownerId, name, firstSurname, secondSurname);
 
-            // if the registry creation succeeds
-            socket.to(ownerId).emit("new-attendance", registry.right);
-            socket.emit("register-attendance-success", "Attendance registered successfully");
+                // if the registry creation fails
+                if (isLeft(registry))
+                    return socket.emit("register-attendance-error", registry.left);
+
+                // if the registry creation succeeds
+                socket.to(ownerId).emit("new-attendance", registry.right);
+                socket.emit("register-attendance-success", "Attendance registered successfully");
+
+            } catch (rejRes) {
+                socket.emit("already-registered-attendance", RegistryError.YOU_HAS_ALREADY_REGISTERED_ATTENDANCE);
+            }
         });
 
         socket.on("authenticated", (data: string) => {
