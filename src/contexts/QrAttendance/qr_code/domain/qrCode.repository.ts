@@ -8,4 +8,5 @@ export interface QrCodeRepository {
     deleteQrCode(qrCodeId: string, userId: string): Promise<Either<QrCodeError, number>>;
     findQrCodeById(qrCodeId: string, userId: string): Promise<Either<QrCodeError, QrCodeEntity>>
     findQrCodeByUserId(userId: string): Promise<Either<QrCodeError, QrCodeEntity[]>>
+    findByFormId(formId: string): Promise<Either<QrCodeError, QrCodeEntity>>
 }

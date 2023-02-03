@@ -75,6 +75,20 @@ export class QrCodeMysqlRepository implements QrCodeRepository{
 
     }
 
+    async findByFormId(formId: string): Promise<Either<QrCodeError, QrCodeEntity>> {
+
+        const qrCode = await QrCode.findOne({
+            where: {
+                formId: formId,
+                enabled: true
+            }
+        });
+
+        return (qrCode)
+            ? right(this.toDomain(qrCode))
+            : left(QrCodeError.QR_CODE_NOT_FOUND);
+    }
+
     private toDomain(qrCode: QrCode): QrCodeEntity {
         return {
             qrId: qrCode.qrId,

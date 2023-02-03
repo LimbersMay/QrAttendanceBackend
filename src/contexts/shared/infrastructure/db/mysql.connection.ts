@@ -7,7 +7,7 @@ import Registry from "../../../QrAttendance/registry/infrastructure/model/regist
 const sequelize = new Sequelize('QrAttendance', 'limber', '15891', {
     host: 'localhost',
     dialect: 'mariadb',
-    // logging: false
+    logging: false
 });
 
 // init models
