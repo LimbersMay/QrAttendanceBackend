@@ -29,6 +29,7 @@
     "mysql2": "^2.3.3",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
+    "rate-limiter-flexible": "^2.4.1",
     "reflect-metadata": "^0.1.13",
     "routing-controllers": "^0.10.1",
     "sequelize": "^6.28.0",
