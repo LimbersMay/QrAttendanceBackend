@@ -24,6 +24,8 @@ import {SocketControllers} from "socket-controllers";
 import {Socket} from "socket.io";
 import { Server as SocketServer } from "socket.io";
 
+import { RateLimiterMemory } from "rate-limiter-flexible";
+
 export class Server {
     public app: Application;
     public port: number;
@@ -97,6 +99,12 @@ export class Server {
     }
 
     public websockets() {
+
+        const rateLimiter = new RateLimiterMemory({
+            points: 1,
+            duration: 60, // 8 hours
+        });
+
         this.io.on("connection", (socket: Socket) => {
             console.log("Client connected");
 
@@ -104,7 +112,7 @@ export class Server {
                 console.log("Client disconnected");
             });
 
-            RegistrySocketController.onConnection(socket);
+            RegistrySocketController.onConnection(socket, rateLimiter);
         });
 
         new SocketControllers({io: this.io, container: container});
