@@ -78,7 +78,7 @@ export class Server {
             resave: false,
             saveUninitialized: true,
             cookie: {
-                sameSite: 'none',
+                sameSite: true,
                 maxAge: 1000 * 60 * 60 * 24, // 1 day
                 secure: true,
                 httpOnly: true
