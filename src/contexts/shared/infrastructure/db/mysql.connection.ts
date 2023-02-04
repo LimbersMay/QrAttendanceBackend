@@ -4,8 +4,8 @@ import Group from "../../../QrAttendance/group/infrastructure/model/group.schema
 import QrCode from "../../../QrAttendance/qr_code/infrastructure/models/qrCode.schema";
 import Registry from "../../../QrAttendance/registry/infrastructure/model/registry.schema";
 
-const sequelize = new Sequelize(process.env.MYSQL_DATABASE, process.env.MYSQL_USER, process.env.MYSQL_PASSWORD, {
-    host: process.env.MYSQL_HOST,
+const sequelize = new Sequelize(process.env.MYSQL_DATABASE ?? '', process.env.MYSQL_USER ?? '', process.env.MYSQL_PASSWORD ?? '', {
+    host: process.env.MYSQL_HOST ?? '',
     dialect: 'mysql',
     logging: false
 });
