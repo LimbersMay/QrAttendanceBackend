@@ -6,6 +6,11 @@ declare global {
             PORT: string;
             COOKIE_SECRET: string;
             SESSION_SECRET: string;
+            MYSQL_DATABASE: string;
+            MYSQL_USER: string;
+            MYSQL_PASSWORD: string;
+            MYSQL_HOST: string;
+            MYSQL_PORT: string;
         }
     }
 }

@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "",
+    "start": "node src/apps/QrAttendance/app.ts",
     "dev": "nodemon src/apps/QrAttendance/app.ts"
   },
   "keywords": [],
@@ -33,6 +33,7 @@
     "reflect-metadata": "^0.1.13",
     "routing-controllers": "^0.10.1",
     "sequelize": "^6.28.0",
+    "sequelize-mysql": "^1.7.0",
     "sequelize-typescript": "^2.1.5",
     "socket-controllers": "^0.1.2",
     "socket.io": "^4.5.4",
