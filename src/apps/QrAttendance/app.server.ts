@@ -40,7 +40,7 @@ export class Server {
         this.httpServer = createServer(this.app);
         this.io = new SocketServer(this.httpServer, {
             cors: {
-                origin: ["http://localhost:5173", "https://easyqrattendance.netlify.app/"],
+                origin: ["http://localhost:5173", "https://easyqrattendance.netlify.app"],
                 methods: ["GET", "POST", "PUT", "DELETE"],
                 credentials: true
             }
@@ -91,7 +91,7 @@ export class Server {
             routePrefix: "/api",
             cors: {
                 credentials: true,
-                origin: ["http://localhost:5173", "https://easyqrattendance.netlify.app/"],
+                origin: ["http://localhost:5173", "https://easyqrattendance.netlify.app"],
                 defaultErrorHandler: false
             },
             controllers: [UserController, AuthController, GroupController, QrCodeController, RegistryController],
