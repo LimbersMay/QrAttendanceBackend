@@ -20,10 +20,6 @@ export class AuthController {
     @UseAfter(InvalidCredentialsHandler)
     public login (@Req() req: Request) {
 
-        console.log('User: ', req.user);
-        console.log('Session: ', req.session);
-        console.log('Authenticated: ', req.isAuthenticated());
-
         return ResponseEntity
             .status(200)
             .body(req.user)
