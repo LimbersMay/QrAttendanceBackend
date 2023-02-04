@@ -40,7 +40,7 @@ export class AuthController {
                 return ResponseEntity
                     .status(500)
                     .body(result.left)
-                    .buid()
+                    .send(res)
         }
     }
 
