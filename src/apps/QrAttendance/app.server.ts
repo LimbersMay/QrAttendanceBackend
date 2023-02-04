@@ -81,6 +81,7 @@ export class Server {
                 sameSite: 'none',
                 maxAge: 1000 * 60 * 60 * 24, // 1 day
                 secure: true,
+                httpOnly: true
             }
         }));
 
