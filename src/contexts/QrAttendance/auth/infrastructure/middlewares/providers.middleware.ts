@@ -42,7 +42,7 @@ export class InvalidCredentialsHandler implements ExpressErrorMiddlewareInterfac
     error (err: any, req: Request, res: Response, next: NextFunction) {
         return ResponseEntity
             .status(401)
-            .body(err)
+            .body(err.message)
             .send(res);
     }
 }
