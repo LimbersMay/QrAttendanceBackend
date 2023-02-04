@@ -11,6 +11,7 @@ declare global {
             MYSQL_PASSWORD: string;
             MYSQL_HOST: string;
             MYSQL_PORT: string;
+            NODE_ENV: string;
         }
     }
 }
