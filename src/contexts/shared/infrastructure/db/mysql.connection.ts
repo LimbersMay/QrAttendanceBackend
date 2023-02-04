@@ -4,10 +4,17 @@ import Group from "../../../QrAttendance/group/infrastructure/model/group.schema
 import QrCode from "../../../QrAttendance/qr_code/infrastructure/models/qrCode.schema";
 import Registry from "../../../QrAttendance/registry/infrastructure/model/registry.schema";
 
-const sequelize = new Sequelize(process.env.MYSQL_DATABASE ?? '', process.env.MYSQL_USER ?? '', process.env.MYSQL_PASSWORD ?? '', {
-    host: process.env.MYSQL_HOST ?? '',
+const DB_NAME = process.env.MYSQL_DATABASE ?? '';
+const DB_USER = process.env.MYSQL_USER ?? '';
+const DB_PASSWORD = process.env.MYSQL_PASSWORD ?? '';
+const DB_HOST = process.env.MYSQL_HOST ?? '';
+const DB_PORT = parseInt(process.env.MYSQL_PORT ?? '3000');
+
+const sequelize = new Sequelize(DB_NAME, DB_USER ?? '', DB_PASSWORD, {
+    host: DB_HOST,
+    port: parseInt(DB_PORT.toString()),
     dialect: 'mysql',
-    logging: false
+    logging: true
 });
 
 // init models
