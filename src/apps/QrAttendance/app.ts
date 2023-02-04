@@ -1,7 +1,10 @@
 import {config} from 'dotenv';
+import path from "path";
+
+const pathToEnv = path.resolve(__dirname + '../' + '../' + '../' + '../' + '.env');
 
 config({
-    path: __dirname + '/.production.example.env'
+    path: pathToEnv
 })
 
 import {Server} from "./app.server";
