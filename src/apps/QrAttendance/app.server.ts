@@ -40,7 +40,7 @@ export class Server {
         this.httpServer = createServer(this.app);
         this.io = new SocketServer(this.httpServer, {
             cors: {
-                origin: ["http://localhost:5173", "https://easyqrattendance.netlify.app"],
+                origin: [ "https://easyqrattendance.netlify.app", "http://localhost:5173"],
                 methods: ["GET", "POST", "PUT", "DELETE"],
                 credentials: true
             }
@@ -81,7 +81,6 @@ export class Server {
                 sameSite: 'none',
                 maxAge: 1000 * 60 * 60 * 24, // 1 day
                 secure: true,
-                domain: "https://easyqrattendance.netlify.app"
             }
         }));
 
@@ -97,14 +96,6 @@ export class Server {
                 defaultErrorHandler: false
             },
             controllers: [UserController, AuthController, GroupController, QrCodeController, RegistryController],
-        });
-
-        this.app.use((req, res, next) => {
-            res.header("Access-Control-Allow-Origin", "https://easyqrattendance.netlify.app");
-            res.header("Access-Control-Allow-Credentials", "true");
-            res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
-            res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-            next();
         });
     }
 
