@@ -80,7 +80,7 @@ export class Server {
             cookie: {
                 sameSite: true,
                 maxAge: 1000 * 60 * 60 * 24, // 1 day
-                secure: "auto",
+                secure: false,
                 httpOnly: true
             }
         }));
