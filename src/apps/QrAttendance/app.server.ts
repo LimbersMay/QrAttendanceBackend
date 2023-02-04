@@ -19,7 +19,7 @@ import {GroupController} from "../../contexts/QrAttendance/group/infrastructure/
 import {QrCodeController} from "../../contexts/QrAttendance/qr_code/infrastructure/controllers";
 import {RegistryController} from "../../contexts/QrAttendance/registry/infrastructure/controller/registry.controller";
 
-import {createServer} from "https";
+import {createServer} from "http";
 import {SocketControllers} from "socket-controllers";
 import {Socket} from "socket.io";
 import { Server as SocketServer } from "socket.io";
