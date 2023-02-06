@@ -4,7 +4,6 @@ import {TYPES} from "../../../../../../apps/QrAttendance/dependency-injection/us
 import {isRight, left, right} from "fp-ts/Either";
 import {Either} from "../../../../../shared/types/ErrorEither";
 import {UUIDGenerator} from "../../../../shared/application/services/UUIDGenerator";
-import {PasswordHasher} from "../../../../shared/application/services/encrypt.service";
 import {UserRepository, UserValue} from "../../../domain";
 import {UserError} from "../../../domain/errors/userError";
 import {UserResponse} from "../../responses/user.response";
@@ -14,16 +13,16 @@ export class UserCreator {
     constructor(
         @inject(TYPES.UserRepository) private userRepository: UserRepository,
         @inject(TYPES.UserUUIDGenerator) private UUIDGenerator: UUIDGenerator,
-        @inject(TYPES.PasswordHasher) private passwordHasher: PasswordHasher,
+
     ) {
     }
 
-    execute = async ({name, email, password, lastname}: { name: string, email: string, password: string, lastname: string }): Promise<Either<UserError, UserResponse>> => {
+    execute = async ({name, email, lastname, password}: { name: string, email: string, lastname: string, password: string }): Promise<Either<UserError, UserResponse>> => {
 
         const user = UserValue.create({
             userId: this.UUIDGenerator.random(),
             email,
-            password: await this.passwordHasher.hash(password),
+            password,
             name,
             lastname
         });
@@ -33,7 +32,10 @@ export class UserCreator {
                 ? right(UserResponse.fromUser(user.right))
                 : left(UserError.DUPLICATED_EMAIL);
 
-        }).catch(() => left(UserError.USER_CANNOT_BE_CREATED));
+        }).catch((err) => {
+            console.log(err)
+            return left(UserError.DUPLICATED_EMAIL);
+        });
     }
 }
 
