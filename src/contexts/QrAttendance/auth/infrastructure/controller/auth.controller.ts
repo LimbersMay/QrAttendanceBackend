@@ -1,24 +1,33 @@
 import {Request, Response} from "express";
-import {injectable} from "inversify";
+import {inject, injectable} from "inversify";
 import {Body, Controller, Get, Post, Req, Res, UseAfter, UseBefore} from "routing-controllers";
 import {UserCreator} from "../../../user/application/useCases";
 import {ResponseEntity} from "../../../../shared/infrastructure/entities/response.entity";
 import {EmailExists, Logout} from "../middlewares";
-import {Authenticate, InvalidCredentialsHandler} from "../middlewares/providers.middleware";
+import {
+    Authenticate,
+    GoogleAuthentication,
+    GoogleAuthenticationCallback,
+    InvalidCredentialsHandler
+} from "../middlewares/providers.middleware";
 import {isRight} from "fp-ts/Either";
 import {UserError} from "../../../user/domain/errors/userError";
+import {TYPES} from "../../../../../apps/QrAttendance/dependency-injection/user/types";
+import {PasswordHasher} from "../../../shared/application/services/encrypt.service";
 
 @Controller('/auth')
 @injectable()
 export class AuthController {
     constructor(
-        private readonly userCreator: UserCreator
-    ) {}
+        private readonly userCreator: UserCreator,
+        @inject(TYPES.PasswordHasher) private passwordHasher: PasswordHasher,
+    ) {
+    }
 
     @Post('/login')
     @UseBefore(Authenticate)
     @UseAfter(InvalidCredentialsHandler)
-    public login (@Req() req: Request) {
+    public login(@Req() req: Request) {
 
         return ResponseEntity
             .status(200)
@@ -26,10 +35,27 @@ export class AuthController {
             .buid()
     }
 
+    @Get('/login-google')
+    @UseBefore(GoogleAuthentication)
+    public loginGoogle() {}
+
+    @Get('/login-google-callback')
+    @UseBefore(GoogleAuthenticationCallback)
+    public loginGoogleCallback(@Req() req: Request, @Res() res: Response) {
+
+    }
+
     @Post('/register')
     @UseBefore(EmailExists)
-    public async register (@Body() { name, email, password, lastname}: { name: string, email: string, password: string, lastname: string}, @Res() res: Response) {
-        const result = await this.userCreator.execute({ name, email, password, lastname });
+    public async register(@Body() {
+        name,
+        email,
+        password,
+        lastname
+    }: { name: string, email: string, password: string, lastname: string }, @Res() res: Response) {
+
+        const hashedPassword = await this.passwordHasher.hash(password);
+        const result = await this.userCreator.execute({name, email, password: hashedPassword, lastname});
 
         if (isRight(result)) return ResponseEntity
             .ok()
@@ -46,7 +72,7 @@ export class AuthController {
 
     @Post('/logout')
     @UseBefore(Logout)
-    public logout () {
+    public logout() {
         return ResponseEntity
             .status(200)
             .body('Logout success')
@@ -54,7 +80,7 @@ export class AuthController {
     }
 
     @Get('/authenticated')
-    public isAuthenticated( @Req() req: Request) {
+    public isAuthenticated(@Req() req: Request) {
 
         if (!req.isAuthenticated()) return ResponseEntity
             .status(200)
