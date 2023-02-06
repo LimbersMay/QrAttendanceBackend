@@ -8,7 +8,7 @@ import {
 import {PassportLocalStrategy} from "../../../../contexts/QrAttendance/auth/infrastructure/passport/config";
 import {AuthenticateUser} from "../../../../contexts/QrAttendance/auth/application/authentication/auth";
 import {
-    Authenticate,
+    Authenticate, GoogleAuthentication, GoogleAuthenticationCallback,
     InvalidCredentialsHandler
 } from "../../../../contexts/QrAttendance/auth/infrastructure/middlewares/providers.middleware";
 
@@ -24,6 +24,8 @@ export const authModule = (container: Container) => {
 
     // auth providers
     container.bind<Authenticate>(Authenticate).toSelf();
+    container.bind<GoogleAuthentication>(GoogleAuthentication).toSelf()
+    container.bind<GoogleAuthenticationCallback>(GoogleAuthenticationCallback).toSelf();
 
     container.bind<AuthController>(AuthController).toSelf();
     container.bind<PassportLocalStrategy>(PassportLocalStrategy).toSelf();
