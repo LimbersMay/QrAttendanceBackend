@@ -103,8 +103,8 @@ export class Server {
     public websockets() {
 
         const rateLimiter = new RateLimiterMemory({
-            points: 1,
-            duration: 60, // 8 hours
+            points: 2,
+            duration: 30, // 8 hours
         });
 
         this.io.on("connection", (socket: Socket) => {
