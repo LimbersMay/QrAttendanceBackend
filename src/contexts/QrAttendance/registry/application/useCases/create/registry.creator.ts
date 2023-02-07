@@ -15,13 +15,15 @@ export class RegistryCreator {
         @inject(TYPES.RegistryUUIDGenerator) private uuidGenerator: UUIDGenerator
     ){}
 
-    async execute(qrId: string, ownerId: string, name: string, firstSurname: string, secondSurname: string): Promise<Either<RegistryError, RegistryResponse>> {
+    async execute(qrId: string, ownerId: string, name: string, group: string, career: string, firstSurname: string, secondSurname: string): Promise<Either<RegistryError, RegistryResponse>> {
 
         const registry = RegistryValue.create({
             registryId: this.uuidGenerator.random(),
             qrId,
             ownerId,
             name,
+            group,
+            career,
             firstSurname,
             secondSurname
         })

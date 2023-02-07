@@ -21,7 +21,7 @@ export class RegistrySocketController {
             try {
                 await rateLimiter.consume(socket.handshake.address);
 
-                const { name, firstSurname, secondSurname, formId } = data;
+                const { name, group, career, firstSurname, secondSurname, formId } = data;
                 const qrCode = await this.qrCodeFinder.execute(formId);
 
                 // if the qrCode creation fails
@@ -30,7 +30,7 @@ export class RegistrySocketController {
 
                 const { id, ownerId } = qrCode.right;
 
-                const registry = await this.registryCreator.execute(id, ownerId, name, firstSurname, secondSurname);
+                const registry = await this.registryCreator.execute(id, ownerId, name, group, career, firstSurname, secondSurname);
 
                 // if the registry creation fails
                 if (isLeft(registry))

@@ -151,6 +151,12 @@ const registryAttributes = {
         type: DataType.STRING,
         allowNull: false
     },
+    group: {
+        type: DataType.STRING,
+    },
+    career: {
+        type: DataType.STRING,
+    },
     firstSurname: {
         type: DataType.STRING,
         allowNull: false

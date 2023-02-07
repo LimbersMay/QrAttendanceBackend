@@ -26,6 +26,12 @@ export class Registry extends Model<RegistryEntity> {
     name!: string;
 
     @Column
+    group!: string;
+
+    @Column
+    career!: string;
+
+    @Column
     firstSurname!: string;
 
     @Column
