@@ -93,6 +93,8 @@ export class RegistryController {
 
         const expectedFields = {
             name: updatedFields.name,
+            group: updatedFields.group,
+            career: updatedFields.career,
             firstSurname: updatedFields.firstSurname,
             secondSurname: updatedFields.secondSurname,
             checkinTime: updatedFields.checkinTime
