@@ -58,6 +58,9 @@ export class IsAuthenticated implements ExpressMiddlewareInterface {
 
         if (request.isAuthenticated()) return next();
 
+        console.log(request.user);
+        console.log(request.isAuthenticated());
+
         return next(new UnauthorizedError(AuthError.NOT_AUTHENTICATED));
     }
 }

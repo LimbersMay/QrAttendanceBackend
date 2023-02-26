@@ -35,9 +35,9 @@ export class RegistryController {
 
         // @ts-ignore
         const {id: userId} = req.user;
-        const {qrId, name, firstSurname, secondSurname} = body;
+        const {qrId, name, group, career, firstSurname, secondSurname} = body;
 
-        const registry = await this.registryCreator.execute(qrId, userId, name, firstSurname, secondSurname);
+        const registry = await this.registryCreator.execute(qrId, userId, name, group, career, firstSurname, secondSurname);
 
         if (E.isRight(registry))
             return ResponseEntity
@@ -93,6 +93,8 @@ export class RegistryController {
 
         const expectedFields = {
             name: updatedFields.name,
+            group: updatedFields.group,
+            career: updatedFields.career,
             firstSurname: updatedFields.firstSurname,
             secondSurname: updatedFields.secondSurname,
             checkinTime: updatedFields.checkinTime

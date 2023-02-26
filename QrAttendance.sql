@@ -76,6 +76,8 @@ CREATE TABLE registry
     name         varchar(25)              NOT NULL,
     firstSurname varchar(25)              NOT NULL,
     secondSurname varchar(25)              NOT NULL,
+    `group`      varchar(25)             NOT NULL,
+    career     varchar(40)             NOT NULL,
     createdAt   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updatedAt   TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     checkinTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

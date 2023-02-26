@@ -5,14 +5,18 @@ export class RegistryValue implements RegistryEntity {
     qrId: string;
     ownerId: string;
     name: string;
+    group: string;
+    career: string;
     firstSurname: string;
     secondSurname: string;
     checkinTime?: Date;
     updatedAt?: Date;
     createdAt?: Date;
     
-    constructor({registryId, qrId, ownerId, name, firstSurname, secondSurname, checkinTime, createdAt, updatedAt}: RegistryEntity) {
+    constructor({registryId, qrId, ownerId, name, group, career, firstSurname, secondSurname, checkinTime, createdAt, updatedAt}: RegistryEntity) {
         this.name = name;
+        this.group = group;
+        this.career = career;
         this.firstSurname = firstSurname;
         this.secondSurname = secondSurname;
 

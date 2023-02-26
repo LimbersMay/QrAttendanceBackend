@@ -80,6 +80,8 @@ export class RegistryMysqlRepository implements RegistryRepository {
             qrId: registry.qrId,
             registryId: registry.registryId,
             name: registry.name,
+            group: registry.group,
+            career: registry.career,
             firstSurname: registry.firstSurname,
             secondSurname: registry.secondSurname,
             ownerId: registry.ownerId,

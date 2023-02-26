@@ -15,13 +15,13 @@ export class AuthenticateUser {
     ){}
 
     execute(email: string, password: string): Promise<Either<AuthError, UserResponse>> {
-        return this.repository.findUserByEmail(email).then((user) => {
+        return this.repository.findUserByEmail(email).then(async (user) => {
 
             // check if user exists
             if (isLeft(user)) return left(AuthError.INVALID_CREDENTIALS);
 
             // check if password is correct
-            const isPasswordCorrect = this.encryptService.compare(password, user.right.password);
+            const isPasswordCorrect = await this.encryptService.compare(password, user.right.password);
             if (!isPasswordCorrect) return left(AuthError.INVALID_CREDENTIALS);
 
             return right(UserResponse.fromUser(user.right));

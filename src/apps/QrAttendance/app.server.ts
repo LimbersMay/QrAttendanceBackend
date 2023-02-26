@@ -40,7 +40,7 @@ export class Server {
         this.httpServer = createServer(this.app);
         this.io = new SocketServer(this.httpServer, {
             cors: {
-                origin: ["http://localhost:5173", "https://easyqrattendance.netlify.app/"],
+                origin: [ "https://easyqrattendance.up.railway.app", "https://easyqrattendance.netlify.app", "http://localhost:5173"],
                 methods: ["GET", "POST", "PUT", "DELETE"],
                 credentials: true
             }
@@ -79,7 +79,9 @@ export class Server {
             saveUninitialized: true,
             cookie: {
                 sameSite: true,
-                maxAge: 1000 * 60 * 60 * 24 // 1 day
+                maxAge: 1000 * 60 * 60 * 24, // 1 day
+                secure: false,
+                httpOnly: true
             }
         }));
 
@@ -91,7 +93,7 @@ export class Server {
             routePrefix: "/api",
             cors: {
                 credentials: true,
-                origin: ["http://localhost:5173", "https://easyqrattendance.netlify.app/"],
+                origin: ["https://easyqrattendance.up.railway.app","http://localhost:5173", "https://easyqrattendance.netlify.app"],
                 defaultErrorHandler: false
             },
             controllers: [UserController, AuthController, GroupController, QrCodeController, RegistryController],
@@ -101,8 +103,8 @@ export class Server {
     public websockets() {
 
         const rateLimiter = new RateLimiterMemory({
-            points: 1,
-            duration: 60, // 8 hours
+            points: 2,
+            duration: 30, // 8 hours
         });
 
         this.io.on("connection", (socket: Socket) => {

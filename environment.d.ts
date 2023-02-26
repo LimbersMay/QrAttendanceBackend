@@ -11,6 +11,12 @@ declare global {
             MYSQL_PASSWORD: string;
             MYSQL_HOST: string;
             MYSQL_PORT: string;
+            NODE_ENV: string;
+            GOOGLE_CLIENT_ID: string;
+            GOOGLE_CLIENT_SECRET: string;
+            GOOGLE_CALLBACK_URL: string;
+            API_URL: string;
+            CLIENT_URL: string;
         }
     }
 }

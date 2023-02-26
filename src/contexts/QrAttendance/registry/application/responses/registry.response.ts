@@ -5,14 +5,18 @@ export class RegistryResponse {
     qrCodeId: string;
     checkinTime?: Date;
     name: string;
+    group: string;
+    career: string;
     firstSurname: string;
     secondSurname: string;
 
-    constructor({id, qrCodeId, checkinTime, name, firstSurname, secondSurname}: { id: string, qrCodeId: string, checkinTime?: Date, name: string, firstSurname: string, secondSurname: string }) {
+    constructor({id, qrCodeId, checkinTime, name, group, career, firstSurname, secondSurname}: { id: string, qrCodeId: string, checkinTime?: Date, name: string, group: string, career: string, firstSurname: string, secondSurname: string }) {
         this.id = id;
         this.qrCodeId = qrCodeId;
         this.checkinTime = checkinTime;
         this.name = name;
+        this.group = group;
+        this.career = career;
         this.firstSurname = firstSurname;
         this.secondSurname = secondSurname;
     }
@@ -23,6 +27,8 @@ export class RegistryResponse {
             qrCodeId: registryEntity.qrId,
             checkinTime: registryEntity.checkinTime,
             name: registryEntity.name,
+            group: registryEntity.group,
+            career: registryEntity.career,
             firstSurname: registryEntity.firstSurname,
             secondSurname: registryEntity.secondSurname
         });
