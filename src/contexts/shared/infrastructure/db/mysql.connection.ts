@@ -117,11 +117,13 @@ const qrCodeAttributes = {
         type: DataType.DATE
     },
     createdAt: {
-        type: DataType.DATE
+        type: DataType.DATE,
+        defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
     },
     updatedAt: {
-        type: DataType.DATE
-    }
+        type: DataType.DATE,
+        defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
+    },
 }
 
 const registryAttributes = {
@@ -178,9 +180,9 @@ const registryAttributes = {
 
 sequelize.addModels([User, Group, QrCode, Registry]);
 
-User.init(userAttributes, {sequelize: sequelize, tableName: "user"});
-Group.init(groupAttributes, {sequelize: sequelize, tableName: "group"});
-QrCode.init(qrCodeAttributes, {sequelize: sequelize, tableName: "qrCode"});
-Registry.init(registryAttributes, {sequelize: sequelize, tableName: "registry"});
+User.init(userAttributes, {sequelize: sequelize, timestamps: true});
+Group.init(groupAttributes, {sequelize: sequelize});
+QrCode.init(qrCodeAttributes, {sequelize: sequelize});
+Registry.init(registryAttributes, {sequelize: sequelize});
 
 export default sequelize;
