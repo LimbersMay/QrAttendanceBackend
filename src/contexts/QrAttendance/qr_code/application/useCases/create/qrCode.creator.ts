@@ -15,7 +15,7 @@ export class QrCodeCreator {
         @inject(TYPES.QrCodeUUIDGenerator) private readonly uuidGenerator: UUIDGenerator
     ){}
 
-    public execute = (name: string, groupId: string, userId: string, enabled: boolean, url: string): Promise<Either<QrCodeError, QrCodeResponse>> => {
+    public execute = (name: string, groupId: string, userId: string, enabled: boolean, url: string, manualRegistrationDate: Date): Promise<Either<QrCodeError, QrCodeResponse>> => {
 
         const qrCodeValue = QrCodeValue.create({
             qrId: this.uuidGenerator.random(),
@@ -24,7 +24,8 @@ export class QrCodeCreator {
             name,
             url,
             formId: this.uuidGenerator.random(),
-            enabled
+            enabled,
+            manualRegistrationDate
         });
 
         return this.qrCodeRepository.createQrCode(qrCodeValue).then(qrCode => {
