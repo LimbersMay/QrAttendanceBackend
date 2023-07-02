@@ -58,7 +58,9 @@
     "@types/passport-jwt": "^3.0.8",
     "@types/passport-local": "^1.0.34",
     "@types/uuid": "^8.3.4",
-    "@types/validator": "^13.7.11"
+    "@types/validator": "^13.7.11",
+    "nodemon": "^2.0.22",
+    "ts-node": "^10.9.1"
   },
   "optionalDependencies": {
     "bufferutil": "^4.0.7",
