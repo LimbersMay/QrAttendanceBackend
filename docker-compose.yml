@@ -20,7 +20,7 @@ services:
         MYSQL_ROOT_PASSWORD: 12345
         MYSQL_DATABASE: QrAttendance
     volumes:
-      - ./setup.sql:/docker-entrypoint-initdb.d/QrAttendance.sql
+      - ./QrAttendance.sql:/docker-entrypoint-initdb.d/QrAttendance.sql
     networks:
         - qrAttendanceNetwork
 
