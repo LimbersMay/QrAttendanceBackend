@@ -7,7 +7,7 @@
 * [Main Technologies used](#main-technologies-used)
 * [Previous requirements](#previous-requirements)
 * [Setup](#setup)
-* [API Documentation](https://documenter.getpostman.com/view/13795791/Tz5tZ6Qq)
+* [API Documentation](https://documenter.getpostman.com/view/18052163/2s9XxyRtJH)
 
 ## General info
 This project is a backend for easyQrAttendance app. It is a simple REST API that allows to create and manage users, groups and attendance lists. It also provides endpoints for QR code generation and attendance list signing.
