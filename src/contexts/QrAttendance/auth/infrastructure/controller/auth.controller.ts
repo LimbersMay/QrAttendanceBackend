@@ -27,13 +27,7 @@ export class AuthController {
     @Post('/login')
     @UseBefore(Authenticate)
     @UseAfter(InvalidCredentialsHandler)
-    public login(@Req() req: Request) {
-
-        return ResponseEntity
-            .status(200)
-            .body(req.user)
-            .buid()
-    }
+    public login(@Req() req: Request) {}
 
     @Get('/login-google')
     @UseBefore(GoogleAuthentication)
