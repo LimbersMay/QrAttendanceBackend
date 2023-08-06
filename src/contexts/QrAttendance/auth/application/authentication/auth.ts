@@ -6,15 +6,22 @@ import {Either} from "../../../../shared/types/ErrorEither";
 import {AuthError} from "../errors/authError";
 import {UserResponse} from "../../../user/application/responses/user.response";
 import {TYPES} from "../../../../../apps/QrAttendance/dependency-injection/user/types";
+import {JwtGenerator} from "../../infrastructure/helpers/jwt-generator";
+
+interface AuthResponse {
+    token: string;
+    user: UserResponse;
+}
 
 @injectable()
-export class AuthenticateUser {
+export class UserAuthenticator {
     constructor (
         @inject(TYPES.UserRepository) private repository: UserRepository,
-        @inject(TYPES.PasswordHasher) private encryptService: PasswordHasher
+        @inject(TYPES.PasswordHasher) private encryptService: PasswordHasher,
+        private jwtGenerator: JwtGenerator
     ){}
 
-    execute(email: string, password: string): Promise<Either<AuthError, UserResponse>> {
+    execute(email: string, password: string): Promise<Either<AuthError, AuthResponse>> {
         return this.repository.findUserByEmail(email).then(async (user) => {
 
             // check if user exists
@@ -24,7 +31,13 @@ export class AuthenticateUser {
             const isPasswordCorrect = await this.encryptService.compare(password, user.right.password);
             if (!isPasswordCorrect) return left(AuthError.INVALID_CREDENTIALS);
 
-            return right(UserResponse.fromUser(user.right));
+            const userResponse = UserResponse.fromUser(user.right);
+            const token = this.jwtGenerator.generate(userResponse);
+
+            return right({
+                token,
+                user: userResponse
+            });
         }).catch(() => left(AuthError.CANNOT_AUTHENTICATE_USER));
     }
 }
