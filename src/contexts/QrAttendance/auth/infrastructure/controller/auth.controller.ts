@@ -1,33 +1,52 @@
 import {Request, Response} from "express";
 import {inject, injectable} from "inversify";
-import {Body, Controller, Get, Post, Req, Res, UseAfter, UseBefore} from "routing-controllers";
+import {Body, Controller, Get, Post, Req, Res, UseBefore} from "routing-controllers";
 import {UserCreator} from "../../../user/application/useCases";
 import {ResponseEntity} from "../../../../shared/infrastructure/entities/response.entity";
 import {EmailExists, Logout} from "../middlewares";
-import {
-    Authenticate,
-    GoogleAuthentication,
-    GoogleAuthenticationCallback,
-    InvalidCredentialsHandler
-} from "../middlewares/providers.middleware";
+import {GoogleAuthentication, GoogleAuthenticationCallback} from "../middlewares";
 import {isRight} from "fp-ts/Either";
 import {UserError} from "../../../user/domain/errors/userError";
 import {TYPES} from "../../../../../apps/QrAttendance/dependency-injection/user/types";
 import {PasswordHasher} from "../../../shared/application/services/encrypt.service";
+import {UserAuthenticator} from "../../application/authentication/auth";
+import {AuthError} from "../../application/errors/authError";
 
 @Controller('/auth')
 @injectable()
 export class AuthController {
     constructor(
         private readonly userCreator: UserCreator,
+        private readonly userAuthenticator: UserAuthenticator,
         @inject(TYPES.PasswordHasher) private passwordHasher: PasswordHasher,
-    ) {
-    }
+    ) {}
 
     @Post('/login')
-    @UseBefore(Authenticate)
-    @UseAfter(InvalidCredentialsHandler)
-    public login(@Req() req: Request) {}
+    public async login(@Body(){
+        email,
+        password
+    }: {email: string, password: string}, @Res() res: Response) {
+
+        const result = await this.userAuthenticator.execute(email, password);
+
+        if (isRight(result)) return ResponseEntity
+            .ok()
+            .body(result.right)
+            .buid()
+
+        switch (result.left) {
+            case AuthError.INVALID_CREDENTIALS:
+                return ResponseEntity
+                    .status(404)
+                    .body(result.left)
+                    .send(res)
+            case AuthError.CANNOT_AUTHENTICATE_USER:
+                return ResponseEntity
+                    .status(500)
+                    .body(result.left)
+                    .send(res)
+        }
+    }
 
     @Get('/login-google')
     @UseBefore(GoogleAuthentication)
