@@ -60,6 +60,7 @@ export class Server {
 
     public async connectDB() {
         await db.authenticate();
+        await db.sync();
     }
 
     public middlewares() {
