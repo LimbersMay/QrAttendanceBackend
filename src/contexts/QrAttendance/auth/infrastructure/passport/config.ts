@@ -1,5 +1,6 @@
 import {Strategy as LocalStrategy} from 'passport-local';
 import {Strategy as GoogleStrategy} from 'passport-google-oauth20';
+import {ExtractJwt, Strategy as JWTStrategy} from 'passport-jwt';
 import {inject, injectable} from "inversify";
 import passport from "passport";
 import {isLeft, isRight} from "fp-ts/Either";
@@ -8,8 +9,9 @@ import {UserCreator, UserFinder} from "../../../user/application/useCases";
 import {UserDTO} from "../../../user/application/entities/user.dto";
 import {UserError} from "../../../user/domain/errors/userError";
 import {AuthError} from "../../application/errors/authError";
-import {API_URL, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET} from "../../../../utils/secrets";
+import {API_URL, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, JWT_SECRET} from "../../../../utils/secrets";
 import {TYPES} from "../../../../../apps/QrAttendance/dependency-injection/user/types";
+
 import {PasswordHasher} from "../../../shared/application/services/encrypt.service";
 
 declare global {
@@ -67,6 +69,19 @@ export class PassportLocalStrategy {
                 ? done(false, result.right)
                 : done(result.left, false);
         });
+
+        // JWT Implementation
+        passport.use(new JWTStrategy({
+            jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+            secretOrKey: JWT_SECRET,
+            }, async (jwtPayload, done) => {
+                const result = await this.userFinder.execute(jwtPayload.id);
+
+                return isRight(result)
+                    ? done(false, result.right)
+                    : done(result.left, false);
+            }
+        ))
     }
 
     public googleStrategy() {
