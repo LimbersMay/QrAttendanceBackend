@@ -2,7 +2,6 @@ import {Strategy as GoogleStrategy} from 'passport-google-oauth20';
 import {inject, injectable} from "inversify";
 import passport from "passport";
 import {isLeft, isRight} from "fp-ts/Either";
-import {UserAuthenticator} from "../../application/authentication/auth";
 import {UserCreator, UserFinder} from "../../../user/application/useCases";
 import {UserDTO} from "../../../user/application/entities/user.dto";
 import {UserError} from "../../../user/domain/errors/userError";
