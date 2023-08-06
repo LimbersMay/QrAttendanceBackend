@@ -6,7 +6,7 @@ import {Either} from "../../../../shared/types/ErrorEither";
 import {AuthError} from "../errors/authError";
 import {UserResponse} from "../../../user/application/responses/user.response";
 import {TYPES} from "../../../../../apps/QrAttendance/dependency-injection/user/types";
-import {JwtGenerator} from "../../infrastructure/helpers/jwt-generator";
+import {JwtGenerator} from "../../infrastructure/services/jwt-generator";
 
 interface AuthResponse {
     token: string;

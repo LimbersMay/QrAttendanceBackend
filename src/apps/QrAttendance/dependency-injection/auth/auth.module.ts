@@ -11,7 +11,7 @@ import {
     GoogleAuthentication, GoogleAuthenticationCallback,
     InvalidCredentialsHandler
 } from "../../../../contexts/QrAttendance/auth/infrastructure/middlewares";
-import {JwtGenerator} from "../../../../contexts/QrAttendance/auth/infrastructure/helpers/jwt-generator";
+import {JwtGenerator} from "../../../../contexts/QrAttendance/auth/infrastructure/services/jwt-generator";
 
 export const authModule = (container: Container) => {
 
@@ -33,6 +33,6 @@ export const authModule = (container: Container) => {
     // use cases
     container.bind<UserAuthenticator>(UserAuthenticator).toSelf();
 
-    // helpers
+    // services
     container.bind<JwtGenerator>(JwtGenerator).toSelf();
 }
