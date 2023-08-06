@@ -1,5 +1,5 @@
 import {NextFunction, Request, Response} from "express";
-import passport, {Authenticator} from "passport";
+import passport from "passport";
 import {
     ExpressErrorMiddlewareInterface,
     ExpressMiddlewareInterface,
@@ -10,45 +10,6 @@ import {injectable} from "inversify";
 import {AuthError} from "../../application/errors/authError";
 import {ResponseEntity} from "../../../../shared/infrastructure/entities/response.entity";
 import {CLIENT_URL} from "../../../../utils/secrets";
-import {generateToken} from "../helpers/jwt-generator";
-
-@injectable()
-export class Authenticate implements ExpressMiddlewareInterface {
-    public authenticate (callback: any) {
-        return passport.authenticate('local', { session: false }, callback);
-    }
-
-    public use(req: Request, res: Response, next: NextFunction): Promise<Authenticator> {
-
-        // NOTE: We can use JWT because in this middleware, then the user is authenticated, we generate a JWT token
-        // And passport will know that the user is authenticated because we are using JWT strategy
-
-        return this.authenticate((err: any, user: any) => {
-
-            if (err || !user) {
-                return next(new UnauthorizedError(AuthError.INVALID_CREDENTIALS));
-            }
-
-            req.login(user, {session: false},(err) => {
-                if (err) {
-                    return next(new UnauthorizedError(AuthError.INVALID_CREDENTIALS));
-                }
-
-                // generate a signed son web token with the contents of user object and return it in the response
-                const token = generateToken(user)
-                return ResponseEntity
-                    .status(200)
-                    .body({
-                        user,
-                        token
-                    })
-                    .send(res);
-
-            })
-
-        })(req, res, next);
-    }
-}
 
 @injectable()
 export class GoogleAuthentication implements ExpressMiddlewareInterface {
