@@ -1,6 +1,6 @@
 import {Request, Response} from "express";
 import {inject, injectable} from "inversify";
-import {Body, Controller, Get, Post, Req, Res, UseBefore} from "routing-controllers";
+import {Body, Controller, Get, HeaderParam, Post, Req, Res, UseBefore} from "routing-controllers";
 import {UserCreator} from "../../../user/application/useCases";
 import {ResponseEntity} from "../../../../shared/infrastructure/entities/response.entity";
 import {EmailExists, Logout} from "../middlewares";
@@ -11,6 +11,7 @@ import {TYPES} from "../../../../../apps/QrAttendance/dependency-injection/user/
 import {PasswordHasher} from "../../../shared/application/services/encrypt.service";
 import {UserAuthenticator} from "../../application/authentication/auth";
 import {AuthError} from "../../application/errors/authError";
+import {JwtGenerator} from "../services/jwt-generator";
 
 @Controller('/auth')
 @injectable()
@@ -18,6 +19,7 @@ export class AuthController {
     constructor(
         private readonly userCreator: UserCreator,
         private readonly userAuthenticator: UserAuthenticator,
+        private readonly JwtGenerator: JwtGenerator,
         @inject(TYPES.PasswordHasher) private passwordHasher: PasswordHasher,
     ) {}
 
@@ -93,17 +95,13 @@ export class AuthController {
     }
 
     @Get('/authenticated')
-    public isAuthenticated(@Req() req: Request) {
+    public async isAuthenticated(@HeaderParam('x-token') token: string, @Req() req: Request) {
 
-        if (!req.isAuthenticated()) return ResponseEntity
-            .status(200)
-            .body(null)
-            .buid()
-
+        const user = await this.JwtGenerator.verify(token);
 
         return ResponseEntity
             .status(200)
-            .body(req.user)
+            .body(user)
             .buid()
     }
 }
