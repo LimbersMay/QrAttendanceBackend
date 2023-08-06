@@ -1,5 +1,4 @@
 import {Application} from "express";
-import session from "express-session";
 import express from "express";
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
@@ -74,21 +73,8 @@ export class Server {
         this.app.use(bodyParser.json());
         this.app.use(bodyParser.urlencoded({extended: true}));
 
-        this.app.use(session({
-            secret: process.env.COOKIE_SECRET ?? "secret",
-            resave: false,
-            saveUninitialized: true,
-            cookie: {
-                sameSite: true,
-                maxAge: 1000 * 60 * 60 * 24, // 1 day
-                secure: false,
-                httpOnly: true
-            }
-        }));
-
         // passport
         this.app.use(PassportLocalStrategy.initialize());
-        this.app.use(PassportLocalStrategy.session());
 
         useExpressServer(this.app, {
             routePrefix: "/api",
