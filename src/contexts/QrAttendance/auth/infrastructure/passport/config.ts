@@ -3,7 +3,7 @@ import {Strategy as GoogleStrategy} from 'passport-google-oauth20';
 import {inject, injectable} from "inversify";
 import passport from "passport";
 import {isLeft, isRight} from "fp-ts/Either";
-import {AuthenticateUser} from "../../application/authentication/auth";
+import {UserAuthenticator} from "../../application/authentication/user-authenticator";
 import {UserCreator, UserFinder} from "../../../user/application/useCases";
 import {UserDTO} from "../../../user/application/entities/user.dto";
 import {UserError} from "../../../user/domain/errors/userError";
@@ -23,7 +23,7 @@ declare global {
 // decouple passport using dependency injection
 export class PassportLocalStrategy {
     constructor(
-        private readonly authenteicateUser: AuthenticateUser,
+        private readonly userAuthenticator: UserAuthenticator,
         private readonly userFinder: UserFinder,
         private readonly userCreator: UserCreator,
          @inject(TYPES.PasswordHasher) private passwordHasher: PasswordHasher,
@@ -42,7 +42,7 @@ export class PassportLocalStrategy {
                 },
                 async (email, password, done) => {
                     // your logic here
-                    const result = await this.authenteicateUser.execute(email, password);
+                    const result = await this.userAuthenticator.execute(email, password);
 
                     return isRight(result)
                         ? done(null, result.right)
