@@ -34,7 +34,7 @@ export class UserCreator {
 
         }).catch((err) => {
             console.log(err)
-            return left(UserError.DUPLICATED_EMAIL);
+            return left(UserError.USER_CANNOT_BE_CREATED);
         });
     }
 }
