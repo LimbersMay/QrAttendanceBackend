@@ -1,15 +1,14 @@
 import {Request, Response} from "express";
 import {inject, injectable} from "inversify";
-import {Body, Controller, Get, Post, Req, Res, UseAfter, UseBefore} from "routing-controllers";
+import {Body, Controller, Get, Post, Req, Res, UseBefore} from "routing-controllers";
 import {UserCreator} from "../../../user/application/useCases";
 import {ResponseEntity} from "../../../../shared/infrastructure/entities/response.entity";
 import {EmailExists, Logout} from "../middlewares";
 import {
     Authenticate,
     GoogleAuthentication,
-    GoogleAuthenticationCallback,
-    InvalidCredentialsHandler
-} from "../middlewares/providers.middleware";
+    GoogleAuthenticationCallback
+} from "../middlewares";
 import {isRight} from "fp-ts/Either";
 import {UserError} from "../../../user/domain/errors/userError";
 import {TYPES} from "../../../../../apps/QrAttendance/dependency-injection/user/types";
@@ -26,7 +25,6 @@ export class AuthController {
 
     @Post('/login')
     @UseBefore(Authenticate)
-    @UseAfter(InvalidCredentialsHandler)
     public login(@Req() req: Request) {
 
         return ResponseEntity
