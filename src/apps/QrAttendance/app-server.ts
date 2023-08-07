@@ -98,6 +98,9 @@ export class Server {
                 defaultErrorHandler: false
             },
             controllers: [UserController, AuthController, GroupController, QrCodeController, RegistryController],
+            currentUserChecker: async (action) => {
+                return action.request.user;
+            }
         });
     }
 
