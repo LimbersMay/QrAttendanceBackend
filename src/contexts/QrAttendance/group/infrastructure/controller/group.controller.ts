@@ -32,8 +32,8 @@ export class GroupController {
         private groupDeleter: GroupDeleter,
     ) {}
 
-    @Get('/all')
-    public async getGroups (
+    @Get('/')
+    public async getAll (
         @Req() req: Request,
         @Res() res: Response,
         @CurrentUser({required: true}) user: UserResponse
@@ -50,7 +50,7 @@ export class GroupController {
     }
 
     @Get('/:id')
-    public async getGroup (
+    public async getOne (
         @Param("id") id: string,
         @Req() req: Request,
         @Res() res: Response,
