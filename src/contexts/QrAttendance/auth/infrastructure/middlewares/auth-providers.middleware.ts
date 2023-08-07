@@ -1,14 +1,11 @@
 import {NextFunction, Request, Response} from "express";
 import passport, {Authenticator} from "passport";
 import {
-    ExpressErrorMiddlewareInterface,
     ExpressMiddlewareInterface,
-    Middleware,
     UnauthorizedError
 } from "routing-controllers";
 import {injectable} from "inversify";
 import {AuthError} from "../../application/errors/authError";
-import {ResponseEntity} from "../../../../shared/infrastructure/entities/response.entity";
 import {CLIENT_URL} from "../../../../utils/secrets";
 
 @injectable()
@@ -68,16 +65,5 @@ export class GoogleAuthenticationCallback implements ExpressMiddlewareInterface 
 
             req.user = user;
         })(req, res, next);
-    }
-}
-
-@Middleware({ type: "after" })
-@injectable()
-export class InvalidCredentialsHandler implements ExpressErrorMiddlewareInterface {
-    error (err: any, req: Request, res: Response, next: NextFunction) {
-        return ResponseEntity
-            .status(401)
-            .body(err.message)
-            .send(res);
     }
 }
