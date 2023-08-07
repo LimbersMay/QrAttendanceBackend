@@ -6,21 +6,21 @@ import {
     Logout
 } from "../../../../contexts/QrAttendance/auth/infrastructure/middlewares";
 import {PassportLocalStrategy} from "../../../../contexts/QrAttendance/auth/infrastructure/passport/config";
-import {AuthenticateUser} from "../../../../contexts/QrAttendance/auth/application/authentication/auth";
+import {UserAuthenticator} from "../../../../contexts/QrAttendance/auth/application/authentication/user-authenticator";
 import {
     Authenticate, GoogleAuthentication, GoogleAuthenticationCallback,
-    InvalidCredentialsHandler
-} from "../../../../contexts/QrAttendance/auth/infrastructure/middlewares/providers.middleware";
+    ErrorHandlerMiddleware
+} from "../../../../contexts/QrAttendance/auth/infrastructure/middlewares";
 
 export const authModule = (container: Container) => {
 
     // middlewares
-    container.bind<InvalidCredentialsHandler>(InvalidCredentialsHandler).toSelf();
     container.bind<IsAuthenticated>(IsAuthenticated).toSelf();
     container.bind<EmailExists>(EmailExists).toSelf();
     container.bind<Logout>(Logout).toSelf();
 
     // middlewares error handlers
+    container.bind<ErrorHandlerMiddleware>(ErrorHandlerMiddleware).toSelf();
 
     // auth providers
     container.bind<Authenticate>(Authenticate).toSelf();
@@ -31,5 +31,5 @@ export const authModule = (container: Container) => {
     container.bind<PassportLocalStrategy>(PassportLocalStrategy).toSelf();
 
     // use cases
-    container.bind<AuthenticateUser>(AuthenticateUser).toSelf();
+    container.bind<UserAuthenticator>(UserAuthenticator).toSelf();
 }
