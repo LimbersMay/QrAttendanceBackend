@@ -77,8 +77,4 @@ export class PassportLocalStrategy {
     public initialize() {
         return passport.initialize();
     }
-
-    public session() {
-        return passport.session();
-    }
 }
