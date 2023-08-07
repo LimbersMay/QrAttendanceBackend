@@ -4,18 +4,8 @@ import {isRight} from "fp-ts/Either";
 import {AuthError} from "../../application/errors/authError";
 import {UserFinder} from "../../../user/application/useCases";
 import {ResponseEntity} from "../../../../shared/infrastructure/entities/response.entity";
-import {ExpressMiddlewareInterface, UnauthorizedError, BadRequestError} from "routing-controllers";
-
-export const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
-    if (req.isAuthenticated()) {
-        return next();
-    }
-
-    return res.status(401).json({
-        ok: false,
-        msg: AuthError.NOT_AUTHENTICATED
-    })
-}
+import {ExpressMiddlewareInterface, BadRequestError} from "routing-controllers";
+import {JwtGenerator} from "../services/jwt-generator";
 
 @injectable()
 export class AuthMiddleware {
@@ -54,9 +44,30 @@ export class EmailExists implements ExpressMiddlewareInterface {
 
 @injectable()
 export class IsAuthenticated implements ExpressMiddlewareInterface {
-    use(request: Request, response: Response, next: NextFunction) {
-        if (request.isAuthenticated()) return next()
-        return next(new UnauthorizedError(AuthError.NOT_AUTHENTICATED));
+
+    public constructor(
+        private readonly jwtGenerator: JwtGenerator
+    ) {}
+    async use(req: Request, res: Response, next: NextFunction) {
+
+        const jwtAuth = req.headers["x-token"];
+
+        if (!jwtAuth) {
+            return next({
+                status: 401,
+                message: AuthError.NO_TOKEN_IN_HEADERS
+            });
+        }
+
+        try {
+            await this.jwtGenerator.verify(`${jwtAuth}`);
+            return next();
+        } catch (e) {
+            return next({
+                status: 401,
+                message: AuthError.INVALID_SESSION
+            });
+        }
     }
 }
 
