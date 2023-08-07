@@ -8,8 +8,14 @@ import {
 } from "routing-controllers";
 import {injectable} from "inversify";
 import {AuthError} from "../../application/errors/authError";
-import {ResponseEntity} from "../../../../shared/infrastructure/entities/response.entity";
 import {CLIENT_URL} from "../../../../utils/secrets";
+import {JwtGenerator} from "../services/jwt-generator";
+import {ValidationError} from "class-validator";
+
+interface HttpErrorHandler {
+    status: number;
+    message: string;
+}
 
 @injectable()
 export class GoogleAuthentication implements ExpressMiddlewareInterface {
@@ -21,37 +27,72 @@ export class GoogleAuthentication implements ExpressMiddlewareInterface {
 @injectable()
 export class GoogleAuthenticationCallback implements ExpressMiddlewareInterface {
 
+    constructor(
+        private readonly jwtGenerator: JwtGenerator
+    ) {}
+
     authenticate (callback: any) {
-        return passport.authenticate('google', { session: true }, callback);
+        return passport.authenticate('google', { session: false }, callback);
     }
 
     use(req: Request, res: Response, next: NextFunction){
         return this.authenticate((err: any , user: any) => {
 
             if (err || !user) {
+                console.log(err);
                 return next(new UnauthorizedError(err));
             }
 
-            req.login(user, (err) => {
+            req.login(user, {session: false},(err) => {
                 if (err) {
+                    console.log(err)
                     return next(new UnauthorizedError(AuthError.INVALID_CREDENTIALS));
                 }
 
-                return res.redirect(CLIENT_URL);
+                const token = this.jwtGenerator.generate(user);
+                return res.redirect(301, `${CLIENT_URL}/auth?token=${token}`);
             });
-
-            req.user = user;
         })(req, res, next);
     }
 }
 
-@Middleware({ type: "after" })
 @injectable()
-export class InvalidCredentialsHandler implements ExpressErrorMiddlewareInterface {
-    error (err: any, req: Request, res: Response, next: NextFunction) {
-        return ResponseEntity
-            .status(401)
-            .body(err.message)
-            .send(res);
+@Middleware({ type: "after" })
+export class ErrorMiddleware implements ExpressErrorMiddlewareInterface {
+    error(error: HttpErrorHandler | any, request: Request, response: Response, next: NextFunction) {
+
+        if (error.errors) {
+
+            if (!Array.isArray(error.errors)) {
+                console.log(error.errors);
+                return {
+                    errors: error.errors
+                };
+            }
+
+            // class-validator error
+            const errors = error.errors.map((err: ValidationError) => {
+                return {
+                    field: err.property,
+                    constraints: err.constraints
+                }
+            });
+
+            response.status(400);
+            response.json({
+                message: error.message,
+                errors
+            });
+
+        } else {
+            // generic error handler
+            console.log(error);
+            response.status(error.status || 500);
+            response.json({
+                error: error.message,
+            });
+        }
+
+        return next();
     }
 }
