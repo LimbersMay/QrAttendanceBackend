@@ -9,14 +9,14 @@ import {PassportLocalStrategy} from "../../../../contexts/QrAttendance/auth/infr
 import {UserAuthenticator} from "../../../../contexts/QrAttendance/auth/application/authentication/auth";
 import {
     GoogleAuthentication, GoogleAuthenticationCallback,
-    InvalidCredentialsHandler
+    ErrorMiddleware
 } from "../../../../contexts/QrAttendance/auth/infrastructure/middlewares";
 import {JwtGenerator} from "../../../../contexts/QrAttendance/auth/infrastructure/services/jwt-generator";
 
 export const authModule = (container: Container) => {
 
     // middlewares
-    container.bind<InvalidCredentialsHandler>(InvalidCredentialsHandler).toSelf();
+    container.bind<ErrorMiddleware>(ErrorMiddleware).toSelf();
     container.bind<IsAuthenticated>(IsAuthenticated).toSelf();
     container.bind<EmailExists>(EmailExists).toSelf();
     container.bind<Logout>(Logout).toSelf();
