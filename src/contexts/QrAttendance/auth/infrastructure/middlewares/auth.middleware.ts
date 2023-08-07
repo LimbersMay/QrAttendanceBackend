@@ -55,12 +55,7 @@ export class EmailExists implements ExpressMiddlewareInterface {
 @injectable()
 export class IsAuthenticated implements ExpressMiddlewareInterface {
     use(request: Request, response: Response, next: NextFunction) {
-
-        if (request.isAuthenticated()) return next();
-
-        console.log(request.user);
-        console.log(request.isAuthenticated());
-
+        if (request.isAuthenticated()) return next()
         return next(new UnauthorizedError(AuthError.NOT_AUTHENTICATED));
     }
 }
