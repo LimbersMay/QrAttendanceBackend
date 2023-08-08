@@ -24,8 +24,6 @@ export class ResponseEntity {
     }
 
     public static buid = () => {
-        return {
-            body: this.data
-        }
+        return this.data;
     }
 }
