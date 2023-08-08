@@ -33,7 +33,7 @@ export class GroupController {
     ) {}
 
     @Get('/')
-    public async getAll (
+    public async findAll (
         @Req() req: Request,
         @Res() res: Response,
         @CurrentUser({required: true}) user: UserResponse
@@ -50,7 +50,7 @@ export class GroupController {
     }
 
     @Get('/:id')
-    public async getOne (
+    public async findOne (
         @Param("id") id: string,
         @Req() req: Request,
         @Res() res: Response,
@@ -103,7 +103,7 @@ export class GroupController {
         if (isRight(result))
             return ResponseEntity
                 .ok()
-                .body(result.right)
+                .body({ rowsUpdated: result.right })
                 .buid();
 
         this.handleError(result.left, res);
@@ -122,7 +122,7 @@ export class GroupController {
         if (isRight(group))
             return ResponseEntity
                 .ok()
-                .body(group.right)
+                .body({ rowsDeleted: group.right })
                 .buid();
 
         this.handleError(group.left, res);
