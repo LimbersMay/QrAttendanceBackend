@@ -30,6 +30,9 @@ export class RegistryCreator {
 
         return this.registryRepository.createRegistry(registry).then(registry => {
             return E.right(RegistryResponse.fromRegistry(registry))
-        }).catch(() => E.left(RegistryError.REGISTRY_CANNOT_BE_CREATED));
+        }).catch((error) => {
+            console.log(error);
+            return E.left(RegistryError.REGISTRY_CANNOT_BE_CREATED);
+        });
     }
 }
