@@ -10,6 +10,7 @@ import {UserResponse} from "../../../user/application/responses/user.response";
 import {QrCodeQuery} from "../../domain/entities/qrCode.query";
 
 @Controller('/qrCode')
+@UseBefore(IsAuthenticated)
 @injectable()
 export class QrCodeController {
     constructor(
@@ -20,7 +21,6 @@ export class QrCodeController {
     ) {}
 
     @Get('/')
-    @UseBefore(IsAuthenticated)
     public async findAll (
         @Res() res: Response,
         @CurrentUser() user: UserResponse
@@ -38,7 +38,6 @@ export class QrCodeController {
     }
 
     @Get('/:id')
-    @UseBefore(IsAuthenticated)
     public async findOne (
         @Param('id') id: string,
         @Res() res: Response,
@@ -57,7 +56,6 @@ export class QrCodeController {
     }
 
     @Post('/')
-    @UseBefore(IsAuthenticated)
     public async create (
         @Res() res: Response,
         @Body() { name, groupId, enabled, url, manualRegistrationDate}: {name: string, groupId: string, enabled: boolean, url: string, manualRegistrationDate: Date},
@@ -76,7 +74,6 @@ export class QrCodeController {
     }
 
     @Put('/:id')
-    @UseBefore(IsAuthenticated)
     public async update (
         @Res() res: Response,
         @Body() updatedFields: QrCodeQuery,
@@ -96,7 +93,6 @@ export class QrCodeController {
     }
 
     @Delete('/:id')
-    @UseBefore(IsAuthenticated)
     public async delete (
         @Res() res: Response,
         @Param('id') id: string,
