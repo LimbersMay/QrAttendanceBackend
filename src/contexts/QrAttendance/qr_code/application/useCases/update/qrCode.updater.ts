@@ -4,7 +4,7 @@ import {TYPES} from "../../../../../../apps/QrAttendance/dependency-injection/qr
 import {QrCodeRepository} from "../../../domain/qrCode.repository";
 import {Either} from "../../../../../shared/types/ErrorEither";
 import {QrCodeError} from "../../../domain/errors/qrCode.errors";
-import {GroupQuery} from "../../../../group/domain/group.query";
+import {QrCodeQuery} from "../../../domain/entities/qrCode.query";
 
 @injectable()
 export class QrCodeUpdater {
@@ -12,7 +12,7 @@ export class QrCodeUpdater {
         @inject(TYPES.QrCodeRepository) private qrCodeRepository: QrCodeRepository,
     ) {}
 
-    public execute = async(fields: GroupQuery, qrCodeId: string, userId: string): Promise<Either<QrCodeError, number>> => {
+    public execute = async(fields: QrCodeQuery, qrCodeId: string, userId: string): Promise<Either<QrCodeError, number>> => {
 
         return this.qrCodeRepository.updateQrCode(fields, qrCodeId, userId).then(result => {
 
