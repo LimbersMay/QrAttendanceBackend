@@ -1,11 +1,13 @@
 import {QrCodeCreator, QrCodeDeleter, QrCodeFinder, QrCodeUpdater} from "../../application/useCases";
-import {Request, Response} from "express";
+import {Response} from "express";
 import {ResponseEntity} from "../../../../shared/infrastructure/entities/response.entity";
 import {isRight} from "fp-ts/Either";
 import {QrCodeError} from "../../domain/errors/qrCode.errors";
 import {injectable} from "inversify";
-import {Body, Controller, Delete, Get, Param, Post, Put, Req, Res, UseBefore} from "routing-controllers";
+import {Body, Controller, CurrentUser, Delete, Get, Param, Post, Put, Res, UseBefore} from "routing-controllers";
 import {IsAuthenticated} from "../../../auth/infrastructure/middlewares";
+import {UserResponse} from "../../../user/application/responses/user.response";
+import {QrCodeQuery} from "../../domain/entities/qrCode.query";
 
 @Controller('/qrCode')
 @injectable()
@@ -17,14 +19,14 @@ export class QrCodeController {
         private qrCodeCreator: QrCodeCreator
     ) {}
 
-    @Get('/:id([0-9]+)')
+    @Get('/')
     @UseBefore(IsAuthenticated)
-    public async find (@Param("id") id: string, @Req() req: Request, @Res() res: Response) {
+    public async findAll (
+        @Res() res: Response,
+        @CurrentUser() user: UserResponse
+    ) {
 
-        // @ts-ignore
-        const { id: userId } = req.user;
-
-        const qrCode = await this.qrCodeFinder.execute(id, userId);
+        const qrCode = await this.qrCodeFinder.executeByUserId(user.id);
 
         if (isRight(qrCode))
             return ResponseEntity
@@ -35,14 +37,15 @@ export class QrCodeController {
         return this.handleError(qrCode.left, res);
     }
 
-    @Get('/all')
+    @Get('/:id')
     @UseBefore(IsAuthenticated)
-    public async findByUserId (@Req() req: Request, @Res() res: Response) {
+    public async findOne (
+        @Param('id') id: string,
+        @Res() res: Response,
+        @CurrentUser() user: UserResponse
+    ) {
 
-        // @ts-ignore
-        const { id: userId } = req.user;
-
-        const qrCode = await this.qrCodeFinder.executeByUserId(userId);
+        const qrCode = await this.qrCodeFinder.execute(id, user.id);
 
         if (isRight(qrCode))
             return ResponseEntity
@@ -50,17 +53,18 @@ export class QrCodeController {
                 .body(qrCode.right)
                 .buid();
 
-       return this.handleError(qrCode.left, res);
+        return this.handleError(qrCode.left, res);
     }
 
-    @Post('/create')
+    @Post('/')
     @UseBefore(IsAuthenticated)
-    public async create (@Req() req: Request, @Res() res: Response, @Body() { name, groupId, enabled, url, manualRegistrationDate}: {name: string, groupId: string, enabled: boolean, url: string, manualRegistrationDate: Date}) {
+    public async create (
+        @Res() res: Response,
+        @Body() { name, groupId, enabled, url, manualRegistrationDate}: {name: string, groupId: string, enabled: boolean, url: string, manualRegistrationDate: Date},
+        @CurrentUser() user: UserResponse
+    ) {
 
-        // @ts-ignore
-        const { id: idUser } = req.user;
-
-        const result = await this.qrCodeCreator.execute(name, groupId, idUser, enabled, url, manualRegistrationDate);
+        const result = await this.qrCodeCreator.execute(name, groupId, user.id, enabled, url, manualRegistrationDate);
 
         if (isRight(result))
             return ResponseEntity
@@ -71,37 +75,40 @@ export class QrCodeController {
         return this.handleError(result.left, res);
     }
 
-    @Put('/update')
+    @Put('/:id')
     @UseBefore(IsAuthenticated)
-    public async update (@Req() req: Request, @Res() res: Response ,@Body() { id, updatedFields }: {id: string, updatedFields: any}) {
+    public async update (
+        @Res() res: Response,
+        @Body() updatedFields: QrCodeQuery,
+        @Param('id') id: string,
+        @CurrentUser() user: UserResponse
+    ) {
 
-        // @ts-ignore
-        const { id: idUser } = req.user;
-
-        const result = await this.qrCodeUpdater.execute(updatedFields, id, idUser);
+        const result = await this.qrCodeUpdater.execute(updatedFields, id, user.id);
 
         if (isRight(result))
             return ResponseEntity
                 .status(200)
-                .body(result.right)
+                .body({ rowsUpdated: result.right })
                 .buid();
 
         return this.handleError(result.left, res);
     }
 
-    @Delete('/delete/:id')
+    @Delete('/:id')
     @UseBefore(IsAuthenticated)
-    public async delete ( @Req() req: Request, @Res() res: Response, @Param("id") id: string) {
+    public async delete (
+        @Res() res: Response,
+        @Param('id') id: string,
+        @CurrentUser() user: UserResponse
+    ) {
 
-        // @ts-ignore
-        const { id: userId } = req.user;
-
-        const result = await this.qrCodeDeleter.execute(id, userId);
+        const result = await this.qrCodeDeleter.execute(id, user.id);
 
         if (isRight(result))
             return ResponseEntity
                 .status(200)
-                .body(result.right)
+                .body({ rowsDeleted: result.right })
                 .buid();
 
         return this.handleError(result.left, res);
