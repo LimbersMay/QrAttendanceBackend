@@ -8,7 +8,7 @@ import {UserResponse} from "../../../user/application/responses/user.response";
 import {TYPES} from "../../../../../apps/QrAttendance/dependency-injection/user/types";
 
 @injectable()
-export class AuthenticateUser {
+export class UserAuthenticator {
     constructor (
         @inject(TYPES.UserRepository) private repository: UserRepository,
         @inject(TYPES.PasswordHasher) private encryptService: PasswordHasher
