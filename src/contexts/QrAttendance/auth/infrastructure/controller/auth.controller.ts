@@ -59,6 +59,7 @@ export class AuthController {
 
         if (isRight(result)) return ResponseEntity
             .ok()
+            .body({ message: "User created successfully" })
             .buid()
 
         switch (result.left) {
@@ -75,7 +76,7 @@ export class AuthController {
     public logout() {
         return ResponseEntity
             .status(200)
-            .body('Logout success')
+            .body({ message: "Logout success"})
             .buid()
     }
 
