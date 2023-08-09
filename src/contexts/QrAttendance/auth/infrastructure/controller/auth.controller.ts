@@ -31,7 +31,7 @@ export class AuthController {
 
         return ResponseEntity
             .status(200)
-            .body(req.user)
+            .body({ user: req.user })
             .buid()
     }
 
@@ -46,7 +46,6 @@ export class AuthController {
     }
 
     @Post('/register')
-    @UseBefore(EmailExists)
     public async register(@Body() {
         name,
         email,
@@ -59,7 +58,7 @@ export class AuthController {
 
         if (isRight(result)) return ResponseEntity
             .ok()
-            .body({ message: "User created successfully" })
+            .body({ user: result.right })
             .buid()
 
         switch (result.left) {
@@ -91,7 +90,7 @@ export class AuthController {
 
         return ResponseEntity
             .status(200)
-            .body(req.user)
+            .body({ user: req.user })
             .buid()
     }
 }
