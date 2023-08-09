@@ -3,7 +3,7 @@ import {inject, injectable} from "inversify";
 import {Body, Controller, Get, Post, Req, Res, UseAfter, UseBefore} from "routing-controllers";
 import {UserCreator} from "../../../user/application/useCases";
 import {ResponseEntity} from "../../../../shared/infrastructure/entities/response.entity";
-import {EmailExists, Logout} from "../middlewares";
+import {Logout} from "../middlewares";
 import {
     Authenticate,
     GoogleAuthentication,
