@@ -1,5 +1,5 @@
 import {Response} from "express";
-import {UserFinder, UserUpdater } from "../../application/useCases";
+import {UserUpdater} from "../../application/useCases";
 import {
     Body,
     CurrentUser,
@@ -9,9 +9,9 @@ import {
     UseBefore
 } from "routing-controllers";
 import {isRight} from "fp-ts/Either";
+import {injectable} from "inversify";
 import {ResponseEntity} from "../../../../shared/infrastructure/entities/response.entity";
 import {UserError} from "../../domain/errors/userError";
-import {injectable} from "inversify";
 import {IsAuthenticated} from "../../../auth/infrastructure/middlewares";
 import {UserResponse} from "../../application/responses/user.response";
 
@@ -20,7 +20,6 @@ import {UserResponse} from "../../application/responses/user.response";
 @injectable()
 export class UserController {
     constructor(
-        private readonly userFinder: UserFinder,
         private readonly userUpdater: UserUpdater
     ) {}
 
