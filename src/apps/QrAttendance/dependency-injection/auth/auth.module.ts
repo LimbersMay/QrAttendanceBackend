@@ -1,7 +1,6 @@
 import {Container} from "inversify";
 import {AuthController} from "../../../../contexts/QrAttendance/auth/infrastructure/controller/auth.controller";
 import {
-    EmailExists,
     IsAuthenticated,
     Logout
 } from "../../../../contexts/QrAttendance/auth/infrastructure/middlewares";
@@ -16,7 +15,6 @@ export const authModule = (container: Container) => {
 
     // middlewares
     container.bind<IsAuthenticated>(IsAuthenticated).toSelf();
-    container.bind<EmailExists>(EmailExists).toSelf();
     container.bind<Logout>(Logout).toSelf();
 
     // middlewares error handlers
