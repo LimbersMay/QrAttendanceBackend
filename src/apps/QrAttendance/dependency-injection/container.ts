@@ -4,7 +4,7 @@ import {groupModule} from "./group/group.module";
 import {qrCodeModule} from "./qrCode/qrCode.module";
 import {registryModule} from "./registry/registry.module";
 import {authModule} from "./auth/auth.module";
-import {PassportLocalStrategy} from "../../../contexts/QrAttendance/auth/infrastructure/passport/config";
+import {PassportLocalStrategy} from "../../../contexts/QrAttendance/auth/infrastructure/passport/passport-config";
 import {
     RegistrySocketController
 } from "../../../contexts/QrAttendance/registry/infrastructure/sockets/Registrysocket.controller";
