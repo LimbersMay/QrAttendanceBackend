@@ -8,8 +8,11 @@ import {PassportLocalStrategy} from "../../../contexts/QrAttendance/auth/infrast
 import {
     RegistrySocketController
 } from "../../../contexts/QrAttendance/registry/infrastructure/sockets/Registrysocket.controller";
+import {sharedModule} from "./shared-module";
 
 const container = new Container();
+
+sharedModule(container);
 
 authModule(container);
 userModule(container);
