@@ -4,7 +4,7 @@ import {
     IsAuthenticated,
     Logout
 } from "../../../../contexts/QrAttendance/auth/infrastructure/middlewares";
-import {PassportLocalStrategy} from "../../../../contexts/QrAttendance/auth/infrastructure/passport/config";
+import {PassportLocalStrategy} from "../../../../contexts/QrAttendance/auth/infrastructure/passport/passport-config";
 import {UserAuthenticator} from "../../../../contexts/QrAttendance/auth/application/authentication/user-authenticator";
 import {
     Authenticate, GoogleAuthentication, GoogleAuthenticationCallback,
