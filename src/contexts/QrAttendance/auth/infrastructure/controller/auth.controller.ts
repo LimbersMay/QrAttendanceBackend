@@ -3,7 +3,7 @@ import {inject, injectable} from "inversify";
 import {Body, Controller, Get, Post, Req, Res, UseBefore} from "routing-controllers";
 import {UserCreator} from "../../../user/application/useCases";
 import {ResponseEntity} from "../../../../shared/infrastructure/entities/response.entity";
-import {EmailExists, Logout} from "../middlewares";
+import {Logout} from "../middlewares";
 import {
     Authenticate,
     GoogleAuthentication,
@@ -29,7 +29,7 @@ export class AuthController {
 
         return ResponseEntity
             .status(200)
-            .body(req.user)
+            .body({ user: req.user })
             .buid()
     }
 
@@ -44,7 +44,6 @@ export class AuthController {
     }
 
     @Post('/register')
-    @UseBefore(EmailExists)
     public async register(@Body() {
         name,
         email,
@@ -57,6 +56,7 @@ export class AuthController {
 
         if (isRight(result)) return ResponseEntity
             .ok()
+            .body({ user: result.right })
             .buid()
 
         switch (result.left) {
@@ -73,7 +73,7 @@ export class AuthController {
     public logout() {
         return ResponseEntity
             .status(200)
-            .body('Logout success')
+            .body({ message: "Logout success"})
             .buid()
     }
 
@@ -88,7 +88,7 @@ export class AuthController {
 
         return ResponseEntity
             .status(200)
-            .body(req.user)
+            .body({ user: req.user })
             .buid()
     }
 }

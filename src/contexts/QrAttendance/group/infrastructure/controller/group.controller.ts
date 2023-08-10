@@ -4,10 +4,25 @@ import {isRight} from "fp-ts/Either";
 import {GroupCreator, GroupDeleter, GroupFinder, GroupUpdater} from "../../application/useCases";
 import {ResponseEntity} from "../../../../shared/infrastructure/entities/response.entity";
 import {GroupError} from "../../application/errors/group.errors";
-import {BodyParam, Delete, Get, JsonController, Param, Post, Put, Req, Res, UseBefore} from "routing-controllers";
+import {
+    Body,
+    BodyParam,
+    CurrentUser,
+    Delete,
+    Get,
+    JsonController,
+    Param,
+    Post,
+    Put,
+    Req,
+    Res,
+    UseBefore
+} from "routing-controllers";
 import {IsAuthenticated} from "../../../auth/infrastructure/middlewares";
+import {UserResponse} from "../../../user/application/responses/user.response";
 
 @JsonController('/group')
+@UseBefore(IsAuthenticated)
 @injectable()
 export class GroupController {
     constructor(
@@ -17,31 +32,13 @@ export class GroupController {
         private groupDeleter: GroupDeleter,
     ) {}
 
-    @Get('/:id([0-9]+)')
-    @UseBefore(IsAuthenticated)
-    public async getGroup (@Param("id") id: string, @Req() req: Request, @Res() res: Response) {
-
-        // @ts-ignore
-        const { id: userId } = req.user;
-
-        const group = await this.groupFinder.execute(id, userId);
-        if (isRight(group))
-            return ResponseEntity
-                .ok()
-                .body(group.right)
-                .buid();
-
-        return this.handleError(group.left, res);
-    }
-
-    @Get('/all')
-    @UseBefore(IsAuthenticated)
-    public async getGroups (@Req() req: Request, @Res() res: Response) {
-
-        // @ts-ignore
-        const { id: userId } = req.user;
-
-        const groups = await this.groupFinder.executeByUserId(userId);
+    @Get('/')
+    public async findAll (
+        @Req() req: Request,
+        @Res() res: Response,
+        @CurrentUser({required: true}) user: UserResponse
+    ) {
+        const groups = await this.groupFinder.executeByUserId(user.id);
 
         if (isRight(groups))
             return ResponseEntity
@@ -52,14 +49,33 @@ export class GroupController {
         return this.handleError(groups.left, res);
     }
 
-    @Post('/create')
-    @UseBefore(IsAuthenticated)
-    public async create (@BodyParam("name") name: string, @Req() req: Request, @Res() res: Response) {
+    @Get('/:id')
+    public async findOne (
+        @Param("id") id: string,
+        @Req() req: Request,
+        @Res() res: Response,
+        @CurrentUser({required: true}) user: UserResponse
+    ) {
 
-        // @ts-ignore
-        const { id: userId } = req.user;
+        const group = await this.groupFinder.execute(id, user.id);
+        if (isRight(group))
+            return ResponseEntity
+                .ok()
+                .body(group.right)
+                .buid();
 
-        const group = await this.groupCreator.execute(name, userId);
+        return this.handleError(group.left, res);
+    }
+
+    @Post('/')
+    public async create (
+        @BodyParam("name") name: string,
+        @Req() req: Request,
+        @Res() res: Response,
+        @CurrentUser({required: true}) user: UserResponse
+    ) {
+
+        const group = await this.groupCreator.execute(name, user.id);
 
         if (isRight(group))
             return ResponseEntity
@@ -70,39 +86,43 @@ export class GroupController {
         return this.handleError(group.left, res);
     }
 
-    @Put('/update')
-    @UseBefore(IsAuthenticated)
-    public async update (@Req() req: Request, @Res() res: Response, @BodyParam("id") id: string, @BodyParam("updatedFields") updatedFields: any) {
-
-        // @ts-ignore
-        const { id: userId } = req.user;
+    @Put('/:id')
+    public async update (
+        @Req() req: Request,
+        @Res() res: Response,
+        @Param("id") id: string,
+        @Body() updatedFields: any,
+        @CurrentUser({required: true}) user: UserResponse
+    ) {
 
         const expectedFields = {
             name: updatedFields.name
         }
 
-        const result = await this.groupUpdater.execute(id, userId, expectedFields);
+        const result = await this.groupUpdater.execute(id, user.id, expectedFields);
         if (isRight(result))
             return ResponseEntity
                 .ok()
-                .body(result.right)
+                .body({ rowsUpdated: result.right })
                 .buid();
 
         this.handleError(result.left, res);
     }
 
-    @Delete('/delete/:id')
-    @UseBefore(IsAuthenticated)
-    public async delete (@Param("id") id: string, @Req() req: Request, @Res() res: Response) {
+    @Delete('/:id')
+    public async delete (
+        @Param("id") id: string,
+        @Req() req: Request,
+        @Res() res: Response,
+        @CurrentUser({required: true}) user: UserResponse
+    ) {
 
-        // @ts-ignore
-        const { id: userId } = req.user;
-        const group = await this.groupDeleter.execute(id, userId);
+        const group = await this.groupDeleter.execute(id, user.id);
 
         if (isRight(group))
             return ResponseEntity
                 .ok()
-                .body(group.right)
+                .body({ rowsDeleted: group.right })
                 .buid();
 
         this.handleError(group.left, res);

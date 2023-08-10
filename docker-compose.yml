@@ -12,7 +12,8 @@ services:
       - qrAttendanceNetwork
     depends_on:
         - mysql-db
-
+    volumes:
+      - .:/usr/src/app
   mysql-db:
     container_name: mysql-db
     image: mysql:8
