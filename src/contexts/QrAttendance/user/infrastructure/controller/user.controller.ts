@@ -1,19 +1,11 @@
 import {Response} from "express";
-import {UserUpdater} from "../../application/useCases";
-import {
-    Body,
-    CurrentUser,
-    JsonController,
-    Put,
-    Res,
-    UseBefore
-} from "routing-controllers";
+import {Body, JsonController, Put, Res, CurrentUser, UseBefore} from "routing-controllers";
 import {isRight} from "fp-ts/Either";
 import {injectable} from "inversify";
 import {ResponseEntity} from "../../../../shared/infrastructure/entities/response.entity";
-import {UserError} from "../../domain/errors/userError";
+import {UserResponse, UserUpdater} from "../../application";
+import {UserIdSpecification, UserError} from "../../domain";
 import {IsAuthenticated} from "../../../auth/infrastructure/middlewares";
-import {UserResponse} from "../../application/responses/user.response";
 
 @JsonController('/user')
 @UseBefore(IsAuthenticated)
@@ -25,7 +17,8 @@ export class UserController {
 
     @Put('/')
     public async update(
-        @Res() res: Response, @Body() fields: any,
+        @Res() res: Response,
+        @Body() fields: any,
         @CurrentUser() user: UserResponse
     ) {
 
@@ -36,7 +29,10 @@ export class UserController {
             password: fields.password
         }
 
-        const result = await this.userUpdater.execute(expectedFields, user.id);
+        const result = await this.userUpdater.execute(
+            expectedFields,
+            new UserIdSpecification(user.id)
+        );
 
         if (isRight(result))
             return ResponseEntity
