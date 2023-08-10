@@ -1,30 +1,33 @@
 import {inject, injectable} from "inversify";
 import {isLeft, left, right} from "fp-ts/Either";
-import {UserRepository} from "../../../user/domain";
+import {TYPES} from "../../../../../apps/QrAttendance/dependency-injection/user/types";
 import {PasswordHasher} from "../../../shared/application/services/encrypt.service";
 import {Either} from "../../../../shared/types/ErrorEither";
 import {AuthError} from "../errors/authError";
-import {UserResponse} from "../../../user/application/responses/user.response";
-import {TYPES} from "../../../../../apps/QrAttendance/dependency-injection/user/types";
+import {UserResponse} from "../../../user/application";
+import {UserRepository, UserEmailSpecification} from "../../../user/domain";
 
 @injectable()
 export class UserAuthenticator {
     constructor (
-        @inject(TYPES.UserRepository) private repository: UserRepository,
-        @inject(TYPES.PasswordHasher) private encryptService: PasswordHasher
+        @inject(TYPES.UserRepository) private readonly repository: UserRepository,
+        @inject(TYPES.PasswordHasher) private readonly encryptService: PasswordHasher
     ){}
 
-    execute(email: string, password: string): Promise<Either<AuthError, UserResponse>> {
-        return this.repository.findUserByEmail(email).then(async (user) => {
+    public async execute(email: string, password: string): Promise<Either<AuthError, UserResponse>> {
+        try {
+            const user = await this.repository.findOne(new UserEmailSpecification(email));
 
-            // check if user exists
             if (isLeft(user)) return left(AuthError.INVALID_CREDENTIALS);
 
-            // check if password is correct
             const isPasswordCorrect = await this.encryptService.compare(password, user.right.password);
             if (!isPasswordCorrect) return left(AuthError.INVALID_CREDENTIALS);
 
             return right(UserResponse.fromUser(user.right));
-        }).catch(() => left(AuthError.CANNOT_AUTHENTICATE_USER));
+
+        } catch (error) {
+            console.log(error);
+            return left(AuthError.CANNOT_AUTHENTICATE_USER);
+        }
     }
 }
