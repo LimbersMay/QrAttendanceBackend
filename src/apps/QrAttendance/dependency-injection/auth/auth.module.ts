@@ -1,22 +1,21 @@
 import {Container} from "inversify";
 import {AuthController} from "../../../../contexts/QrAttendance/auth/infrastructure/controller/auth.controller";
 import {
-    EmailExists,
     IsAuthenticated,
     Logout
 } from "../../../../contexts/QrAttendance/auth/infrastructure/middlewares";
-import {PassportLocalStrategy} from "../../../../contexts/QrAttendance/auth/infrastructure/passport/config";
+import {PassportLocalStrategy} from "../../../../contexts/QrAttendance/auth/infrastructure/passport/passport-config";
 import {UserAuthenticator} from "../../../../contexts/QrAttendance/auth/application/authentication/user-authenticator";
 import {
     Authenticate, GoogleAuthentication, GoogleAuthenticationCallback,
     ErrorHandlerMiddleware
 } from "../../../../contexts/QrAttendance/auth/infrastructure/middlewares";
+import {UserRegistration} from "../../../../contexts/QrAttendance/auth/application/authentication/user-registration";
 
 export const authModule = (container: Container) => {
 
     // middlewares
     container.bind<IsAuthenticated>(IsAuthenticated).toSelf();
-    container.bind<EmailExists>(EmailExists).toSelf();
     container.bind<Logout>(Logout).toSelf();
 
     // middlewares error handlers
@@ -32,4 +31,5 @@ export const authModule = (container: Container) => {
 
     // use cases
     container.bind<UserAuthenticator>(UserAuthenticator).toSelf();
+    container.bind<UserRegistration>(UserRegistration).toSelf();
 }

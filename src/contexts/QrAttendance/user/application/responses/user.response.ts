@@ -1,5 +1,5 @@
 import {UserEntity} from "../../domain";
-import {UserDTO} from "../entities/user.dto";
+import {UserDTO} from "./user.dto";
 
 export class UserResponse implements UserDTO{
 

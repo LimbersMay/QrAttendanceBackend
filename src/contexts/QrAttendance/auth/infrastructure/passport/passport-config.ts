@@ -1,16 +1,15 @@
-import {Strategy as LocalStrategy} from 'passport-local';
-import {Strategy as GoogleStrategy} from 'passport-google-oauth20';
-import {inject, injectable} from "inversify";
+import {injectable} from "inversify";
 import passport from "passport";
 import {isLeft, isRight} from "fp-ts/Either";
+import {Strategy as LocalStrategy} from 'passport-local';
+import {Strategy as GoogleStrategy} from 'passport-google-oauth20';
 import {UserAuthenticator} from "../../application/authentication/user-authenticator";
-import {UserCreator, UserFinder} from "../../../user/application/useCases";
-import {UserDTO} from "../../../user/application/entities/user.dto";
-import {UserError} from "../../../user/domain/errors/userError";
+
+import {UserCreator, UserFinder, UserDTO} from "../../../user/application";
+import {UserEmailSpecification, UserIdSpecification, UserError} from "../../../user/domain";
+
 import {AuthError} from "../../application/errors/authError";
 import {API_URL, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET} from "../../../../utils/secrets";
-import {TYPES} from "../../../../../apps/QrAttendance/dependency-injection/user/types";
-import {PasswordHasher} from "../../../shared/application/services/encrypt.service";
 
 declare global {
     namespace Express {
@@ -26,7 +25,6 @@ export class PassportLocalStrategy {
         private readonly userAuthenticator: UserAuthenticator,
         private readonly userFinder: UserFinder,
         private readonly userCreator: UserCreator,
-         @inject(TYPES.PasswordHasher) private passwordHasher: PasswordHasher,
     ) {
         this.localStrategy();
         this.googleStrategy();
@@ -61,7 +59,7 @@ export class PassportLocalStrategy {
         // 1 -> {id: 1, name: Juan}. Deserializacion Pasar del identificador al objeto
         passport.deserializeUser(async (id: string, done) => {
 
-            const result = await this.userFinder.execute(id);
+            const result = await this.userFinder.execute(new UserIdSpecification(id));
 
             return isRight(result)
                 ? done(false, result.right)
@@ -81,7 +79,9 @@ export class PassportLocalStrategy {
                 if (!profile.emails) return done(AuthError.CANNOT_AUTHENTICATE_USER, undefined);
 
                 // check if user exists
-                const user = await this.userFinder.executeByEmail(profile.emails[0].value);
+                const user = await this.userFinder.execute(
+                    new UserEmailSpecification(profile.emails[0].value)
+                );
 
                 // if user does not exist
                 if (isLeft(user)) {
