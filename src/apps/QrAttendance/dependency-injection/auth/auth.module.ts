@@ -10,6 +10,7 @@ import {
     Authenticate, GoogleAuthentication, GoogleAuthenticationCallback,
     ErrorHandlerMiddleware
 } from "../../../../contexts/QrAttendance/auth/infrastructure/middlewares";
+import {UserRegistration} from "../../../../contexts/QrAttendance/auth/application/authentication/user-registration";
 
 export const authModule = (container: Container) => {
 
@@ -30,4 +31,5 @@ export const authModule = (container: Container) => {
 
     // use cases
     container.bind<UserAuthenticator>(UserAuthenticator).toSelf();
+    container.bind<UserRegistration>(UserRegistration).toSelf();
 }
