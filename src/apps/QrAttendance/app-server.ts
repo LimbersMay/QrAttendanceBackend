@@ -4,27 +4,27 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
 
-import {useContainer, useExpressServer} from "routing-controllers";
-import db from "../../contexts/shared/infrastructure/db/mysql.connection"
-// routes
-
-import {
-    AuthPassportStrategyInjected as PassportLocalStrategy,
-    RegistrySocketControllerInjected as RegistrySocketController,
-    container
-} from "./dependency-injection/container";
-import {UserController} from "../../contexts/QrAttendance/user/infrastructure/controller";
-import {AuthController} from "../../contexts/QrAttendance/auth/infrastructure/controller/auth.controller";
-import {GroupController} from "../../contexts/QrAttendance/group/infrastructure/controller/group.controller";
-import {QrCodeController} from "../../contexts/QrAttendance/qr_code/infrastructure/controllers";
-import {RegistryController} from "../../contexts/QrAttendance/registry/infrastructure/controller/registry.controller";
-
 import {createServer} from "http";
 import {SocketControllers} from "socket-controllers";
 import {Socket} from "socket.io";
 import { Server as SocketServer } from "socket.io";
 
 import { RateLimiterMemory } from "rate-limiter-flexible";
+
+import {
+    AuthPassportStrategyInjected as PassportLocalStrategy,
+    RegistrySocketControllerInjected as RegistrySocketController,
+    container
+} from "./dependency-injection/container";
+
+import {useContainer, useExpressServer} from "routing-controllers";
+
+import db from "../../contexts/shared/infrastructure/db/mysql.connection"
+import {UserController} from "../../contexts/QrAttendance/user/infrastructure/controller";
+import {AuthController} from "../../contexts/QrAttendance/auth/infrastructure/controller/auth.controller";
+import {GroupController} from "../../contexts/QrAttendance/group/infrastructure/controller/group.controller";
+import {QrCodeController} from "../../contexts/QrAttendance/qr_code/infrastructure/controllers";
+import {RegistryController} from "../../contexts/QrAttendance/registry/infrastructure/controller/registry.controller";
 
 export class Server {
     public app: Application;
@@ -98,6 +98,7 @@ export class Server {
                 defaultErrorHandler: false
             },
             controllers: [UserController, AuthController, GroupController, QrCodeController, RegistryController],
+            defaultErrorHandler: false,
             currentUserChecker: async (action) => {
                 return action.request.user;
             }
