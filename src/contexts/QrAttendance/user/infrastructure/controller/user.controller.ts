@@ -5,7 +5,8 @@ import {injectable} from "inversify";
 import {ResponseEntity} from "../../../../shared/infrastructure/entities/response.entity";
 import {UserResponse, UserUpdater} from "../../application";
 import {UserIdSpecification, UserError} from "../../domain";
-import {IsAuthenticated} from "../../../auth/infrastructure/middlewares";
+import {IsAuthenticated} from "../../../auth/infrastructure";
+import {UpdateUserDTO} from "../../application/validators/user.update";
 
 @JsonController('/user')
 @UseBefore(IsAuthenticated)
@@ -18,19 +19,12 @@ export class UserController {
     @Put('/')
     public async update(
         @Res() res: Response,
-        @Body() fields: any,
+        @Body() fieldsToUpdate: UpdateUserDTO,
         @CurrentUser() user: UserResponse
     ) {
 
-        const expectedFields = {
-            name: fields.name,
-            lastname: fields.lastname,
-            email: fields.email,
-            password: fields.password
-        }
-
         const result = await this.userUpdater.execute(
-            expectedFields,
+            fieldsToUpdate,
             new UserIdSpecification(user.id)
         );
 
