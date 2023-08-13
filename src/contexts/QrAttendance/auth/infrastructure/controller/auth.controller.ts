@@ -1,7 +1,6 @@
 import {Request, Response} from "express";
-import {inject, injectable} from "inversify";
+import {injectable} from "inversify";
 import {Body, Controller, Get, Post, Req, Res, UseBefore} from "routing-controllers";
-import {UserCreator} from "../../../user/application/useCases";
 import {ResponseEntity} from "../../../../shared/infrastructure/entities/response.entity";
 import {Logout} from "../middlewares";
 import {
@@ -10,16 +9,14 @@ import {
     GoogleAuthenticationCallback
 } from "../middlewares";
 import {isRight} from "fp-ts/Either";
-import {UserError} from "../../../user/domain/errors/userError";
-import {TYPES} from "../../../../../apps/QrAttendance/dependency-injection/user/types";
-import {PasswordHasher} from "../../../shared/application/services/encrypt.service";
+import {UserError} from "../../../user/domain";
+import {UserRegistration} from "../../application/authentication/user-registration";
 
 @Controller('/auth')
 @injectable()
 export class AuthController {
     constructor(
-        private readonly userCreator: UserCreator,
-        @inject(TYPES.PasswordHasher) private passwordHasher: PasswordHasher,
+        private readonly userRegistration: UserRegistration
     ) {
     }
 
@@ -51,8 +48,7 @@ export class AuthController {
         lastname
     }: { name: string, email: string, password: string, lastname: string }, @Res() res: Response) {
 
-        const hashedPassword = await this.passwordHasher.hash(password);
-        const result = await this.userCreator.execute({name, email, password: hashedPassword, lastname});
+        const result = await this.userRegistration.execute({ name, email, password, lastname});
 
         if (isRight(result)) return ResponseEntity
             .ok()
