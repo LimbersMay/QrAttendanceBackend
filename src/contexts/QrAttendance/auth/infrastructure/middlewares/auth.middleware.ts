@@ -1,13 +1,13 @@
 import { Request, Response, NextFunction } from "express";
 import {ExpressMiddlewareInterface, UnauthorizedError, BadRequestError} from "routing-controllers";
 import {injectable} from "inversify";
-import {AuthError} from "../../application/errors/authError";
+import {AuthErrors} from "../../domain";
 
 @injectable()
 export class IsAuthenticated implements ExpressMiddlewareInterface {
-    use(request: Request, response: Response, next: NextFunction) {
+    use(request: Request, _response: Response, next: NextFunction) {
         if (request.isAuthenticated()) return next();
-        return next(new UnauthorizedError(AuthError.NOT_AUTHENTICATED));
+        return next(new UnauthorizedError(AuthErrors.NOT_AUTHENTICATED));
     }
 }
 
