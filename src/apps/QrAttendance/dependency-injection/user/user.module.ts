@@ -11,7 +11,7 @@ import {
     UserDeleter,
     UserFinder,
     UserUpdater
-} from "../../../../contexts/QrAttendance/user/application/useCases";
+} from "../../../../contexts/QrAttendance/user/application";
 import {UserController} from "../../../../contexts/QrAttendance/user/infrastructure/controller";
 
 export const userModule = (container: Container) => {
