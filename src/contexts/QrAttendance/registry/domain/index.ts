@@ -3,3 +3,4 @@ export * from './registry.value';
 export * from './registryErrors';
 export * from './registry.entity';
 export * from './registry.repository';
+export * from './specifications';
