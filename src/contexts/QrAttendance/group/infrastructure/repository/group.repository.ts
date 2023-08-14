@@ -2,9 +2,7 @@ import {WhereOptions} from "sequelize";
 import {inject, injectable} from "inversify";
 import {left, right} from "fp-ts/Either";
 import {TYPES} from "../../../../../apps/QrAttendance/dependency-injection/types";
-import {Criteria} from "../../../../shared/specifications/specification";
-import {Either} from "../../../../shared/types/ErrorEither";
-import {SpecificationBuilder} from "../../../../shared/specifications/specification-builder";
+import {Criteria, Either, SpecificationBuilder} from "../../../shared";
 import Group from "../";
 import {GroupEntity, GroupError, GroupQuery, GroupRepository} from "../../domain";
 

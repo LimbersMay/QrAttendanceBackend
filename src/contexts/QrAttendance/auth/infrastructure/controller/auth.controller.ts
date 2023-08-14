@@ -1,16 +1,16 @@
 import {Request, Response} from "express";
-import {injectable} from "inversify";
 import {Body, Controller, Get, Post, Req, Res, UseBefore} from "routing-controllers";
-import {ResponseEntity} from "../../../../shared/infrastructure/entities/response.entity";
+import {injectable} from "inversify";
+import {isRight} from "fp-ts/Either";
+import {ResponseEntity, } from "../../../shared";
+import {UserErrors} from "../../../user/domain";
 import {Logout} from "../middlewares";
 import {
     Authenticate,
     GoogleAuthentication,
     GoogleAuthenticationCallback
 } from "../middlewares";
-import {isRight} from "fp-ts/Either";
-import {UserError} from "../../../user/domain";
-import {UserRegistration} from "../../application/authentication/user-registration";
+import {UserRegistration} from "../../application";
 import {CreateUserDTO} from "../../application/validators/user.create";
 
 @Controller('/auth')
@@ -55,7 +55,7 @@ export class AuthController {
             .buid()
 
         switch (result.left) {
-            case UserError.USER_CANNOT_BE_CREATED:
+            case UserErrors.USER_CANNOT_BE_CREATED:
                 return ResponseEntity
                     .status(500)
                     .body(result.left)

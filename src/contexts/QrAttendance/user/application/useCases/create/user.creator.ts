@@ -2,11 +2,9 @@ import {inject, injectable} from "inversify";
 import {TYPES} from "../../../../../../apps/QrAttendance/dependency-injection/user/types";
 
 import {isRight, left, right} from "fp-ts/Either";
-import {Either} from "../../../../../shared/types/ErrorEither";
-import {UUIDGenerator} from "../../../../shared/application/services/UUIDGenerator";
-import {UserRepository, UserValue} from "../../../domain";
-import {UserError} from "../../../domain/errors/userError";
-import {UserResponse} from "../../responses/user.response";
+import {UUIDGenerator, Either} from "../../../../shared";
+import {UserRepository, UserValue, UserErrors} from "../../../domain";
+import {UserResponse} from "../../responses";
 
 @injectable()
 export class UserCreator {
@@ -17,7 +15,7 @@ export class UserCreator {
     ) {
     }
 
-    execute = async ({name, email, lastname, password}: { name: string, email: string, lastname: string, password: string }): Promise<Either<UserError, UserResponse>> => {
+    execute = async ({name, email, lastname, password}: { name: string, email: string, lastname: string, password: string }): Promise<Either<UserErrors, UserResponse>> => {
 
         const user = UserValue.create({
             userId: this.UUIDGenerator.random(),
@@ -30,11 +28,11 @@ export class UserCreator {
         return this.userRepository.createUser(user).then((user) => {
             return isRight(user)
                 ? right(UserResponse.fromUser(user.right))
-                : left(UserError.DUPLICATED_EMAIL);
+                : left(UserErrors.DUPLICATED_EMAIL);
 
         }).catch((err) => {
             console.log(err)
-            return left(UserError.USER_CANNOT_BE_CREATED);
+            return left(UserErrors.USER_CANNOT_BE_CREATED);
         });
     }
 }

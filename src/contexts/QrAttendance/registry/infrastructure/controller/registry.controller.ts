@@ -1,22 +1,21 @@
 import {Request, Response} from "express";
-import {injectable} from "inversify";
-
-import {RegistryCreator, RegistryDeleter, RegistryFinder, RegistryUpdater} from "../../application/useCases";
-import {ResponseEntity} from "../../../../shared/infrastructure/entities/response.entity";
-import {RegistryError} from "../../domain/errors/registry.error";
 import {
     Body,
     Controller, CurrentUser,
     Delete,
     Get,
     Param,
+    Req, Res, UseBefore,
     Post,
-    Put,
-    Req, Res, UseBefore
+    Put
 } from "routing-controllers";
-import {IsAuthenticated} from "../../../auth/infrastructure/middlewares";
-import {UserResponse} from "../../../user/application/responses/user.response";
+import {injectable} from "inversify";
 import {isRight} from "fp-ts/Either";
+import {ResponseEntity} from "../../../shared";
+import {RegistryCreator, RegistryDeleter, RegistryFinder, RegistryUpdater} from "../../application/useCases";
+import {RegistryError} from "../../domain/errors/registry.error";
+import {IsAuthenticated} from "../../../auth/infrastructure";
+import {UserResponse} from "../../../user/application";
 
 @Controller('/registry')
 @UseBefore(IsAuthenticated)

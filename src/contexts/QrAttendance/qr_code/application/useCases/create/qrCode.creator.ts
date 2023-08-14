@@ -1,12 +1,11 @@
 import {inject, injectable} from "inversify";
 import {left, right} from "fp-ts/Either";
 import {TYPES} from "../../../../../../apps/QrAttendance/dependency-injection/qrCode/types";
+import {Either, UUIDGenerator} from "../../../../shared";
 import {QrCodeRepository} from "../../../domain/qrCode.repository";
-import {Either} from "../../../../../shared/types/ErrorEither";
 import {QrCodeError} from "../../../domain/errors/qrCode.errors";
 import {QrCodeResponse} from "../../responses/qrCode.response";
 import {QrCodeValue} from "../../../domain/qrCode.value";
-import {UUIDGenerator} from "../../../../shared/application/services/UUIDGenerator";
 
 @injectable()
 export class QrCodeCreator {

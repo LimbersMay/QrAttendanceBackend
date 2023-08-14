@@ -1,5 +1,4 @@
-import {Either} from "../../../shared/types/ErrorEither";
-import {Criteria} from "../../../shared/specifications/specification";
+import {Either, Criteria} from "../../shared";
 import {GroupError, GroupEntity, GroupQuery} from "./";
 
 export interface GroupRepository {

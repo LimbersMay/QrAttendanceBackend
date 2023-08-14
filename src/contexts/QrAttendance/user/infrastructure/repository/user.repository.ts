@@ -1,16 +1,11 @@
 import {inject, injectable} from "inversify";
 import {left, right} from "fp-ts/Either";
 import {WhereOptions} from "sequelize";
-
 import {TYPES} from "../../../../../apps/QrAttendance/dependency-injection/types";
-import {SpecificationBuilder} from "../../../../shared/specifications/specification-builder";
-import {Either} from "../../../../shared/types/ErrorEither";
-import {Criteria} from '../../../../shared/specifications/specification';
+import {SpecificationBuilder, Either, Criteria} from "../../../shared";
 
 import User from '../model/user.schema';
-
-import {UserEntity, UserRepository, UserQuery, UserError} from "../../domain";
-
+import {UserEntity, UserRepository, UserQuery, UserErrors} from "../../domain";
 
 @injectable()
 export class UserMysqlRepository implements UserRepository {
@@ -19,11 +14,11 @@ export class UserMysqlRepository implements UserRepository {
         @inject(TYPES.SpecificationBuilder) private readonly specificationBuilder: SpecificationBuilder<unknown, WhereOptions<UserEntity>>
     ) {}
 
-    public async findAll(specifications: Criteria): Promise<Either<UserError, UserEntity[]>> {
+    public async findAll(specifications: Criteria): Promise<Either<UserErrors, UserEntity[]>> {
         const whereClause = this.specificationBuilder.buildWhereClauseFromSpecifications(specifications);
 
         const matchedUsers = await User.findAll({ where: whereClause });
-        if (!matchedUsers) return left(UserError.USER_NOT_FOUND);
+        if (!matchedUsers) return left(UserErrors.USER_NOT_FOUND);
 
         return right(matchedUsers.map(user => ({
             userId: user.userId,
@@ -36,13 +31,13 @@ export class UserMysqlRepository implements UserRepository {
         })));
     }
 
-    public async findOne(query: Criteria): Promise<Either<UserError, UserEntity>> {
+    public async findOne(query: Criteria): Promise<Either<UserErrors, UserEntity>> {
 
         const whereClause = this.specificationBuilder.buildWhereClauseFromSpecifications(query);
 
         const matchedUser = await User.findOne({ where: whereClause });
 
-        if (!matchedUser) return left(UserError.USER_NOT_FOUND);
+        if (!matchedUser) return left(UserErrors.USER_NOT_FOUND);
 
         return right({
             userId: matchedUser.userId,
@@ -55,10 +50,10 @@ export class UserMysqlRepository implements UserRepository {
         });
     }
 
-    public async createUser(user: UserEntity): Promise<Either<UserError, UserEntity>> {
+    public async createUser(user: UserEntity): Promise<Either<UserErrors, UserEntity>> {
 
         const userCreated = await User.create(user);
-        if (!userCreated) return left(UserError.DUPLICATED_EMAIL);
+        if (!userCreated) return left(UserErrors.DUPLICATED_EMAIL);
 
         return right({
             userId: userCreated.userId,
@@ -70,7 +65,7 @@ export class UserMysqlRepository implements UserRepository {
             updatedAt: userCreated.updatedAt
         });
     }
-    public async deleteUser(criteria: Criteria): Promise<Either<UserError, number>>{
+    public async deleteUser(criteria: Criteria): Promise<Either<UserErrors, number>>{
 
         const whereClause = this.specificationBuilder.buildWhereClauseFromSpecifications(criteria);
 
@@ -80,10 +75,10 @@ export class UserMysqlRepository implements UserRepository {
 
         return (rows > 0)
             ? right(rows)
-            : left(UserError.USER_NOT_FOUND);
+            : left(UserErrors.USER_NOT_FOUND);
     }
 
-    public async updateUser(fields: UserQuery, criteria: Criteria): Promise<Either<UserError, number>> {
+    public async updateUser(fields: UserQuery, criteria: Criteria): Promise<Either<UserErrors, number>> {
 
         const whereClause = this.specificationBuilder.buildWhereClauseFromSpecifications(criteria);
 
@@ -98,6 +93,6 @@ export class UserMysqlRepository implements UserRepository {
 
         return (rowsAffected[0] > 0)
             ? right(rowsAffected[0])
-            : left(UserError.USER_NOT_FOUND);
+            : left(UserErrors.USER_NOT_FOUND);
     }
 }

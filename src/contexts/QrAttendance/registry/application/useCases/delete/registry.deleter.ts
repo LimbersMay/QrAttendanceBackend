@@ -1,9 +1,9 @@
-import {TYPES} from "../../../../../../apps/QrAttendance/dependency-injection/registry/types";
 import {inject, injectable} from "inversify";
 import * as E from 'fp-ts/lib/Either';
+import {Either} from "../../../../shared";
+import {TYPES} from "../../../../../../apps/QrAttendance/dependency-injection/registry/types";
 import {RegistryError} from "../../../domain/errors/registry.error";
 import {RegistryRepository} from "../../../domain/registry.repository";
-import {Either} from "../../../../../shared/types/ErrorEither";
 
 @injectable()
 export class RegistryDeleter {

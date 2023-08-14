@@ -1,12 +1,12 @@
 import {QrCodeCreator, QrCodeDeleter, QrCodeFinder, QrCodeUpdater} from "../../application/useCases";
 import {Response} from "express";
-import {ResponseEntity} from "../../../../shared/infrastructure/entities/response.entity";
+import {ResponseEntity} from "../../../shared";
 import {isRight} from "fp-ts/Either";
 import {QrCodeError} from "../../domain/errors/qrCode.errors";
 import {injectable} from "inversify";
 import {Body, Controller, CurrentUser, Delete, Get, Param, Post, Put, Res, UseBefore} from "routing-controllers";
-import {IsAuthenticated} from "../../../auth/infrastructure/middlewares";
-import {UserResponse} from "../../../user/application/responses/user.response";
+import {IsAuthenticated} from "../../../auth/infrastructure";
+import {UserResponse} from "../../../user/application";
 import {QrCodeQuery} from "../../domain/entities/qrCode.query";
 
 @Controller('/qrCode')

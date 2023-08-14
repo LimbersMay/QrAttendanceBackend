@@ -1,7 +1,6 @@
 import {Response} from "express";
 import {injectable} from "inversify";
 import {isRight} from "fp-ts/Either";
-import {ResponseEntity} from "../../../../shared/infrastructure/entities/response.entity";
 import {
     Body,
     CurrentUser,
@@ -14,6 +13,7 @@ import {
     Res,
     UseBefore
 } from "routing-controllers";
+import {ResponseEntity} from "../../../shared";
 import {GroupCreator, GroupDeleter, GroupFinder, GroupUpdater} from "../../application";
 import {GroupError, GroupIdSpecification} from "../../domain";
 import {IsAuthenticated} from "../../../auth/infrastructure";

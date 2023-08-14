@@ -5,7 +5,7 @@ import {
     ValidatorConstraint,
     ValidatorConstraintInterface,
 } from 'class-validator';
-import {Specification} from "../../../../shared/specifications/specification";
+import {Specification} from "../../../shared";
 import {UserFinder} from "../../../user/application";
 
 @ValidatorConstraint({async: true})

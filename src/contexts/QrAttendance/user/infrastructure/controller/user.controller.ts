@@ -2,11 +2,11 @@ import {Response} from "express";
 import {Body, JsonController, Put, Res, CurrentUser, UseBefore} from "routing-controllers";
 import {isRight} from "fp-ts/Either";
 import {injectable} from "inversify";
-import {ResponseEntity} from "../../../../shared/infrastructure/entities/response.entity";
-import {UserResponse, UserUpdater} from "../../application";
-import {UserIdSpecification, UserError} from "../../domain";
+import {ResponseEntity} from "../../../shared";
 import {IsAuthenticated} from "../../../auth/infrastructure";
+import {UserResponse, UserUpdater} from "../../application";
 import {UpdateUserDTO} from "../../application/validators/user.update";
+import {UserIdSpecification, UserErrors} from "../../domain";
 
 @JsonController('/user')
 @UseBefore(IsAuthenticated)
@@ -37,33 +37,33 @@ export class UserController {
        return this.handleError(result.left, res);
     }
 
-    private handleError (error: UserError, res: Response) {
+    private handleError (error: UserErrors, res: Response) {
         switch (error) {
-            case UserError.USER_NOT_FOUND:
+            case UserErrors.USER_NOT_FOUND:
                 return ResponseEntity
                     .status(404)
                     .body(error)
                     .send(res);
 
-            case UserError.USER_CANNOT_BE_FOUND:
+            case UserErrors.USER_CANNOT_BE_FOUND:
                 return ResponseEntity
                     .status(500)
                     .body(error)
                     .send(res);
 
-                case UserError.USER_CANNOT_BE_DELETED:
+                case UserErrors.USER_CANNOT_BE_DELETED:
                 return ResponseEntity
                     .status(500)
                     .body(error)
                     .send(res);
 
-                case UserError.USER_CANNOT_BE_UPDATED:
+                case UserErrors.USER_CANNOT_BE_UPDATED:
                 return ResponseEntity
                     .status(500)
                     .body(error)
                     .send(res);
 
-                case UserError.USER_CANNOT_BE_CREATED:
+                case UserErrors.USER_CANNOT_BE_CREATED:
                 return ResponseEntity
                     .status(500)
                     .body(error)

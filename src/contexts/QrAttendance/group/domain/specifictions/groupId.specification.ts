@@ -1,4 +1,4 @@
-import {AbstractSpecification, Expression} from "../../../../shared/specifications/specification";
+import {AbstractSpecification, Expression} from "../../../shared";
 import {GroupEntity} from "../group.entity";
 
 export class GroupIdSpecification extends AbstractSpecification<GroupEntity> {

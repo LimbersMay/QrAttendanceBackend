@@ -1,6 +1,6 @@
+import {Either} from "../../shared";
 import { RegistryEntity } from './registry.entity';
 import {RegistryQuery} from "./entities/registry.query";
-import {Either} from "../../../shared/types/ErrorEither";
 import {RegistryError} from "./errors/registry.error";
 
 export interface RegistryRepository {

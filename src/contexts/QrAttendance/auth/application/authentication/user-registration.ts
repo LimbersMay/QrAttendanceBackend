@@ -1,10 +1,9 @@
 import {inject, injectable} from "inversify";
 import {Either, isRight, left, right} from "fp-ts/Either";
 import {TYPES} from "../../../../../apps/QrAttendance/dependency-injection/user/types";
-import {UUIDGenerator} from "../../../shared/application/services/UUIDGenerator";
-import {PasswordHasher} from "../../../shared/application/services/encrypt.service";
+import {UUIDGenerator, PasswordHasher} from "../../../shared";
 import {UserResponse} from "../../../user/application";
-import {UserError, UserRepository, UserValue} from "../../../user/domain";
+import {UserErrors, UserRepository, UserValue} from "../../../user/domain";
 import {CreateUserDTO} from "../validators/user.create";
 
 
@@ -17,7 +16,7 @@ export class UserRegistration {
     ) {
     }
 
-    public async execute ({ name, lastname, password, email }: CreateUserDTO): Promise<Either<UserError, UserResponse>> {
+    public async execute ({ name, lastname, password, email }: CreateUserDTO): Promise<Either<UserErrors, UserResponse>> {
 
         const encryptedPassword = await this.encryptService.hash(password);
 
@@ -36,11 +35,11 @@ export class UserRegistration {
                 return right(UserResponse.fromUser(result.right));
             }
 
-            return left(UserError.DUPLICATED_EMAIL);
+            return left(UserErrors.DUPLICATED_EMAIL);
 
         } catch (error) {
             console.log(error);
-            return left(UserError.USER_CANNOT_BE_CREATED);
+            return left(UserErrors.USER_CANNOT_BE_CREATED);
         }
     }
 }

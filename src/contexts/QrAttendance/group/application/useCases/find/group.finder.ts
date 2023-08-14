@@ -1,8 +1,7 @@
 import {inject, injectable} from "inversify";
 import {left, right, fold} from "fp-ts/Either";
 import {TYPES} from "../../../../../../apps/QrAttendance/dependency-injection/group/types";
-import {Either} from "../../../../../shared/types/ErrorEither";
-import {Criteria} from "../../../../../shared/specifications/specification";
+import {Either, Criteria} from "../../../../shared";
 import {GroupResponse} from "../../responses";
 import {GroupEntity, GroupError, GroupRepository} from "../../../domain";
 

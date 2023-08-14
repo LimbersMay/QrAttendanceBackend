@@ -1,8 +1,8 @@
 import {DataType, Sequelize} from 'sequelize-typescript'
-import User from "../../../QrAttendance/user/infrastructure/model/user.schema";
-import Group from "../../../QrAttendance/group/infrastructure/model/group.schema";
-import QrCode from "../../../QrAttendance/qr_code/infrastructure/models/qrCode.schema";
-import Registry from "../../../QrAttendance/registry/infrastructure/model/registry.schema";
+import User from "../../../user/infrastructure/model/user.schema";
+import Group from "../../../group/infrastructure/model/group.schema";
+import QrCode from "../../../qr_code/infrastructure/models/qrCode.schema";
+import Registry from "../../../registry/infrastructure/model/registry.schema";
 
 const DB_NAME = process.env.MYSQL_DATABASE ?? '';
 const DB_USER = process.env.MYSQL_USER ?? '';

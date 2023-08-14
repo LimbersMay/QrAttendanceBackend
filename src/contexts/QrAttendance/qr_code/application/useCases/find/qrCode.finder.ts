@@ -2,9 +2,9 @@ import {inject, injectable} from "inversify";
 import {isRight, left, right} from "fp-ts/Either";
 import {TYPES} from "../../../../../../apps/QrAttendance/dependency-injection/qrCode/types";
 import {QrCodeRepository} from "../../../domain/qrCode.repository";
-import {Either} from "../../../../../shared/types/ErrorEither";
-import {QrCodeError} from "../../../domain/errors/qrCode.errors";
+import {Either} from "../../../../shared";
 import {QrCodeResponse} from "../../responses/qrCode.response";
+import {QrCodeError} from "../../../domain/errors/qrCode.errors";
 
 @injectable()
 export class QrCodeFinder {

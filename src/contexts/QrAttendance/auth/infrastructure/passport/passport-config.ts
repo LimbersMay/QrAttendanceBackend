@@ -7,7 +7,7 @@ import {AuthErrors} from "../../domain";
 import {UserAuthenticator} from "../../application";
 
 import {UserCreator, UserFinder, UserDTO} from "../../../user/application";
-import {UserEmailSpecification, UserIdSpecification, UserError} from "../../../user/domain";
+import {UserEmailSpecification, UserIdSpecification, UserErrors} from "../../../user/domain";
 import {API_URL, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET} from "../../../../utils/secrets";
 
 declare global {
@@ -85,7 +85,7 @@ export class PassportLocalStrategy {
                 // if user does not exist
                 if (isLeft(user)) {
                     // uncaught exception
-                    if (user.left === UserError.USER_CANNOT_BE_FOUND) {
+                    if (user.left === UserErrors.USER_CANNOT_BE_FOUND) {
                         return done(user.left, undefined);
                     }
                 }

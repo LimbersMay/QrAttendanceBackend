@@ -1,10 +1,10 @@
 import {inject, injectable} from "inversify";
-import {TYPES} from "../../../../../../apps/QrAttendance/dependency-injection/registry/types";
 import * as E from 'fp-ts/lib/Either';
+import {TYPES} from "../../../../../../apps/QrAttendance/dependency-injection/registry/types";
+import {Either} from "../../../../shared";
+import {RegistryResponse} from "../../responses/registry.response";
 import {RegistryRepository} from "../../../domain/registry.repository";
 import {RegistryError} from "../../../domain/errors/registry.error";
-import {RegistryResponse} from "../../responses/registry.response";
-import {Either} from "../../../../../shared/types/ErrorEither";
 import {RegistryEntity} from "../../../domain/registry.entity";
 
 @injectable()

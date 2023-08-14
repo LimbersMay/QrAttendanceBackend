@@ -1,8 +1,7 @@
 import {inject, injectable} from "inversify";
 import { left, right} from "fp-ts/Either";
 import {TYPES} from "../../../../../../apps/QrAttendance/dependency-injection/group/types";
-import {Either} from "../../../../../shared/types/ErrorEither";
-import {UUIDGenerator} from "../../../../shared";
+import {Either, UUIDGenerator} from "../../../../shared";
 import {GroupError, GroupRepository, GroupValue} from "../../../domain";
 import {GroupResponse} from "../../responses";
 import {CreateGroupDTO} from "../../validators/group.create";

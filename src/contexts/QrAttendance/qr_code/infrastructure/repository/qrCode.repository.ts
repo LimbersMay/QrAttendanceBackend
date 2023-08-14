@@ -1,9 +1,9 @@
 import {injectable} from "inversify";
 import {left, right} from "fp-ts/Either";
+import {Either} from "../../../shared";
+import QrCode from "../models/qrCode.schema";
 import {QrCodeRepository} from "../../domain/qrCode.repository";
 import {QrCodeEntity} from "../../domain/qrCode.entity";
-import QrCode from "../models/qrCode.schema";
-import {Either} from "../../../../shared/types/ErrorEither";
 import {QrCodeError} from "../../domain/errors/qrCode.errors";
 
 @injectable()
