@@ -1,2 +1,2 @@
 export * from './useCases';
-export * from './responses/registry.response';
+export * from './responses';
