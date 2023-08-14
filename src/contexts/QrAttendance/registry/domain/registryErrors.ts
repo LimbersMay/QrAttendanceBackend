@@ -1,5 +1,5 @@
 
-export enum RegistryError {
+export enum RegistryErrors {
     REGISTRY_NOT_FOUND = 'REGISTRY_NOT_FOUND',
     REGISTRIES_NOT_FOUND = 'REGISTRIES_NOT_FOUND',
     REGISTRY_CANNOT_BE_FOUND = 'REGISTRY_CANNOT_BE_FOUND',

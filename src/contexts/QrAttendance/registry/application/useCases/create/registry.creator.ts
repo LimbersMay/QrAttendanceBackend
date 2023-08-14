@@ -4,7 +4,7 @@ import {TYPES} from "../../../../../../apps/QrAttendance/dependency-injection/re
 import {Either, UUIDGenerator} from "../../../../shared";
 import {RegistryResponse} from "../../responses/registry.response";
 import {RegistryRepository} from "../../../domain/registry.repository";
-import {RegistryError} from "../../../domain/errors/registry.error";
+import {RegistryErrors} from "../../../domain/registryErrors";
 import {RegistryValue} from "../../../domain/registry.value";
 
 @injectable()
@@ -14,7 +14,7 @@ export class RegistryCreator {
         @inject(TYPES.RegistryUUIDGenerator) private uuidGenerator: UUIDGenerator
     ){}
 
-    async execute(qrId: string, ownerId: string, name: string, group: string, career: string, firstSurname: string, secondSurname: string): Promise<Either<RegistryError, RegistryResponse>> {
+    async execute(qrId: string, ownerId: string, name: string, group: string, career: string, firstSurname: string, secondSurname: string): Promise<Either<RegistryErrors, RegistryResponse>> {
 
         const registry = RegistryValue.create({
             registryId: this.uuidGenerator.random(),
@@ -31,7 +31,7 @@ export class RegistryCreator {
             return E.right(RegistryResponse.fromRegistry(registry))
         }).catch((error) => {
             console.log(error);
-            return E.left(RegistryError.REGISTRY_CANNOT_BE_CREATED);
+            return E.left(RegistryErrors.REGISTRY_CANNOT_BE_CREATED);
         });
     }
 }

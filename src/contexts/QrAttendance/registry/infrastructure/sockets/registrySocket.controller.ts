@@ -3,7 +3,7 @@ import { injectable } from "inversify";
 import {RegistryCreator} from "../../application/useCases";
 import {isLeft} from "fp-ts/Either";
 import {RateLimiterMemory} from "rate-limiter-flexible";
-import {RegistryError} from "../../domain/errors/registry.error";
+import {RegistryErrors} from "../../domain/registryErrors";
 import {QrCodeFinder, QrCodeFormIdSpecification} from "../../../qr_code";
 
 @injectable()
@@ -44,7 +44,7 @@ export class RegistrySocketController {
                 socket.emit("register-attendance-success", "Attendance registered successfully");
 
             } catch (rejRes) {
-                socket.emit("already-registered-attendance", RegistryError.YOU_HAS_ALREADY_REGISTERED_ATTENDANCE);
+                socket.emit("already-registered-attendance", RegistryErrors.YOU_HAS_ALREADY_REGISTERED_ATTENDANCE);
             }
         });
 

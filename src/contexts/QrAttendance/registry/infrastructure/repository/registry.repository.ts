@@ -4,7 +4,7 @@ import {Either} from "../../../shared";
 import Registry from "../model/registry.schema";
 import {RegistryRepository} from "../../domain/registry.repository";
 import {RegistryEntity} from "../../domain/registry.entity";
-import {RegistryError} from "../../domain/errors/registry.error";
+import {RegistryErrors} from "../../domain/registryErrors";
 import {RegistryQuery} from "../../domain/entities/registry.query";
 
 @injectable()
@@ -18,7 +18,7 @@ export class RegistryMysqlRepository implements RegistryRepository {
         return this.toDomain(newRegistry);
     }
 
-    async deleteRegistry(registryId: string, userId: string): Promise<Either<RegistryError, number>> {
+    async deleteRegistry(registryId: string, userId: string): Promise<Either<RegistryErrors, number>> {
 
         const rowsDestroyed = await Registry.destroy({
             where: {
@@ -29,11 +29,11 @@ export class RegistryMysqlRepository implements RegistryRepository {
 
         return (rowsDestroyed > 0)
             ? E.right(rowsDestroyed)
-            : E.left(RegistryError.REGISTRY_NOT_FOUND);
+            : E.left(RegistryErrors.REGISTRY_NOT_FOUND);
 
     }
 
-    async findRegistriesByUserId(userId: string): Promise<Either<RegistryError, RegistryEntity[]>> {
+    async findRegistriesByUserId(userId: string): Promise<Either<RegistryErrors, RegistryEntity[]>> {
 
         const registries = await Registry.findAll({
             where: {
@@ -44,7 +44,7 @@ export class RegistryMysqlRepository implements RegistryRepository {
         return E.right(registries.map(registry => this.toDomain(registry)));
     }
 
-    async findRegistryById(registryId: string, userId: string): Promise<Either<RegistryError, RegistryEntity>> {
+    async findRegistryById(registryId: string, userId: string): Promise<Either<RegistryErrors, RegistryEntity>> {
 
         const registry = await Registry.findOne({
             where: {
@@ -54,10 +54,10 @@ export class RegistryMysqlRepository implements RegistryRepository {
 
         return (registry)
             ? E.right(this.toDomain(registry))
-            : E.left(RegistryError.REGISTRY_NOT_FOUND);
+            : E.left(RegistryErrors.REGISTRY_NOT_FOUND);
     }
 
-    async updateRegistry(fields: RegistryQuery, registryId: string, userId: string): Promise<Either<RegistryError, number>> {
+    async updateRegistry(fields: RegistryQuery, registryId: string, userId: string): Promise<Either<RegistryErrors, number>> {
 
         const rowsUpdated = await Registry.update({
             ...fields
@@ -71,7 +71,7 @@ export class RegistryMysqlRepository implements RegistryRepository {
 
         return (rowsUpdated[0] > 0)
             ? E.right(rowsUpdated[0])
-            : E.left(RegistryError.REGISTRY_NOT_FOUND);
+            : E.left(RegistryErrors.REGISTRY_NOT_FOUND);
 
     }
 
