@@ -4,12 +4,11 @@ import {isRight} from "fp-ts/Either";
 import {ResponseEntity} from "../../../../shared/infrastructure/entities/response.entity";
 import {
     Body,
-    BodyParam,
     CurrentUser,
     Delete,
     Get,
     JsonController,
-    Param,
+    Params,
     Post,
     Put,
     Res,
@@ -20,6 +19,9 @@ import {GroupError, GroupIdSpecification} from "../../domain";
 import {IsAuthenticated} from "../../../auth/infrastructure";
 import {UserResponse} from "../../../user/application";
 import {UserIdSpecification} from "../../../user/domain";
+import {CreateGroupDTO} from "../../application/validators/group.create";
+import {UpdateGroupDTO} from "../../application/validators/group.update";
+import {GroupIdDTO} from "../../application/validators/groupId";
 
 @JsonController('/group')
 @UseBefore(IsAuthenticated)
@@ -52,7 +54,7 @@ export class GroupController {
 
     @Get('/:id')
     public async findOne (
-        @Param('id') groupId: string,
+        @Params() { id: groupId }: GroupIdDTO,
         @Res() res: Response,
         @CurrentUser({required: true}) user: UserResponse
     ) {
@@ -74,11 +76,11 @@ export class GroupController {
     @Post('/')
     public async create (
         @Res() res: Response,
-        @BodyParam('name') name: string,
+        @Body() groupDataDTO: CreateGroupDTO,
         @CurrentUser({required: true}) user: UserResponse
     ) {
 
-        const group = await this.groupCreator.execute(name, user.id);
+        const group = await this.groupCreator.execute(groupDataDTO, user.id);
 
         if (isRight(group))
             return ResponseEntity
@@ -92,16 +94,12 @@ export class GroupController {
     @Put('/:id')
     public async update (
         @Res() res: Response,
-        @Param('id') groupId: string,
-        @Body() updatedFields: any,
+        @Params() { id: groupId }: GroupIdDTO,
+        @Body() fieldsToUpdate: UpdateGroupDTO,
         @CurrentUser({required: true}) user: UserResponse
     ) {
 
-        const expectedFields = {
-            name: updatedFields.name
-        }
-
-        const result = await this.groupUpdater.execute(expectedFields, [
+        const result = await this.groupUpdater.execute(fieldsToUpdate, [
             new UserIdSpecification(user.id),
             new GroupIdSpecification(groupId)
         ]);
@@ -117,8 +115,8 @@ export class GroupController {
 
     @Delete('/:id')
     public async delete (
-        @Param('id') groupId: string,
         @Res() res: Response,
+        @Params() { id: groupId }: GroupIdDTO,
         @CurrentUser({required: true}) user: UserResponse
     ) {
 
