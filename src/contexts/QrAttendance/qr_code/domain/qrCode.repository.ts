@@ -1,5 +1,5 @@
+import {Either} from "../../shared";
 import {QrCodeEntity} from "./qrCode.entity";
-import {Either} from "../../shared/interfaces/ErrorEither";
 import {QrCodeError} from "./errors/qrCode.errors";
 
 export interface QrCodeRepository {
