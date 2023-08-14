@@ -1,5 +1,5 @@
 export type Expression<T> = {
-    [key in keyof T]?: T[key];
+    [key in keyof T]?: T[key] | Expression<T> | Expression<T>[];
 };
 
 export interface Specification<T> {
