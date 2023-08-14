@@ -3,7 +3,7 @@ import {Either, isRight, left, right} from "fp-ts/Either";
 import {TYPES} from "../../../../../apps/QrAttendance/dependency-injection/user/types";
 import {UUIDGenerator, PasswordHasher} from "../../../shared";
 import {UserResponse} from "../../../user/application";
-import {UserErrors, UserRepository, UserValue} from "../../../user/domain";
+import {UserError, UserRepository, UserValue} from "../../../user/domain";
 import {CreateUserDTO} from "../validators/user.create";
 
 
@@ -16,7 +16,7 @@ export class UserRegistration {
     ) {
     }
 
-    public async execute ({ name, lastname, password, email }: CreateUserDTO): Promise<Either<UserErrors, UserResponse>> {
+    public async execute ({ name, lastname, password, email }: CreateUserDTO): Promise<Either<UserError, UserResponse>> {
 
         const encryptedPassword = await this.encryptService.hash(password);
 
@@ -35,11 +35,11 @@ export class UserRegistration {
                 return right(UserResponse.fromUser(result.right));
             }
 
-            return left(UserErrors.DUPLICATED_EMAIL);
+            return left(UserError.DUPLICATED_EMAIL);
 
         } catch (error) {
             console.log(error);
-            return left(UserErrors.USER_CANNOT_BE_CREATED);
+            return left(UserError.USER_CANNOT_BE_CREATED);
         }
     }
 }

@@ -3,7 +3,7 @@ import {Body, Controller, Get, Post, Req, Res, UseBefore} from "routing-controll
 import {injectable} from "inversify";
 import {isRight} from "fp-ts/Either";
 import {ResponseEntity, } from "../../../shared";
-import {UserErrors} from "../../../user/domain";
+import {UserError} from "../../../user/domain";
 import {Logout} from "../middlewares";
 import {
     Authenticate,
@@ -55,7 +55,7 @@ export class AuthController {
             .buid()
 
         switch (result.left) {
-            case UserErrors.USER_CANNOT_BE_CREATED:
+            case UserError.USER_CANNOT_BE_CREATED:
                 return ResponseEntity
                     .status(500)
                     .body(result.left)

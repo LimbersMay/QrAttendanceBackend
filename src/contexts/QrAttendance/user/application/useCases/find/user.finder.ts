@@ -3,7 +3,7 @@ import {isRight, left, right} from "fp-ts/Either";
 import {TYPES} from "../../../../../../apps/QrAttendance/dependency-injection/user/types";
 import {Either, Criteria} from "../../../../shared";
 import {UserResponse} from "../../responses";
-import {UserErrors, UserRepository} from "../../../domain";
+import {UserError, UserRepository} from "../../../domain";
 
 @injectable()
 export class UserFinder {
@@ -11,14 +11,14 @@ export class UserFinder {
         @inject(TYPES.UserRepository) private userRepository: UserRepository
     ) {}
 
-    public async execute (specifications: Criteria): Promise<Either<UserErrors, UserResponse>> {
+    public async execute (specifications: Criteria): Promise<Either<UserError, UserResponse>> {
         try {
             const user = await this.userRepository.findOne(specifications);
             return isRight(user)
                 ? right(UserResponse.fromUser(user.right))
-                : left(UserErrors.USER_NOT_FOUND);
+                : left(UserError.USER_NOT_FOUND);
         } catch {
-            return left(UserErrors.USER_CANNOT_BE_FOUND);
+            return left(UserError.USER_CANNOT_BE_FOUND);
         }
     }
 }

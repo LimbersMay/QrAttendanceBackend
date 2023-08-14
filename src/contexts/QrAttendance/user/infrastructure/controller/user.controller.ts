@@ -6,7 +6,7 @@ import {ResponseEntity} from "../../../shared";
 import {IsAuthenticated} from "../../../auth/infrastructure";
 import {UserResponse, UserUpdater} from "../../application";
 import {UpdateUserDTO} from "../../application/validators/user.update";
-import {UserIdSpecification, UserErrors} from "../../domain";
+import {UserIdSpecification, UserError} from "../../domain";
 
 @JsonController('/user')
 @UseBefore(IsAuthenticated)
@@ -37,33 +37,33 @@ export class UserController {
        return this.handleError(result.left, res);
     }
 
-    private handleError (error: UserErrors, res: Response) {
+    private handleError (error: UserError, res: Response) {
         switch (error) {
-            case UserErrors.USER_NOT_FOUND:
+            case UserError.USER_NOT_FOUND:
                 return ResponseEntity
                     .status(404)
                     .body(error)
                     .send(res);
 
-            case UserErrors.USER_CANNOT_BE_FOUND:
+            case UserError.USER_CANNOT_BE_FOUND:
                 return ResponseEntity
                     .status(500)
                     .body(error)
                     .send(res);
 
-                case UserErrors.USER_CANNOT_BE_DELETED:
+                case UserError.USER_CANNOT_BE_DELETED:
                 return ResponseEntity
                     .status(500)
                     .body(error)
                     .send(res);
 
-                case UserErrors.USER_CANNOT_BE_UPDATED:
+                case UserError.USER_CANNOT_BE_UPDATED:
                 return ResponseEntity
                     .status(500)
                     .body(error)
                     .send(res);
 
-                case UserErrors.USER_CANNOT_BE_CREATED:
+                case UserError.USER_CANNOT_BE_CREATED:
                 return ResponseEntity
                     .status(500)
                     .body(error)

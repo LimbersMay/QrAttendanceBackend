@@ -3,7 +3,7 @@ import {TYPES} from "../../../../../../apps/QrAttendance/dependency-injection/us
 
 import {isRight, left, right} from "fp-ts/Either";
 import {UUIDGenerator, Either} from "../../../../shared";
-import {UserRepository, UserValue, UserErrors} from "../../../domain";
+import {UserRepository, UserValue, UserError} from "../../../domain";
 import {UserResponse} from "../../responses";
 
 @injectable()
@@ -15,7 +15,7 @@ export class UserCreator {
     ) {
     }
 
-    execute = async ({name, email, lastname, password}: { name: string, email: string, lastname: string, password: string }): Promise<Either<UserErrors, UserResponse>> => {
+    execute = async ({name, email, lastname, password}: { name: string, email: string, lastname: string, password: string }): Promise<Either<UserError, UserResponse>> => {
 
         const user = UserValue.create({
             userId: this.UUIDGenerator.random(),
@@ -28,11 +28,11 @@ export class UserCreator {
         return this.userRepository.createUser(user).then((user) => {
             return isRight(user)
                 ? right(UserResponse.fromUser(user.right))
-                : left(UserErrors.DUPLICATED_EMAIL);
+                : left(UserError.DUPLICATED_EMAIL);
 
         }).catch((err) => {
             console.log(err)
-            return left(UserErrors.USER_CANNOT_BE_CREATED);
+            return left(UserError.USER_CANNOT_BE_CREATED);
         });
     }
 }

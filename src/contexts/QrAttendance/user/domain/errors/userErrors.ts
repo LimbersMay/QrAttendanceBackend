@@ -1,4 +1,4 @@
-export enum UserErrors {
+export enum UserError {
     DUPLICATED_EMAIL = 'DUPLICATED_EMAIL',
     USER_NOT_FOUND = 'USER_NOT_FOUND',
     USER_CANNOT_BE_FOUND = 'USER_CANNOT_BE_FOUND',

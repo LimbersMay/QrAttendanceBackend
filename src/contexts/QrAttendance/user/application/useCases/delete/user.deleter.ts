@@ -2,7 +2,7 @@ import {inject, injectable} from "inversify";
 import {isRight, left, right} from "fp-ts/Either";
 import {TYPES} from "../../../../../../apps/QrAttendance/dependency-injection/user/types";
 import {Criteria, Either} from "../../../../shared";
-import {UserRepository, UserErrors} from "../../../domain";
+import {UserRepository, UserError} from "../../../domain";
 
 @injectable()
 export class UserDeleter {
@@ -10,14 +10,14 @@ export class UserDeleter {
         @inject(TYPES.UserRepository) private userRepository: UserRepository
     ) {}
 
-    public async execute (criteria: Criteria): Promise<Either<UserErrors, number>> {
+    public async execute (criteria: Criteria): Promise<Either<UserError, number>> {
         try {
             const result = await this.userRepository.deleteUser(criteria);
             return isRight(result)
                 ? right(result.right)
                 : left(result.left);
         } catch {
-            return left(UserErrors.USER_CANNOT_BE_DELETED);
+            return left(UserError.USER_CANNOT_BE_DELETED);
         }
     }
 }
