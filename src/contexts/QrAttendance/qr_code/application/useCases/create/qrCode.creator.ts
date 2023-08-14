@@ -29,7 +29,9 @@ export class QrCodeCreator {
         try {
             const result = await this.qrCodeRepository.createQrCode(qrCodeValue);
             return right(QrCodeResponse.fromQrCode(result));
-        } catch {
+
+        } catch (error){
+            console.log(error)
             return left(QrCodeError.QR_CODE_CANNOT_BE_CREATED);
         }
     }
