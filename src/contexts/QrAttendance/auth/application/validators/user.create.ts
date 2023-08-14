@@ -37,8 +37,8 @@ export class CreateUserDTO {
     @IsString({
         message: "Password must be a string"
     })
-    @MinLength(6, {
-        message: "Password must be at least 6 characters"
+    @MinLength(4, {
+        message: "Password must be at least 4 characters"
     })
     password!: string;
 }
