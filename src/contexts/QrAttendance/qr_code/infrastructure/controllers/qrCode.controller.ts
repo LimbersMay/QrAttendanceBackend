@@ -1,12 +1,26 @@
 import {Response} from "express";
-import {Body, Controller, CurrentUser, Delete, Get, Param, Post, Put, Res, UseBefore} from "routing-controllers";
+import {
+    Body,
+    Controller,
+    CurrentUser,
+    Delete,
+    Get,
+    Params,
+    Post,
+    Put,
+    Res,
+    UseBefore
+} from "routing-controllers";
 import {injectable} from "inversify";
 import {isRight} from "fp-ts/Either";
 import {ResponseEntity} from "../../../shared";
 import {QrCodeCreator, QrCodeDeleter, QrCodeFinder, QrCodeUpdater} from "../../application";
-import {QrCodeQuery, QrCodeError, QrCodeIdSpecification, OwnerIdSpecification} from "../../domain";
+import {QrCodeError, QrCodeIdSpecification, OwnerIdSpecification} from "../../domain";
 import {IsAuthenticated} from "../../../auth/infrastructure";
 import {UserResponse} from "../../../user/application";
+import {QrCodeIdDTO} from "../../application/validations/qrCodeIdDTO";
+import {CreateQrCodeDTO} from "../../application/validations/qrCode.create";
+import {UpdateQrCodeDTO} from "../../application/validations/qrCode.update";
 
 @Controller('/qrCode')
 @UseBefore(IsAuthenticated)
@@ -40,7 +54,7 @@ export class QrCodeController {
 
     @Get('/:id')
     public async findOne (
-        @Param('id') qrCodeId: string,
+        @Params() { id: qrCodeId }: QrCodeIdDTO,
         @Res() res: Response,
         @CurrentUser() user: UserResponse
     ) {
@@ -62,11 +76,11 @@ export class QrCodeController {
     @Post('/')
     public async create (
         @Res() res: Response,
-        @Body() { name, groupId, enabled, url, manualRegistrationDate}: {name: string, groupId: string, enabled: boolean, url: string, manualRegistrationDate: Date},
+        @Body() qrCodeDataDTO: CreateQrCodeDTO,
         @CurrentUser() user: UserResponse
     ) {
 
-        const result = await this.qrCodeCreator.execute(name, groupId, user.id, enabled, url, manualRegistrationDate);
+        const result = await this.qrCodeCreator.execute(qrCodeDataDTO, user.id);
 
         if (isRight(result))
             return ResponseEntity
@@ -80,12 +94,12 @@ export class QrCodeController {
     @Put('/:id')
     public async update (
         @Res() res: Response,
-        @Body() updatedFields: QrCodeQuery,
-        @Param('id') qrCodeId: string,
+        @Body() qrCodeDTO: UpdateQrCodeDTO,
+        @Params() { id: qrCodeId }: QrCodeIdDTO,
         @CurrentUser() user: UserResponse
     ) {
 
-        const result = await this.qrCodeUpdater.execute(updatedFields, [
+        const result = await this.qrCodeUpdater.execute(qrCodeDTO, [
             new OwnerIdSpecification(user.id),
             new QrCodeIdSpecification(qrCodeId)
         ]);
@@ -102,7 +116,7 @@ export class QrCodeController {
     @Delete('/:id')
     public async delete (
         @Res() res: Response,
-        @Param('id') qrCodeId: string,
+        @Params() { id: qrCodeId }: QrCodeIdDTO,
         @CurrentUser() user: UserResponse
     ) {
 
