@@ -10,7 +10,7 @@ export class QrCodeUpdater {
         @inject(TYPES.QrCodeRepository) private qrCodeRepository: QrCodeRepository,
     ) {}
 
-    public execute = async(fields: QrCodeQuery, specifications: Criteria): Promise<Either<QrCodeError, number>> => {
+    public async execute(fields: QrCodeQuery, specifications: Criteria): Promise<Either<QrCodeError, number>> {
 
         try {
             const result = await this.qrCodeRepository.updateQrCode(fields, specifications);
