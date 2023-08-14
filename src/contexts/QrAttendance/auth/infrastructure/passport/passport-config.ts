@@ -3,7 +3,7 @@ import passport from "passport";
 import {isLeft, isRight} from "fp-ts/Either";
 import {Strategy as LocalStrategy} from 'passport-local';
 import {Strategy as GoogleStrategy} from 'passport-google-oauth20';
-import {AuthErrors} from "../../domain";
+import {AuthError} from "../../domain";
 import {UserAuthenticator} from "../../application";
 
 import {UserCreator, UserFinder, UserDTO} from "../../../user/application";
@@ -75,7 +75,7 @@ export class PassportLocalStrategy {
             },
             async (accessToken: string, refreshToken: string, profile, done) => {
 
-                if (!profile.emails) return done(AuthErrors.CANNOT_AUTHENTICATE_USER, undefined);
+                if (!profile.emails) return done(AuthError.CANNOT_AUTHENTICATE_USER, undefined);
 
                 // check if user exists
                 const user = await this.userFinder.execute(
@@ -95,7 +95,7 @@ export class PassportLocalStrategy {
                 }
 
                 if (!profile.emails)
-                    return done(AuthErrors.CANNOT_AUTHENTICATE_USER, undefined);
+                    return done(AuthError.CANNOT_AUTHENTICATE_USER, undefined);
 
                 const newUser = await this.userCreator.execute({
                     name: profile.displayName,

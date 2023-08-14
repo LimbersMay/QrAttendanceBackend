@@ -5,7 +5,7 @@ import {
     UnauthorizedError
 } from "routing-controllers";
 import {injectable} from "inversify";
-import {AuthErrors} from "../../domain";
+import {AuthError} from "../../domain";
 import {CLIENT_URL} from "../../../../utils/secrets";
 
 @injectable()
@@ -19,12 +19,12 @@ export class Authenticate implements ExpressMiddlewareInterface {
         return this.authenticate((err: any , user: any) => {
 
             if (err || !user) {
-                return next(new UnauthorizedError(AuthErrors.INVALID_CREDENTIALS));
+                return next(new UnauthorizedError(AuthError.INVALID_CREDENTIALS));
             }
 
             req.login(user, (err) => {
                 if (err) {
-                    return next(new UnauthorizedError(AuthErrors.INVALID_CREDENTIALS));
+                    return next(new UnauthorizedError(AuthError.INVALID_CREDENTIALS));
                 }
 
                 return next();
@@ -57,7 +57,7 @@ export class GoogleAuthenticationCallback implements ExpressMiddlewareInterface 
 
             req.login(user, (err) => {
                 if (err) {
-                    return next(new UnauthorizedError(AuthErrors.INVALID_CREDENTIALS));
+                    return next(new UnauthorizedError(AuthError.INVALID_CREDENTIALS));
                 }
 
                 return res.redirect(CLIENT_URL);
