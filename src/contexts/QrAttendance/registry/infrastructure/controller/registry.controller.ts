@@ -1,19 +1,19 @@
-import {Request, Response} from "express";
+import {Response} from "express";
 import {
     Body,
     Controller, CurrentUser,
     Delete,
     Get,
     Param,
-    Req, Res, UseBefore,
+    Res, UseBefore,
     Post,
     Put
 } from "routing-controllers";
 import {injectable} from "inversify";
 import {isRight} from "fp-ts/Either";
 import {ResponseEntity} from "../../../shared";
-import {RegistryCreator, RegistryDeleter, RegistryFinder, RegistryUpdater} from "../../application/useCases";
-import {RegistryErrors} from "../../domain/registryErrors";
+import {RegistryCreator, RegistryDeleter, RegistryFinder, RegistryUpdater} from "../../application";
+import {RegistryErrors, OwnerIdSpecification, RegistryIdSpecification} from "../../domain";
 import {IsAuthenticated} from "../../../auth/infrastructure";
 import {UserResponse} from "../../../user/application";
 
@@ -30,12 +30,13 @@ export class RegistryController {
 
     @Get('/')
     public async findAll(
-        @Req() req: Request,
         @Res() res: Response,
         @CurrentUser() user: UserResponse
     ) {
 
-        const registries = await this.registryFinder.executeByUserId(user.id);
+        const registries = await this.registryFinder.findAll(
+            new OwnerIdSpecification(user.id),
+        );
 
         if (isRight(registries))
             return ResponseEntity
@@ -70,7 +71,7 @@ export class RegistryController {
     public async update (
         @Res() res: Response,
         @Body() updatedFields: any,
-        @Param('id') id: string,
+        @Param('id') registryId: string,
         @CurrentUser() user: UserResponse
     ) {
 
@@ -83,7 +84,10 @@ export class RegistryController {
             checkinTime: updatedFields.checkinTime
         }
 
-        const registry = await this.registryUpdater.execute(expectedFields, id, user.id);
+        const registry = await this.registryUpdater.execute(expectedFields, [
+            new RegistryIdSpecification(registryId),
+            new OwnerIdSpecification(user.id)
+        ]);
 
         if (isRight(registry))
             return ResponseEntity
@@ -97,19 +101,22 @@ export class RegistryController {
     @Delete('/:id')
     public async delete (
         @Res() res: Response,
-        @Param('id') id: string,
+        @Param('id') registryId: string,
         @CurrentUser() user: UserResponse
     ) {
 
-        const registry = await this.registryDeleter.execute(id, user.id);
+        const result = await this.registryDeleter.execute([
+            new RegistryIdSpecification(registryId),
+            new OwnerIdSpecification(user.id)
+        ]);
 
-        if (isRight(registry))
+        if (isRight(result))
             return ResponseEntity
                 .status(200)
-                .body({ rowsDeleted: registry.right })
+                .body({ rowsDeleted: result.right })
                 .buid();
 
-        return this.handleErrors(registry.left, res);
+        return this.handleErrors(result.left, res);
     }
 
     private handleErrors = (error: RegistryErrors, res: Response) => {
