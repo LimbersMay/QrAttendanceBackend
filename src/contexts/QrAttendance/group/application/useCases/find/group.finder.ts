@@ -1,11 +1,10 @@
 import {inject, injectable} from "inversify";
-import {TYPES} from "../../../../../../apps/QrAttendance/dependency-injection/group/types";
 import {left, right, fold} from "fp-ts/Either";
+import {TYPES} from "../../../../../../apps/QrAttendance/dependency-injection/group/types";
 import {Either} from "../../../../../shared/types/ErrorEither";
-import {GroupError} from "../../errors/group.errors";
-import {GroupRepository} from "../../../domain/group.repository";
-import {GroupResponse} from "../../responses/group.response";
-import {GroupEntity} from "../../../domain/group.entity";
+import {Criteria} from "../../../../../shared/specifications/specification";
+import {GroupResponse} from "../../responses";
+import {GroupEntity, GroupError, GroupRepository} from "../../../domain";
 
 @injectable()
 export class GroupFinder {
@@ -13,23 +12,28 @@ export class GroupFinder {
         @inject(TYPES.GroupRepository) private groupRepository: GroupRepository
     ) {}
 
-    execute = (groupId: string, userId: string): Promise<Either<GroupError, GroupResponse>> => {
-        return this.groupRepository.findGroupById(groupId, userId).then(group => {
+
+    public async findOne (specifications: Criteria): Promise<Either<GroupError, GroupResponse>> {
+        try {
+            const group = await this.groupRepository.findOne(specifications);
             return fold(
                 () => left(GroupError.GROUP_NOT_FOUND),
                 (group: GroupEntity) => right(GroupResponse.fromGroup(group))
             )(group);
-
-        }).catch(() => left(GroupError.GROUP_CANNOT_BE_FOUND));
+        } catch {
+            return left(GroupError.GROUP_CANNOT_BE_FOUND);
+        }
     }
 
-    executeByUserId = (userId: string): Promise<Either<GroupError, GroupResponse[]>> => {
-        return this.groupRepository.findGroupsByUserId(userId).then(groups => {
+    public async findAll (specifications: Criteria): Promise<Either<GroupError, GroupResponse[]>> {
+        try {
+            const group = await this.groupRepository.findAll(specifications);
             return fold(
                 () => left(GroupError.GROUP_NOT_FOUND),
                 (groups: GroupEntity[]) => right(GroupResponse.fromGroups(groups))
-            )(groups);
-
-        }).catch(() => left(GroupError.GROUP_CANNOT_BE_FOUND));
+            )(group);
+        } catch {
+            return left(GroupError.GROUPS_CANNOT_BE_FOUND);
+        }
     }
 }
