@@ -1,9 +1,9 @@
 import {inject, injectable} from "inversify";
-import {TYPES} from "../../../../../../apps/QrAttendance/dependency-injection/group/types";
-import {GroupRepository} from "../../../domain/group.repository";
-import {Either} from "../../../../../shared/types/ErrorEither";
-import {GroupError} from "../../errors/group.errors";
 import {left, right, fold} from "fp-ts/Either";
+import {TYPES} from "../../../../../../apps/QrAttendance/dependency-injection/group/types";
+import {Criteria} from "../../../../../shared/specifications/specification";
+import {Either} from "../../../../../shared/types/ErrorEither";
+import {GroupError, GroupRepository} from "../../../domain";
 
 @injectable()
 export class GroupDeleter {
@@ -12,13 +12,15 @@ export class GroupDeleter {
         @inject(TYPES.GroupRepository) private groupRepository: GroupRepository,
     ) {}
 
-    execute = (id: string, userId: string): Promise<Either<GroupError, number>> => {
-        return this.groupRepository.deleteGroup(id, userId).then(group => {
+    public async execute (specifications: Criteria): Promise<Either<GroupError, number>> {
+        try {
+            const group = await this.groupRepository.deleteGroup(specifications);
             return fold(
                 () => left(GroupError.GROUP_NOT_FOUND),
-                (group: number) => right(group)
+                (updatedFields: number) => right(updatedFields)
             )(group);
-
-        }).catch(() => left(GroupError.GROUP_CANNOT_BE_DELETED));
+        } catch {
+            return left(GroupError.GROUP_CANNOT_BE_DELETED);
+        }
     }
 }
