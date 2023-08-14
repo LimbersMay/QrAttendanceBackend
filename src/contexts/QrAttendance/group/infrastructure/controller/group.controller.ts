@@ -1,9 +1,7 @@
-import {Request, Response} from "express";
+import {Response} from "express";
 import {injectable} from "inversify";
 import {isRight} from "fp-ts/Either";
-import {GroupCreator, GroupDeleter, GroupFinder, GroupUpdater} from "../../application/useCases";
 import {ResponseEntity} from "../../../../shared/infrastructure/entities/response.entity";
-import {GroupError} from "../../application/errors/group.errors";
 import {
     Body,
     BodyParam,
@@ -14,12 +12,14 @@ import {
     Param,
     Post,
     Put,
-    Req,
     Res,
     UseBefore
 } from "routing-controllers";
-import {IsAuthenticated} from "../../../auth/infrastructure/middlewares";
-import {UserResponse} from "../../../user/application/responses/user.response";
+import {GroupCreator, GroupDeleter, GroupFinder, GroupUpdater} from "../../application";
+import {GroupError, GroupIdSpecification} from "../../domain";
+import {IsAuthenticated} from "../../../auth/infrastructure";
+import {UserResponse} from "../../../user/application";
+import {UserIdSpecification} from "../../../user/domain";
 
 @JsonController('/group')
 @UseBefore(IsAuthenticated)
@@ -34,11 +34,12 @@ export class GroupController {
 
     @Get('/')
     public async findAll (
-        @Req() req: Request,
         @Res() res: Response,
         @CurrentUser({required: true}) user: UserResponse
     ) {
-        const groups = await this.groupFinder.executeByUserId(user.id);
+        const groups = await this.groupFinder.findAll(
+            new UserIdSpecification(user.id)
+        );
 
         if (isRight(groups))
             return ResponseEntity
@@ -51,13 +52,16 @@ export class GroupController {
 
     @Get('/:id')
     public async findOne (
-        @Param("id") id: string,
-        @Req() req: Request,
+        @Param('id') groupId: string,
         @Res() res: Response,
         @CurrentUser({required: true}) user: UserResponse
     ) {
 
-        const group = await this.groupFinder.execute(id, user.id);
+        const group = await this.groupFinder.findOne([
+            new UserIdSpecification(user.id),
+            new GroupIdSpecification(groupId)
+        ]);
+
         if (isRight(group))
             return ResponseEntity
                 .ok()
@@ -69,9 +73,8 @@ export class GroupController {
 
     @Post('/')
     public async create (
-        @BodyParam("name") name: string,
-        @Req() req: Request,
         @Res() res: Response,
+        @BodyParam('name') name: string,
         @CurrentUser({required: true}) user: UserResponse
     ) {
 
@@ -88,9 +91,8 @@ export class GroupController {
 
     @Put('/:id')
     public async update (
-        @Req() req: Request,
         @Res() res: Response,
-        @Param("id") id: string,
+        @Param('id') groupId: string,
         @Body() updatedFields: any,
         @CurrentUser({required: true}) user: UserResponse
     ) {
@@ -99,7 +101,11 @@ export class GroupController {
             name: updatedFields.name
         }
 
-        const result = await this.groupUpdater.execute(id, user.id, expectedFields);
+        const result = await this.groupUpdater.execute(expectedFields, [
+            new UserIdSpecification(user.id),
+            new GroupIdSpecification(groupId)
+        ]);
+
         if (isRight(result))
             return ResponseEntity
                 .ok()
@@ -111,13 +117,15 @@ export class GroupController {
 
     @Delete('/:id')
     public async delete (
-        @Param("id") id: string,
-        @Req() req: Request,
+        @Param('id') groupId: string,
         @Res() res: Response,
         @CurrentUser({required: true}) user: UserResponse
     ) {
 
-        const group = await this.groupDeleter.execute(id, user.id);
+        const group = await this.groupDeleter.execute([
+            new UserIdSpecification(user.id),
+            new GroupIdSpecification(groupId)
+        ]);
 
         if (isRight(group))
             return ResponseEntity
