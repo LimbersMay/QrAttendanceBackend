@@ -1,17 +1,17 @@
 import { Socket } from "socket.io";
 import { injectable } from "inversify";
 import {RegistryCreator} from "../../application/useCases";
-import {QrCodeFindByFormId} from "../../../qr_code/application/useCases/find/qrCodeFindByFormId";
 import {isLeft} from "fp-ts/Either";
 import {RateLimiterMemory} from "rate-limiter-flexible";
 import {RegistryError} from "../../domain/errors/registry.error";
+import {QrCodeFinder, QrCodeFormIdSpecification} from "../../../qr_code";
 
 @injectable()
 export class RegistrySocketController {
     private clients: Map<string, Set<string>> = new Map();
 
     constructor(
-        private readonly qrCodeFinder: QrCodeFindByFormId,
+        private readonly qrCodeFinder: QrCodeFinder,
         private readonly registryCreator: RegistryCreator
     ) {}
 
@@ -22,7 +22,10 @@ export class RegistrySocketController {
                 await rateLimiter.consume(socket.handshake.address);
 
                 const { name, group, career, firstSurname, secondSurname, formId } = data;
-                const qrCode = await this.qrCodeFinder.execute(formId);
+
+                const qrCode = await this.qrCodeFinder.findOne(
+                    new QrCodeFormIdSpecification(formId)
+                );
 
                 // if the qrCode creation fails
                 if (isLeft(qrCode))
