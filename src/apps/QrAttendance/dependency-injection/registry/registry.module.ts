@@ -11,7 +11,7 @@ import {
 } from "../../../../contexts/QrAttendance/registry/infrastructure/controller/registry.controller";
 import {
     RegistrySocketController
-} from "../../../../contexts/QrAttendance/registry/infrastructure/sockets/Registrysocket.controller";
+} from "../../../../contexts/QrAttendance/registry/infrastructure/sockets/registrySocket.controller";
 
 export const registryModule = (container: Container) => {
     container.bind<RegistryController>(RegistryController).toSelf();
