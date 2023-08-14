@@ -3,7 +3,7 @@ import {inject, injectable} from "inversify";
 import { right, left } from "fp-ts/Either";
 import {Criteria, Either, SpecificationBuilder} from "../../../shared";
 import Registry from "../model/registry.schema";
-import {RegistryEntity, RegistryErrors, RegistryQuery, RegistryRepository} from "../../domain";
+import {RegistryEntity, RegistryError, RegistryQuery, RegistryRepository} from "../../domain";
 import {TYPES} from "../../../../../apps/QrAttendance/dependency-injection/types";
 
 @injectable()
@@ -19,7 +19,7 @@ export class RegistryMysqlRepository implements RegistryRepository {
         return this.toDomain(newRegistry);
     }
 
-    async deleteRegistry(specifications: Criteria): Promise<Either<RegistryErrors, number>> {
+    async deleteRegistry(specifications: Criteria): Promise<Either<RegistryError, number>> {
 
         const whereClause = this.specificationBuilder.buildWhereClauseFromSpecifications(specifications);
 
@@ -29,7 +29,7 @@ export class RegistryMysqlRepository implements RegistryRepository {
 
         return (rowsDestroyed > 0)
             ? right(rowsDestroyed)
-            : left(RegistryErrors.REGISTRY_NOT_FOUND);
+            : left(RegistryError.REGISTRY_NOT_FOUND);
 
     }
 
@@ -44,7 +44,7 @@ export class RegistryMysqlRepository implements RegistryRepository {
         return registries.map(registry => this.toDomain(registry));
     }
 
-    async findOne(specifications: Criteria): Promise<Either<RegistryErrors, RegistryEntity>> {
+    async findOne(specifications: Criteria): Promise<Either<RegistryError, RegistryEntity>> {
 
         const whereClause = this.specificationBuilder.buildWhereClauseFromSpecifications(specifications);
 
@@ -54,10 +54,10 @@ export class RegistryMysqlRepository implements RegistryRepository {
 
         return (registry)
             ? right(this.toDomain(registry))
-            : left(RegistryErrors.REGISTRY_NOT_FOUND);
+            : left(RegistryError.REGISTRY_NOT_FOUND);
     }
 
-    async updateRegistry(fields: RegistryQuery, specifications: Criteria): Promise<Either<RegistryErrors, number>> {
+    async updateRegistry(fields: RegistryQuery, specifications: Criteria): Promise<Either<RegistryError, number>> {
 
         const whereClause = this.specificationBuilder.buildWhereClauseFromSpecifications(specifications);
 
@@ -70,7 +70,7 @@ export class RegistryMysqlRepository implements RegistryRepository {
 
         return (rowsUpdated[0] > 0)
             ? right(rowsUpdated[0])
-            : left(RegistryErrors.REGISTRY_NOT_FOUND);
+            : left(RegistryError.REGISTRY_NOT_FOUND);
 
     }
 

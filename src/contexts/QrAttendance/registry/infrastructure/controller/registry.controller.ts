@@ -13,7 +13,7 @@ import {injectable} from "inversify";
 import {isRight} from "fp-ts/Either";
 import {ResponseEntity} from "../../../shared";
 import {RegistryCreator, RegistryDeleter, RegistryFinder, RegistryUpdater} from "../../application";
-import {RegistryErrors, OwnerIdSpecification, RegistryIdSpecification} from "../../domain";
+import {RegistryError, OwnerIdSpecification, RegistryIdSpecification} from "../../domain";
 import {IsAuthenticated} from "../../../auth/infrastructure";
 import {UserResponse} from "../../../user/application";
 
@@ -119,45 +119,45 @@ export class RegistryController {
         return this.handleErrors(result.left, res);
     }
 
-    private handleErrors = (error: RegistryErrors, res: Response) => {
+    private handleErrors = (error: RegistryError, res: Response) => {
         switch (error) {
-            case RegistryErrors.REGISTRY_NOT_FOUND:
+            case RegistryError.REGISTRY_NOT_FOUND:
                 return ResponseEntity
                     .status(404)
                     .body(error)
                     .send(res);
 
-            case RegistryErrors.REGISTRIES_NOT_FOUND:
+            case RegistryError.REGISTRIES_NOT_FOUND:
                 return ResponseEntity
                     .status(404)
                     .body(error)
                     .send(res);
 
-            case RegistryErrors.REGISTRY_CANNOT_BE_FOUND:
+            case RegistryError.REGISTRY_CANNOT_BE_FOUND:
                 return ResponseEntity
                     .status(400)
                     .body(error)
                     .send(res);
 
-            case RegistryErrors.REGISTRY_CANNOT_BE_CREATED:
+            case RegistryError.REGISTRY_CANNOT_BE_CREATED:
                 return ResponseEntity
                     .status(500)
                     .body(error)
                     .send(res);
 
-            case RegistryErrors.REGISTRIES_CANNOT_BE_FOUND:
+            case RegistryError.REGISTRIES_CANNOT_BE_FOUND:
                 return ResponseEntity
                     .status(500)
                     .body(error)
                     .send(res);
 
-            case RegistryErrors.REGISTRY_CANNOT_BE_UPDATED:
+            case RegistryError.REGISTRY_CANNOT_BE_UPDATED:
                 return ResponseEntity
                     .status(500)
                     .body(error)
                     .send(res);
 
-            case RegistryErrors.REGISTRY_CANNOT_BE_DELETED:
+            case RegistryError.REGISTRY_CANNOT_BE_DELETED:
                 return ResponseEntity
                     .status(500)
                     .body(error)
