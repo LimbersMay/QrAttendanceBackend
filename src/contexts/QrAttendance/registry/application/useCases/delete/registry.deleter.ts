@@ -1,9 +1,8 @@
 import {inject, injectable} from "inversify";
-import * as E from 'fp-ts/lib/Either';
-import {Either} from "../../../../shared";
+import { left, right, fold } from 'fp-ts/Either';
 import {TYPES} from "../../../../../../apps/QrAttendance/dependency-injection/registry/types";
-import {RegistryErrors} from "../../../domain/registryErrors";
-import {RegistryRepository} from "../../../domain/registry.repository";
+import {Criteria, Either} from "../../../../shared";
+import {RegistryErrors, RegistryRepository} from "../../../domain";
 
 @injectable()
 export class RegistryDeleter {
@@ -11,13 +10,19 @@ export class RegistryDeleter {
         @inject(TYPES.RegistryRepository) private registryRepository: RegistryRepository,
     ){}
 
-    execute = async(registryId: string, userId: string): Promise<Either<RegistryErrors, number>> => {
-        return this.registryRepository.deleteRegistry(registryId, userId).then(registry => {
-            return E.fold(
-                () => E.left(RegistryErrors.REGISTRY_NOT_FOUND),
-                (rowsDeleted: number) => E.right(rowsDeleted)
-            )(registry)
+    execute = async(specifications: Criteria): Promise<Either<RegistryErrors, number>> => {
 
-        }).catch(() => E.left(RegistryErrors.REGISTRY_CANNOT_BE_DELETED));
+        try {
+            const result = await this.registryRepository.deleteRegistry(specifications);
+
+            return fold(
+                () => left(RegistryErrors.REGISTRY_NOT_FOUND),
+                (rowsDeleted: number) => right(rowsDeleted)
+            )(result);
+
+        } catch (error) {
+            console.log(error)
+            return left(RegistryErrors.REGISTRY_CANNOT_BE_DELETED);
+        }
     }
 }
