@@ -5,6 +5,7 @@ import {Either} from "../../../../../shared/types/ErrorEither";
 import {UUIDGenerator} from "../../../../shared";
 import {GroupError, GroupRepository, GroupValue} from "../../../domain";
 import {GroupResponse} from "../../responses";
+import {CreateGroupDTO} from "../../validators/group.create";
 
 @injectable()
 export class GroupCreator {
@@ -13,7 +14,7 @@ export class GroupCreator {
         @inject(TYPES.GroupUUIDGenerator) private UUIDGenerator: UUIDGenerator
     ) {}
 
-    public async execute (name: string, userId: string): Promise<Either<GroupError, GroupResponse>> {
+    public async execute ({ name }: CreateGroupDTO, userId: string): Promise<Either<GroupError, GroupResponse>> {
 
         const group = GroupValue.create({
             groupId: this.UUIDGenerator.random(),
