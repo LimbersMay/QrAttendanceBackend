@@ -1,7 +1,7 @@
 import * as E from 'fp-ts/lib/Either';
 import {RegistryErrors} from "../../../domain/registryErrors";
 import {RegistryRepository} from "../../../domain/registry.repository";
-import {RegistryQuery} from "../../../domain/entities/registry.query";
+import {RegistryQuery} from "../../../domain/registry.query";
 import {inject, injectable} from "inversify";
 import {TYPES} from "../../../../../../apps/QrAttendance/dependency-injection/registry/types";
 

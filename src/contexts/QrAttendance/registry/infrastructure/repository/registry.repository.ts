@@ -5,7 +5,7 @@ import Registry from "../model/registry.schema";
 import {RegistryRepository} from "../../domain/registry.repository";
 import {RegistryEntity} from "../../domain/registry.entity";
 import {RegistryErrors} from "../../domain/registryErrors";
-import {RegistryQuery} from "../../domain/entities/registry.query";
+import {RegistryQuery} from "../../domain/registry.query";
 
 @injectable()
 export class RegistryMysqlRepository implements RegistryRepository {
