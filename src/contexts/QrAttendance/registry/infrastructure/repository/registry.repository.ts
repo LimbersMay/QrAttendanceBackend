@@ -1,16 +1,17 @@
-import {injectable} from "inversify";
-import * as E from "fp-ts/Either";
-import {Either} from "../../../shared";
+import {WhereOptions} from "sequelize";
+import {inject, injectable} from "inversify";
+import { right, left } from "fp-ts/Either";
+import {Criteria, Either, SpecificationBuilder} from "../../../shared";
 import Registry from "../model/registry.schema";
-import {RegistryRepository} from "../../domain/registry.repository";
-import {RegistryEntity} from "../../domain/registry.entity";
-import {RegistryErrors} from "../../domain/registryErrors";
-import {RegistryQuery} from "../../domain/registry.query";
+import {RegistryEntity, RegistryErrors, RegistryQuery, RegistryRepository} from "../../domain";
+import {TYPES} from "../../../../../apps/QrAttendance/dependency-injection/types";
 
 @injectable()
 export class RegistryMysqlRepository implements RegistryRepository {
 
-    constructor() {}
+    public constructor(
+        @inject(TYPES.SpecificationBuilder) private readonly specificationBuilder: SpecificationBuilder<unknown, WhereOptions<RegistryEntity>>
+    ) {}
 
     async createRegistry(registry: RegistryEntity): Promise<RegistryEntity> {
         const newRegistry = await Registry.create(registry);
@@ -18,60 +19,58 @@ export class RegistryMysqlRepository implements RegistryRepository {
         return this.toDomain(newRegistry);
     }
 
-    async deleteRegistry(registryId: string, userId: string): Promise<Either<RegistryErrors, number>> {
+    async deleteRegistry(specifications: Criteria): Promise<Either<RegistryErrors, number>> {
+
+        const whereClause = this.specificationBuilder.buildWhereClauseFromSpecifications(specifications);
 
         const rowsDestroyed = await Registry.destroy({
-            where: {
-                registryId,
-                ownerId: userId
-            }
+            where: whereClause
         });
 
         return (rowsDestroyed > 0)
-            ? E.right(rowsDestroyed)
-            : E.left(RegistryErrors.REGISTRY_NOT_FOUND);
+            ? right(rowsDestroyed)
+            : left(RegistryErrors.REGISTRY_NOT_FOUND);
 
     }
 
-    async findRegistriesByUserId(userId: string): Promise<Either<RegistryErrors, RegistryEntity[]>> {
+    async findAll(specifications: Criteria): Promise<RegistryEntity[]> {
+
+        const whereClause = this.specificationBuilder.buildWhereClauseFromSpecifications(specifications);
 
         const registries = await Registry.findAll({
-            where: {
-                ownerId: userId
-            }
+            where: whereClause
         });
 
-        return E.right(registries.map(registry => this.toDomain(registry)));
+        return registries.map(registry => this.toDomain(registry));
     }
 
-    async findRegistryById(registryId: string, userId: string): Promise<Either<RegistryErrors, RegistryEntity>> {
+    async findOne(specifications: Criteria): Promise<Either<RegistryErrors, RegistryEntity>> {
+
+        const whereClause = this.specificationBuilder.buildWhereClauseFromSpecifications(specifications);
 
         const registry = await Registry.findOne({
-            where: {
-                registryId,
-            }
+            where: whereClause
         });
 
         return (registry)
-            ? E.right(this.toDomain(registry))
-            : E.left(RegistryErrors.REGISTRY_NOT_FOUND);
+            ? right(this.toDomain(registry))
+            : left(RegistryErrors.REGISTRY_NOT_FOUND);
     }
 
-    async updateRegistry(fields: RegistryQuery, registryId: string, userId: string): Promise<Either<RegistryErrors, number>> {
+    async updateRegistry(fields: RegistryQuery, specifications: Criteria): Promise<Either<RegistryErrors, number>> {
+
+        const whereClause = this.specificationBuilder.buildWhereClauseFromSpecifications(specifications);
 
         const rowsUpdated = await Registry.update({
             ...fields
         },
             {
-            where: {
-                registryId,
-                ownerId: userId
-            }
+            where: whereClause
         });
 
         return (rowsUpdated[0] > 0)
-            ? E.right(rowsUpdated[0])
-            : E.left(RegistryErrors.REGISTRY_NOT_FOUND);
+            ? right(rowsUpdated[0])
+            : left(RegistryErrors.REGISTRY_NOT_FOUND);
 
     }
 
