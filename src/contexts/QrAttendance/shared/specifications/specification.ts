@@ -1,9 +1,9 @@
 export type Expression<T> = {
-    [key in keyof T]?: string | number | boolean | Expression<T> | Expression<T>[];
+    [key in keyof T]?: T[key];
 };
 
 export interface Specification<T> {
-    readonly value: string | number | boolean | undefined;
+    readonly value: unknown;
     isSatisfiedBy(candidate: T): boolean;
     and(other: Specification<T>): Specification<T>;
     or(other: Specification<T>): Specification<T>;
@@ -15,7 +15,7 @@ export type Criteria = Specification<unknown> | Specification<unknown>[];
 
 export abstract class AbstractSpecification<T> implements Specification<T> {
 
-    public readonly value: string | number | boolean | undefined;
+    public readonly value: unknown;
 
     abstract isSatisfiedBy(candidate: T): boolean;
 
