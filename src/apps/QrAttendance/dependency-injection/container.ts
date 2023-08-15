@@ -4,10 +4,10 @@ import {groupModule} from "./group/group.module";
 import {qrCodeModule} from "./qrCode/qrCode.module";
 import {registryModule} from "./registry/registry.module";
 import {authModule} from "./auth/auth.module";
-import {PassportLocalStrategy} from "../../../contexts/QrAttendance/auth/infrastructure";
+import {PassportLocalStrategy} from "../../../contexts/QrAttendance/auth";
 import {
     RegistrySocketController
-} from "../../../contexts/QrAttendance/registry/infrastructure/sockets/registrySocket.controller";
+} from "../../../contexts/QrAttendance/registry";
 import {sharedModule} from "./shared-module";
 
 const container = new Container();
