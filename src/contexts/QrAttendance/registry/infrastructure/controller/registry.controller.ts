@@ -4,10 +4,9 @@ import {
     Controller, CurrentUser,
     Delete,
     Get,
-    Param,
     Res, UseBefore,
     Post,
-    Put
+    Put, Params
 } from "routing-controllers";
 import {injectable} from "inversify";
 import {isRight} from "fp-ts/Either";
@@ -16,6 +15,9 @@ import {RegistryCreator, RegistryDeleter, RegistryFinder, RegistryUpdater} from 
 import {RegistryError, OwnerIdSpecification, RegistryIdSpecification} from "../../domain";
 import {IsAuthenticated} from "../../../auth/infrastructure";
 import {UserResponse} from "../../../user/application";
+import {CreateRegistryDTO} from "../../application/validations/registry.create";
+import {UpdateRegistryDTO} from "../../application/validations/registry.update";
+import {RegistryIdDTO} from "../../application/validations/registryId";
 
 @Controller('/registry')
 @UseBefore(IsAuthenticated)
@@ -50,13 +52,11 @@ export class RegistryController {
     @Post('/')
     public async create (
         @Res() res: Response,
-        @Body() body: any,
+        @Body() registryDTO: CreateRegistryDTO,
         @CurrentUser() user: UserResponse
     ) {
 
-        const {qrId, name, group, career, firstSurname, secondSurname} = body;
-
-        const registry = await this.registryCreator.execute(qrId, user.id, name, group, career, firstSurname, secondSurname);
+        const registry = await this.registryCreator.execute(registryDTO, user.id);
 
         if (isRight(registry))
             return ResponseEntity
@@ -70,21 +70,12 @@ export class RegistryController {
     @Put('/:id')
     public async update (
         @Res() res: Response,
-        @Body() updatedFields: any,
-        @Param('id') registryId: string,
+        @Body() registryDTO: UpdateRegistryDTO,
+        @Params() { id: registryId }: RegistryIdDTO,
         @CurrentUser() user: UserResponse
     ) {
 
-        const expectedFields = {
-            name: updatedFields.name,
-            group: updatedFields.group,
-            career: updatedFields.career,
-            firstSurname: updatedFields.firstSurname,
-            secondSurname: updatedFields.secondSurname,
-            checkinTime: updatedFields.checkinTime
-        }
-
-        const registry = await this.registryUpdater.execute(expectedFields, [
+        const registry = await this.registryUpdater.execute(registryDTO, [
             new RegistryIdSpecification(registryId),
             new OwnerIdSpecification(user.id)
         ]);
@@ -101,7 +92,7 @@ export class RegistryController {
     @Delete('/:id')
     public async delete (
         @Res() res: Response,
-        @Param('id') registryId: string,
+        @Params() { id: registryId}: RegistryIdDTO,
         @CurrentUser() user: UserResponse
     ) {
 
