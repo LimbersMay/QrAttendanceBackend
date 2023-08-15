@@ -3,8 +3,7 @@ import {isLeft, left, right} from "fp-ts/Either";
 import {TYPES} from "../../../../../apps/QrAttendance/dependency-injection/user/types";
 import {PasswordHasher, Either} from "../../../shared";
 import {AuthError} from "../../domain";
-import {UserResponse} from "../../../user/application";
-import {UserRepository, UserEmailSpecification} from "../../../user/domain";
+import {UserEmailSpecification, UserRepository, UserResponse} from "../../../user";
 
 @injectable()
 export class UserAuthenticator {
