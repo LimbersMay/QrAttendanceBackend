@@ -3,7 +3,7 @@ import {Body, Controller, Get, Post, Req, Res, UseBefore} from "routing-controll
 import {injectable} from "inversify";
 import {isRight} from "fp-ts/Either";
 import {ResponseEntity, } from "../../../shared";
-import {UserError} from "../../../user/domain";
+import {UserError} from "../../../user";
 import {Logout} from "../middlewares";
 import {
     Authenticate,
