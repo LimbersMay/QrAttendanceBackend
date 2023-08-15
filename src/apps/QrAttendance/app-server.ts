@@ -20,11 +20,12 @@ import {
 import {useContainer, useExpressServer} from "routing-controllers";
 
 import db from "../../contexts/QrAttendance/shared/infrastructure/db/mysql.connection"
-import {UserController} from "../../contexts/QrAttendance/user/infrastructure/controller";
-import {AuthController} from "../../contexts/QrAttendance/auth/infrastructure";
-import {GroupController} from "../../contexts/QrAttendance/group/infrastructure";
-import {QrCodeController} from "../../contexts/QrAttendance/qr_code/infrastructure/controllers";
-import {RegistryController} from "../../contexts/QrAttendance/registry/infrastructure/controller/registry.controller";
+
+import {UserController} from "../../contexts/QrAttendance/user";
+import {AuthController} from "../../contexts/QrAttendance/auth";
+import {GroupController} from "../../contexts/QrAttendance/group";
+import {QrCodeController} from "../../contexts/QrAttendance/qr_code";
+import {RegistryController} from "../../contexts/QrAttendance/registry";
 
 export class Server {
     public app: Application;
