@@ -1,25 +1,27 @@
-import {Request, Response} from "express";
+import {Response} from "express";
 import {injectable} from "inversify";
 import {isRight} from "fp-ts/Either";
-import {GroupCreator, GroupDeleter, GroupFinder, GroupUpdater} from "../../application/useCases";
-import {ResponseEntity} from "../../../../shared/infrastructure/entities/response.entity";
-import {GroupError} from "../../application/errors/group.errors";
 import {
     Body,
-    BodyParam,
     CurrentUser,
     Delete,
     Get,
     JsonController,
-    Param,
+    Params,
     Post,
     Put,
-    Req,
     Res,
     UseBefore
 } from "routing-controllers";
-import {IsAuthenticated} from "../../../auth/infrastructure/middlewares";
-import {UserResponse} from "../../../user/application/responses/user.response";
+import {ResponseEntity} from "../../../shared";
+import {GroupCreator, GroupDeleter, GroupFinder, GroupUpdater} from "../../application";
+import {GroupError, GroupIdSpecification} from "../../domain";
+import {IsAuthenticated} from "../../../auth/infrastructure";
+import {UserResponse} from "../../../user/application";
+import {UserIdSpecification} from "../../../user/domain";
+import {CreateGroupDTO} from "../../application/validators/group.create";
+import {UpdateGroupDTO} from "../../application/validators/group.update";
+import {GroupIdDTO} from "../../application/validators/groupId";
 
 @JsonController('/group')
 @UseBefore(IsAuthenticated)
@@ -34,11 +36,12 @@ export class GroupController {
 
     @Get('/')
     public async findAll (
-        @Req() req: Request,
         @Res() res: Response,
         @CurrentUser({required: true}) user: UserResponse
     ) {
-        const groups = await this.groupFinder.executeByUserId(user.id);
+        const groups = await this.groupFinder.findAll(
+            new UserIdSpecification(user.id)
+        );
 
         if (isRight(groups))
             return ResponseEntity
@@ -51,13 +54,16 @@ export class GroupController {
 
     @Get('/:id')
     public async findOne (
-        @Param("id") id: string,
-        @Req() req: Request,
+        @Params() { id: groupId }: GroupIdDTO,
         @Res() res: Response,
         @CurrentUser({required: true}) user: UserResponse
     ) {
 
-        const group = await this.groupFinder.execute(id, user.id);
+        const group = await this.groupFinder.findOne([
+            new UserIdSpecification(user.id),
+            new GroupIdSpecification(groupId)
+        ]);
+
         if (isRight(group))
             return ResponseEntity
                 .ok()
@@ -69,13 +75,12 @@ export class GroupController {
 
     @Post('/')
     public async create (
-        @BodyParam("name") name: string,
-        @Req() req: Request,
         @Res() res: Response,
+        @Body() groupDataDTO: CreateGroupDTO,
         @CurrentUser({required: true}) user: UserResponse
     ) {
 
-        const group = await this.groupCreator.execute(name, user.id);
+        const group = await this.groupCreator.execute(groupDataDTO, user.id);
 
         if (isRight(group))
             return ResponseEntity
@@ -88,18 +93,17 @@ export class GroupController {
 
     @Put('/:id')
     public async update (
-        @Req() req: Request,
         @Res() res: Response,
-        @Param("id") id: string,
-        @Body() updatedFields: any,
+        @Params() { id: groupId }: GroupIdDTO,
+        @Body() fieldsToUpdate: UpdateGroupDTO,
         @CurrentUser({required: true}) user: UserResponse
     ) {
 
-        const expectedFields = {
-            name: updatedFields.name
-        }
+        const result = await this.groupUpdater.execute(fieldsToUpdate, [
+            new UserIdSpecification(user.id),
+            new GroupIdSpecification(groupId)
+        ]);
 
-        const result = await this.groupUpdater.execute(id, user.id, expectedFields);
         if (isRight(result))
             return ResponseEntity
                 .ok()
@@ -111,13 +115,15 @@ export class GroupController {
 
     @Delete('/:id')
     public async delete (
-        @Param("id") id: string,
-        @Req() req: Request,
         @Res() res: Response,
+        @Params() { id: groupId }: GroupIdDTO,
         @CurrentUser({required: true}) user: UserResponse
     ) {
 
-        const group = await this.groupDeleter.execute(id, user.id);
+        const group = await this.groupDeleter.execute([
+            new UserIdSpecification(user.id),
+            new GroupIdSpecification(groupId)
+        ]);
 
         if (isRight(group))
             return ResponseEntity

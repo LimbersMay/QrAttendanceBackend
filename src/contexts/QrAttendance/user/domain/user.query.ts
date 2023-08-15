@@ -1,7 +1,7 @@
 
 export interface UserQuery {
-    name?: string;
-    lastName?: string;
-    email?: string;
-    password?: string;
+    name: string;
+    lastname: string;
+    email: string;
+    password: string;
 }

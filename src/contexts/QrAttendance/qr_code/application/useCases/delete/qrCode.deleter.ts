@@ -1,9 +1,8 @@
 import {inject, injectable} from "inversify";
-import {isRight, left, right} from "fp-ts/Either";
+import {fold, left, right} from "fp-ts/Either";
 import {TYPES} from "../../../../../../apps/QrAttendance/dependency-injection/qrCode/types";
-import {QrCodeRepository} from "../../../domain/qrCode.repository";
-import {Either} from "../../../../../shared/types/ErrorEither";
-import {QrCodeError} from "../../../domain/errors/qrCode.errors";
+import {Criteria, Either} from "../../../../shared";
+import {QrCodeRepository, QrCodeError} from "../../../domain";
 
 @injectable()
 export class QrCodeDeleter {
@@ -11,14 +10,19 @@ export class QrCodeDeleter {
         @inject(TYPES.QrCodeRepository) private qrCodeRepository: QrCodeRepository,
     ){}
 
-    async execute(id: string, userId: string): Promise<Either<QrCodeError, number>> {
+    async execute(specifications: Criteria): Promise<Either<QrCodeError, number>> {
 
-        return this.qrCodeRepository.deleteQrCode(id, userId).then(result => {
+        try {
+            const result = await this.qrCodeRepository.deleteQrCode(specifications);
 
-            return isRight(result)
-                ? right(result.right)
-                : left(QrCodeError.QR_CODE_NOT_FOUND);
+            return fold(
+                () => left(QrCodeError.QR_CODE_NOT_FOUND),
+                (rowsDeleted: number) => right(rowsDeleted)
+            )(result);
 
-        }).catch(() => left(QrCodeError.QR_CODE_CANNOT_BE_DELETED));
+        } catch (error) {
+            console.log(error);
+            return left(QrCodeError.QR_CODE_CANNOT_BE_DELETED);
+        }
     }
 }

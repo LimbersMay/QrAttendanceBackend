@@ -1,16 +1,17 @@
 import {Request, Response} from "express";
-import {injectable} from "inversify";
 import {Body, Controller, Get, Post, Req, Res, UseBefore} from "routing-controllers";
-import {ResponseEntity} from "../../../../shared/infrastructure/entities/response.entity";
+import {injectable} from "inversify";
+import {isRight} from "fp-ts/Either";
+import {ResponseEntity, } from "../../../shared";
+import {UserError} from "../../../user";
 import {Logout} from "../middlewares";
 import {
     Authenticate,
     GoogleAuthentication,
     GoogleAuthenticationCallback
 } from "../middlewares";
-import {isRight} from "fp-ts/Either";
-import {UserError} from "../../../user/domain";
-import {UserRegistration} from "../../application/authentication/user-registration";
+import {UserRegistration} from "../../application";
+import {CreateUserDTO} from "../../application/validators/user.create";
 
 @Controller('/auth')
 @injectable()
@@ -41,14 +42,12 @@ export class AuthController {
     }
 
     @Post('/register')
-    public async register(@Body() {
-        name,
-        email,
-        password,
-        lastname
-    }: { name: string, email: string, password: string, lastname: string }, @Res() res: Response) {
+    public async register(
+        @Res() res: Response,
+        @Body({ validate: true }) userDataDTO: CreateUserDTO
+    ) {
 
-        const result = await this.userRegistration.execute({ name, email, password, lastname});
+        const result = await this.userRegistration.execute(userDataDTO);
 
         if (isRight(result)) return ResponseEntity
             .ok()
@@ -57,6 +56,12 @@ export class AuthController {
 
         switch (result.left) {
             case UserError.USER_CANNOT_BE_CREATED:
+                return ResponseEntity
+                    .status(500)
+                    .body(result.left)
+                    .send(res)
+
+            default:
                 return ResponseEntity
                     .status(500)
                     .body(result.left)

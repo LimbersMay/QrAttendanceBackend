@@ -1,6 +1,6 @@
 
 export interface QrCodeQuery {
-    name?: string,
-    enabled?: boolean,
-    createdAt?: Date
+    name: string,
+    enabled: boolean,
+    manualRegistrationDate: Date
 }

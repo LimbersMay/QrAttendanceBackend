@@ -1,10 +1,8 @@
 import {inject, injectable} from "inversify";
-import {isRight, left, right} from "fp-ts/Either";
+import {fold, left, right} from "fp-ts/Either";
 import {TYPES} from "../../../../../../apps/QrAttendance/dependency-injection/qrCode/types";
-import {QrCodeRepository} from "../../../domain/qrCode.repository";
-import {Either} from "../../../../../shared/types/ErrorEither";
-import {QrCodeError} from "../../../domain/errors/qrCode.errors";
-import {QrCodeQuery} from "../../../domain/entities/qrCode.query";
+import {Criteria, Either} from "../../../../shared";
+import {QrCodeError, QrCodeQuery, QrCodeRepository} from "../../../domain";
 
 @injectable()
 export class QrCodeUpdater {
@@ -12,14 +10,19 @@ export class QrCodeUpdater {
         @inject(TYPES.QrCodeRepository) private qrCodeRepository: QrCodeRepository,
     ) {}
 
-    public execute = async(fields: QrCodeQuery, qrCodeId: string, userId: string): Promise<Either<QrCodeError, number>> => {
+    public async execute(fields: QrCodeQuery, specifications: Criteria): Promise<Either<QrCodeError, number>> {
 
-        return this.qrCodeRepository.updateQrCode(fields, qrCodeId, userId).then(result => {
+        try {
+            const result = await this.qrCodeRepository.updateQrCode(fields, specifications);
 
-            return isRight(result)
-                ? right(result.right)
-                : left(QrCodeError.QR_CODE_NOT_FOUND);
+            return fold(
+                () => left(QrCodeError.QR_CODE_NOT_FOUND),
+                (rowsUpdated: number) => right(rowsUpdated)
+            )(result);
 
-        }).catch(() => left(QrCodeError.QR_CODE_CANNOT_BE_UPDATED));
+        } catch (error) {
+            console.log(error);
+            return left(QrCodeError.QR_CODE_CANNOT_BE_UPDATED);
+        }
     }
 }

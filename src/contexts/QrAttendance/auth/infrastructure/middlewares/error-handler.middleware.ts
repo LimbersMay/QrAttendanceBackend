@@ -1,5 +1,5 @@
 import {NextFunction, Request, Response} from "express";
-import {ExpressErrorMiddlewareInterface, Middleware} from "routing-controllers";
+import {ExpressErrorMiddlewareInterface, Middleware, UnauthorizedError} from "routing-controllers";
 import {ValidationError} from "class-validator";
 import {injectable} from "inversify";
 
@@ -11,7 +11,7 @@ export interface HttpErrorHandler {
 @injectable()
 @Middleware({ type: "after" })
 export class ErrorHandlerMiddleware implements ExpressErrorMiddlewareInterface {
-    error(error: HttpErrorHandler | any, request: Request, response: Response, next: NextFunction) {
+    error(error: HttpErrorHandler | any, _request: Request, response: Response, next: NextFunction) {
 
         if (error.errors) {
 
@@ -39,9 +39,17 @@ export class ErrorHandlerMiddleware implements ExpressErrorMiddlewareInterface {
         } else {
             // generic error handler
             console.log('Error: ', error);
+
+            if (error instanceof UnauthorizedError) {
+                response.status(401);
+                return response.json({
+                    body: error.message,
+                });
+            }
+
             response.status(error.status || 500);
             response.json({
-                error: error.message,
+                body: error.message,
             });
         }
 

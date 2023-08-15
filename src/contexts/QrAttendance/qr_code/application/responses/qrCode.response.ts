@@ -1,4 +1,4 @@
-import {QrCodeEntity} from "../../domain/qrCode.entity";
+import {QrCodeEntity} from "../../domain";
 
 export class QrCodeResponse {
     id: string;

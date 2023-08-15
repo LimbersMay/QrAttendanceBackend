@@ -1,21 +1,42 @@
-import Group from "../model/group.schema";
-import {GroupEntity} from "../../domain/group.entity";
-import {Either} from "../../../../shared/types/ErrorEither";
-import {GroupError} from "../../application/errors/group.errors";
+import {WhereOptions} from "sequelize";
+import {inject, injectable} from "inversify";
 import {left, right} from "fp-ts/Either";
-import {GroupRepository} from "../../domain/group.repository";
-import {injectable} from "inversify";
+import {TYPES} from "../../../../../apps/QrAttendance/dependency-injection/types";
+import {Criteria, Either, SpecificationBuilder} from "../../../shared";
+import Group from "../";
+import {GroupEntity, GroupError, GroupQuery, GroupRepository} from "../../domain";
 
 @injectable()
 export class GroupMysqlRepository implements GroupRepository {
 
-    public async findGroupById(groupId: string, userId: string): Promise<Either<GroupError, GroupEntity>> {
+    public constructor(
+        @inject(TYPES.SpecificationBuilder) private readonly specificationBuilder: SpecificationBuilder<unknown, WhereOptions<GroupEntity>>
+    ) {
+    }
+
+    public async findAll(specifications: Criteria): Promise<Either<GroupError, GroupEntity[]>> {
+
+        const whereClause = this.specificationBuilder.buildWhereClauseFromSpecifications(specifications);
+
+        const groups = await Group.findAll({
+            where: whereClause
+        });
+
+        return right(groups.map(group => ({
+            groupId: group.groupId,
+            name: group.name,
+            userId: group.userId,
+            createdAt: group.createdAt,
+            updatedAt: group.updatedAt
+        })));
+    }
+
+    public async findOne(specifications: Criteria): Promise<Either<GroupError, GroupEntity>> {
+
+        const whereClause = this.specificationBuilder.buildWhereClauseFromSpecifications(specifications);
 
         const group = await Group.findOne({
-            where: {
-                groupId,
-                userId
-            }
+            where: whereClause
         });
 
         return (group)
@@ -27,26 +48,6 @@ export class GroupMysqlRepository implements GroupRepository {
                 updatedAt: group.updatedAt
             })
             : left(GroupError.GROUP_NOT_FOUND);
-
-
-    }
-
-    public async findGroupsByUserId(userId: string): Promise<Either<GroupError, GroupEntity[]>> {
-
-
-        const groups = await Group.findAll({
-            where: {
-                userId
-            }
-        });
-
-        return right(groups.map(group => ({
-            groupId: group.groupId,
-            name: group.name,
-            userId: group.userId,
-            createdAt: group.createdAt,
-            updatedAt: group.updatedAt
-        })));
     }
 
     public async createGroup(user: GroupEntity): Promise<GroupEntity> {
@@ -62,12 +63,12 @@ export class GroupMysqlRepository implements GroupRepository {
         };
     }
 
-    public async deleteGroup(groupId: string, userId: string): Promise<Either<GroupError, number>> {
+    public async deleteGroup(specifications: Criteria): Promise<Either<GroupError, number>> {
+
+        const whereClause = this.specificationBuilder.buildWhereClauseFromSpecifications(specifications);
+
         const rowsDestroyed = await Group.destroy({
-            where: {
-                groupId,
-                userId
-            }
+            where: whereClause
         });
 
         return (rowsDestroyed > 0)
@@ -75,17 +76,16 @@ export class GroupMysqlRepository implements GroupRepository {
             : left(GroupError.GROUP_NOT_FOUND);
     }
 
-    async updateGroup(groupId: string, userId: string, fields: Record<string, any>): Promise<Either<GroupError, number>> {
+    async updateGroup(specifications: Criteria, fields: GroupQuery): Promise<Either<GroupError, number>> {
+
+        const whereClause = this.specificationBuilder.buildWhereClauseFromSpecifications(specifications);
 
         const rowsUpdated = await Group.update(
             {
                 ...fields
             },
             {
-                where: {
-                    groupId,
-                    userId
-                }
+                where: whereClause
             });
 
         return (rowsUpdated[0] > 0)

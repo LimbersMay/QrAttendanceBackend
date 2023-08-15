@@ -1,8 +1,7 @@
 import {isRight, left, right} from "fp-ts/Either";
 import {inject, injectable} from "inversify";
 import {TYPES} from "../../../../../../apps/QrAttendance/dependency-injection/user/types";
-import {Criteria} from "../../../../../shared/specifications/specification";
-import {Either} from "../../../../../shared/types/ErrorEither";
+import {Criteria, Either} from "../../../../shared";
 import {UserQuery, UserError, UserRepository} from "../../../domain";
 
 @injectable()

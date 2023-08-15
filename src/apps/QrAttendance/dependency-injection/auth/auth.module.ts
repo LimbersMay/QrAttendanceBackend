@@ -1,16 +1,11 @@
 import {Container} from "inversify";
-import {AuthController} from "../../../../contexts/QrAttendance/auth/infrastructure/controller/auth.controller";
 import {
-    IsAuthenticated,
-    Logout
-} from "../../../../contexts/QrAttendance/auth/infrastructure/middlewares";
-import {PassportLocalStrategy} from "../../../../contexts/QrAttendance/auth/infrastructure/passport/passport-config";
-import {UserAuthenticator} from "../../../../contexts/QrAttendance/auth/application/authentication/user-authenticator";
-import {
-    Authenticate, GoogleAuthentication, GoogleAuthenticationCallback,
-    ErrorHandlerMiddleware
-} from "../../../../contexts/QrAttendance/auth/infrastructure/middlewares";
-import {UserRegistration} from "../../../../contexts/QrAttendance/auth/application/authentication/user-registration";
+    AuthController,
+    Authenticate,
+    ErrorHandlerMiddleware,
+    GoogleAuthentication, GoogleAuthenticationCallback,
+    IsAuthenticated, Logout, PassportLocalStrategy, UserAuthenticator, UserRegistration
+} from "../../../../contexts/QrAttendance/auth";
 
 export const authModule = (container: Container) => {
 
