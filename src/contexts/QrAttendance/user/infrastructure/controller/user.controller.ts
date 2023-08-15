@@ -3,7 +3,7 @@ import {Body, JsonController, Put, Res, CurrentUser, UseBefore} from "routing-co
 import {isRight} from "fp-ts/Either";
 import {injectable} from "inversify";
 import {ResponseEntity} from "../../../shared";
-import {IsAuthenticated} from "../../../auth/infrastructure";
+import {IsAuthenticated} from "../../../auth";
 import {UserResponse, UserUpdater} from "../../application";
 import {UpdateUserDTO} from "../../application/validators/user.update";
 import {UserIdSpecification, UserError} from "../../domain";
