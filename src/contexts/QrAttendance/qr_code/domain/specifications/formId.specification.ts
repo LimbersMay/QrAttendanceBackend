@@ -1,7 +1,7 @@
 import {AbstractSpecification, Expression} from "../../../shared";
 import {QrCodeEntity} from "../qrCode.entity";
 
-export class QrCodeFormIdSpecification extends AbstractSpecification<QrCodeEntity> {
+export class FormIdSpecification extends AbstractSpecification<QrCodeEntity> {
 
     public readonly value: string;
 
