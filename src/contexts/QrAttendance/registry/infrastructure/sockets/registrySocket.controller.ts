@@ -1,10 +1,10 @@
 import { Socket } from "socket.io";
 import { injectable } from "inversify";
-import {RegistryCreator} from "../../application/useCases";
 import {isLeft} from "fp-ts/Either";
 import {RateLimiterMemory} from "rate-limiter-flexible";
-import {RegistryError} from "../../domain/registryError";
-import {QrCodeFinder, QrCodeFormIdSpecification} from "../../../qr_code";
+import {QrCodeFinder, FormIdSpecification, QrCodeError} from "../../../qr_code";
+import {RegistryCreator} from "../../application";
+import {RegistryError} from "../../domain";
 
 @injectable()
 export class RegistrySocketController {
@@ -24,16 +24,21 @@ export class RegistrySocketController {
                 const { name, group, career, firstSurname, secondSurname, formId } = data;
 
                 const qrCode = await this.qrCodeFinder.findOne(
-                    new QrCodeFormIdSpecification(formId)
+                    new FormIdSpecification(formId)
                 );
 
-                // if the qrCode creation fails
+                // if the search fails
                 if (isLeft(qrCode))
                     return socket.emit("register-attendance-error", qrCode.left);
 
+                // if the qrCode enabled is false
+                if (!qrCode.right.enabled) {
+                    return socket.emit("register-attendance-error", QrCodeError.FORM_DEACTIVATED_BY_THE_TEACHER);
+                }
+
                 const { id, ownerId } = qrCode.right;
 
-                const registry = await this.registryCreator.execute(id, ownerId, name, group, career, firstSurname, secondSurname);
+                const registry = await this.registryCreator.execute({qrId: id, name, group, career, firstSurname, secondSurname}, ownerId);
 
                 // if the registry creation fails
                 if (isLeft(registry))
@@ -55,7 +60,7 @@ export class RegistrySocketController {
                 this.clients.set(data, new Set())
             }
 
-            // eveytime a client connects we verify if is the same client
+            // everytime a client connects we verify if is the same client
             // and if it is we add join the client at the same room
             const roomId = data;
             this.clients.get(data)?.add(roomId);
