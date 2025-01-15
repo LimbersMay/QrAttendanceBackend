@@ -11,7 +11,7 @@ import {UserEntity, UserRepository, UserQuery, UserError} from "../../domain";
 export class UserMysqlRepository implements UserRepository {
 
     public constructor(
-        @inject(TYPES.SpecificationBuilder) private readonly specificationBuilder: SpecificationBuilder<unknown, WhereOptions<UserEntity>>
+        @inject(TYPES.SpecificationBuilder) private readonly specificationBuilder: SpecificationBuilder<UserEntity, WhereOptions<UserEntity>>
     ) {}
 
     public async findAll(specifications: Criteria): Promise<Either<UserError, UserEntity[]>> {
