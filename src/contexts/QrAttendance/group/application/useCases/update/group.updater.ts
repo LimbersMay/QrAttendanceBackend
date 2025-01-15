@@ -1,10 +1,8 @@
 import {inject, injectable} from "inversify";
-import {GroupRepository} from "../../../domain/group.repository";
-import {GroupError} from "../../errors/group.errors";
-import {Either} from "../../../../../shared/types/ErrorEither";
 import {left, right, fold} from "fp-ts/Either";
-import {GroupQuery} from "../../../domain/group.query";
 import {TYPES} from "../../../../../../apps/QrAttendance/dependency-injection/group/types";
+import {Either, Criteria} from "../../../../shared";
+import {GroupQuery, GroupError, GroupRepository} from "../../../domain";
 
 @injectable()
 export class GroupUpdater {
@@ -12,13 +10,15 @@ export class GroupUpdater {
         @inject(TYPES.GroupRepository) private groupRepository: GroupRepository
     ) {}
 
-    execute = (groupId: string, userId: string, fields: GroupQuery): Promise<Either<GroupError, number>> => {
-        return this.groupRepository.updateGroup(groupId, userId, fields).then(group => {
+    public async execute (fields: GroupQuery, specifications: Criteria): Promise<Either<GroupError, number>> {
+        try {
+            const group = await this.groupRepository.updateGroup(specifications, fields);
             return fold(
                 () => left(GroupError.GROUP_NOT_FOUND),
-                (group: number) => right(group)
+                (updatedFields: number) => right(updatedFields)
             )(group);
-
-        }).catch(() => left(GroupError.GROUP_CANNOT_BE_UPDATED));
+        } catch {
+            return left(GroupError.GROUP_CANNOT_BE_UPDATED);
+        }
     }
 }

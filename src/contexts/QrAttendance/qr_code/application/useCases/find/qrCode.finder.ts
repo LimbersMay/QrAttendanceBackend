@@ -1,36 +1,39 @@
 import {inject, injectable} from "inversify";
-import {isRight, left, right} from "fp-ts/Either";
+import {fold, left, right} from "fp-ts/Either";
 import {TYPES} from "../../../../../../apps/QrAttendance/dependency-injection/qrCode/types";
-import {QrCodeRepository} from "../../../domain/qrCode.repository";
-import {Either} from "../../../../../shared/types/ErrorEither";
-import {QrCodeError} from "../../../domain/errors/qrCode.errors";
-import {QrCodeResponse} from "../../responses/qrCode.response";
+import {Criteria, Either} from "../../../../shared";
+import {QrCodeResponse} from "../../responses";
+import {QrCodeEntity, QrCodeError, QrCodeRepository} from "../../../domain";
 
 @injectable()
 export class QrCodeFinder {
     constructor(
         @inject(TYPES.QrCodeRepository) private qrCodeRepository: QrCodeRepository
-    ) {
+    ) {}
+
+    public async findOne(specifications: Criteria): Promise<Either<QrCodeError, QrCodeResponse>> {
+        try {
+            const qrCode = await this.qrCodeRepository.findOne(specifications);
+
+            return fold(
+                () => left(QrCodeError.QR_CODE_NOT_FOUND),
+                (qrCode: QrCodeEntity) => right(QrCodeResponse.fromQrCode(qrCode))
+            )(qrCode);
+
+        } catch (error) {
+            console.log(error);
+            return left(QrCodeError.QR_CODE_CANNOT_BE_FOUND);
+        }
     }
 
-    public execute = async (id: string, userId: string): Promise<Either<QrCodeError, QrCodeResponse>> => {
+    public async findAll(specifications: Criteria): Promise<Either<QrCodeError, QrCodeResponse[]>> {
 
-        return this.qrCodeRepository.findQrCodeById(id, userId).then(qrCode => {
-
-            return isRight(qrCode)
-                ? right(QrCodeResponse.fromQrCode(qrCode.right))
-                : left(QrCodeError.QR_CODE_NOT_FOUND);
-
-        }).catch(() => left(QrCodeError.QR_CODE_CANNOT_BE_FOUND));
-    }
-
-    public executeByUserId = async (userId: string): Promise<Either<QrCodeError, QrCodeResponse[]>> => {
-        return this.qrCodeRepository.findQrCodeByUserId(userId).then(qrCodes => {
-
-            return isRight(qrCodes)
-                ? right(QrCodeResponse.fromQrCodes(qrCodes.right))
-                : left(QrCodeError.QR_CODE_NOT_FOUND);
-
-        }).catch(() => left(QrCodeError.QR_CODE_CANNOT_BE_FOUND));
+        try {
+            const qrCodes = await this.qrCodeRepository.findAll(specifications);
+            return right(QrCodeResponse.fromQrCodes(qrCodes));
+        } catch (error){
+            console.log(error)
+            return left(QrCodeError.QR_CODES_CANNOT_BE_FOUND);
+        }
     }
 }

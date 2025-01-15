@@ -5,7 +5,7 @@ import {
     UnauthorizedError
 } from "routing-controllers";
 import {injectable} from "inversify";
-import {AuthError} from "../../application/errors/authError";
+import {AuthError} from "../../domain";
 import {CLIENT_URL} from "../../../../utils/secrets";
 
 @injectable()

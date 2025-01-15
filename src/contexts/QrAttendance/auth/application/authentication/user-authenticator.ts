@@ -1,11 +1,9 @@
 import {inject, injectable} from "inversify";
 import {isLeft, left, right} from "fp-ts/Either";
 import {TYPES} from "../../../../../apps/QrAttendance/dependency-injection/user/types";
-import {PasswordHasher} from "../../../shared/application/services/encrypt.service";
-import {Either} from "../../../../shared/types/ErrorEither";
-import {AuthError} from "../errors/authError";
-import {UserResponse} from "../../../user/application";
-import {UserRepository, UserEmailSpecification} from "../../../user/domain";
+import {PasswordHasher, Either} from "../../../shared";
+import {AuthError} from "../../domain";
+import {UserEmailSpecification, UserRepository, UserResponse} from "../../../user";
 
 @injectable()
 export class UserAuthenticator {

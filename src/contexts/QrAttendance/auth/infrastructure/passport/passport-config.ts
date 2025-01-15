@@ -3,12 +3,11 @@ import passport from "passport";
 import {isLeft, isRight} from "fp-ts/Either";
 import {Strategy as LocalStrategy} from 'passport-local';
 import {Strategy as GoogleStrategy} from 'passport-google-oauth20';
-import {UserAuthenticator} from "../../application/authentication/user-authenticator";
+import {AuthError} from "../../domain";
+import {UserAuthenticator} from "../../application";
 
 import {UserCreator, UserFinder, UserDTO} from "../../../user/application";
 import {UserEmailSpecification, UserIdSpecification, UserError} from "../../../user/domain";
-
-import {AuthError} from "../../application/errors/authError";
 import {API_URL, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET} from "../../../../utils/secrets";
 
 declare global {
@@ -51,12 +50,12 @@ export class PassportLocalStrategy {
         );
 
         // {id: 1, name: Juan}
-        // 1 -> Serialización, pasar de un objeto a un dato muy particular
+        // 1 -> Serialization convert the current user to an identifier
         passport.serializeUser((user, done) => {
             done(null, user.id);
         });
 
-        // 1 -> {id: 1, name: Juan}. Deserializacion Pasar del identificador al objeto
+        // 1 -> {id: 1, name: Juan}. Deserialization convert the identifier to the current user
         passport.deserializeUser(async (id: string, done) => {
 
             const result = await this.userFinder.execute(new UserIdSpecification(id));

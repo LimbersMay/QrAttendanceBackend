@@ -1,12 +1,10 @@
-import { RegistryEntity } from './registry.entity';
-import {RegistryQuery} from "./entities/registry.query";
-import {Either} from "../../../shared/types/ErrorEither";
-import {RegistryError} from "./errors/registry.error";
+import {Criteria, Either} from "../../shared";
+import {RegistryEntity, RegistryQuery, RegistryError} from "./";
 
 export interface RegistryRepository {
+    findAll(specifications: Criteria): Promise<RegistryEntity[]>;
+    findOne(specifications: Criteria): Promise<Either<RegistryError, RegistryEntity>>;
     createRegistry(registry: RegistryEntity): Promise<RegistryEntity>;
-    deleteRegistry(registryId: string, userId: string): Promise<Either<RegistryError, number>>;
-    updateRegistry(fields: RegistryQuery, registryId: string, userId: string): Promise<Either<RegistryError, number>>;
-    findRegistryById(registryId: string, userId: string): Promise<Either<RegistryError, RegistryEntity>>;
-    findRegistriesByUserId(userId: string): Promise<Either<RegistryError, RegistryEntity[]>>;
+    updateRegistry(fields: RegistryQuery, specifications: Criteria): Promise<Either<RegistryError, number>>;
+    deleteRegistry(specifications: Criteria): Promise<Either<RegistryError, number>>;
 }

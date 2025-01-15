@@ -1,7 +1,6 @@
 import {Container} from "inversify";
+import {SpecificationBuilder, SequelizeSpecificationBuilder} from "../../../contexts/QrAttendance/shared";
 import {TYPES} from "./types";
-import {SpecificationBuilder} from "../../../contexts/shared/specifications/specification-builder";
-import {SequelizeSpecificationBuilder} from "../../../contexts/shared/specifications/sequelize-specification-builder";
 
 export const sharedModule = (container: Container) => {
     // specifications

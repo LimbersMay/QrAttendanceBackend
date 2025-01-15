@@ -1,10 +1,8 @@
 import {inject, injectable} from "inversify";
 import {Either, isRight, left, right} from "fp-ts/Either";
 import {TYPES} from "../../../../../apps/QrAttendance/dependency-injection/user/types";
-import {UUIDGenerator} from "../../../shared/application/services/UUIDGenerator";
-import {PasswordHasher} from "../../../shared/application/services/encrypt.service";
-import {UserResponse} from "../../../user/application";
-import {UserError, UserRepository, UserValue} from "../../../user/domain";
+import {UUIDGenerator, PasswordHasher} from "../../../shared";
+import {UserError, UserRepository, UserValue, UserResponse} from "../../../user";
 import {CreateUserDTO} from "../validators/user.create";
 
 

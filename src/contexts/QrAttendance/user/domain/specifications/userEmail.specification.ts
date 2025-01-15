@@ -1,4 +1,4 @@
-import {AbstractSpecification, Expression} from "../../../../shared/specifications/specification";
+import {AbstractSpecification, Expression} from "../../../shared";
 import {UserEntity} from "../user.entity";
 
 export class UserEmailSpecification extends AbstractSpecification<UserEntity> {

@@ -1,10 +1,9 @@
-import {isRight, left, right} from "fp-ts/Either";
 import {inject, injectable} from "inversify";
-import {Either} from "../../../../../shared/types/ErrorEither";
+import {isRight, left, right} from "fp-ts/Either";
+import {TYPES} from "../../../../../../apps/QrAttendance/dependency-injection/user/types";
+import {Either, Criteria} from "../../../../shared";
 import {UserResponse} from "../../responses";
 import {UserError, UserRepository} from "../../../domain";
-import {TYPES} from "../../../../../../apps/QrAttendance/dependency-injection/user/types";
-import {Criteria} from "../../../../../shared/specifications/specification";
 
 @injectable()
 export class UserFinder {

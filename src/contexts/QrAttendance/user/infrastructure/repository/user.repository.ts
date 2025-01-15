@@ -1,22 +1,17 @@
 import {inject, injectable} from "inversify";
 import {left, right} from "fp-ts/Either";
 import {WhereOptions} from "sequelize";
-
 import {TYPES} from "../../../../../apps/QrAttendance/dependency-injection/types";
-import {SpecificationBuilder} from "../../../../shared/specifications/specification-builder";
-import {Either} from "../../../../shared/types/ErrorEither";
-import {Criteria} from '../../../../shared/specifications/specification';
+import {SpecificationBuilder, Either, Criteria} from "../../../shared";
 
 import User from '../model/user.schema';
-
 import {UserEntity, UserRepository, UserQuery, UserError} from "../../domain";
-
 
 @injectable()
 export class UserMysqlRepository implements UserRepository {
 
     public constructor(
-        @inject(TYPES.SpecificationBuilder) private readonly specificationBuilder: SpecificationBuilder<unknown, WhereOptions<UserEntity>>
+        @inject(TYPES.SpecificationBuilder) private readonly specificationBuilder: SpecificationBuilder<UserEntity, WhereOptions<UserEntity>>
     ) {}
 
     public async findAll(specifications: Criteria): Promise<Either<UserError, UserEntity[]>> {

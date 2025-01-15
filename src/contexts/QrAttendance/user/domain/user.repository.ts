@@ -1,5 +1,4 @@
-import {Criteria} from "../../../shared/specifications/specification";
-import {Either} from "../../../shared/types/ErrorEither";
+import {Criteria, Either} from "../../shared";
 import {UserEntity, UserQuery, UserError} from "./";
 
 export interface UserRepository {

@@ -1,13 +1,26 @@
-import {QrCodeCreator, QrCodeDeleter, QrCodeFinder, QrCodeUpdater} from "../../application/useCases";
 import {Response} from "express";
-import {ResponseEntity} from "../../../../shared/infrastructure/entities/response.entity";
-import {isRight} from "fp-ts/Either";
-import {QrCodeError} from "../../domain/errors/qrCode.errors";
+import {
+    Body,
+    Controller,
+    CurrentUser,
+    Delete,
+    Get,
+    Params,
+    Post,
+    Put,
+    Res,
+    UseBefore
+} from "routing-controllers";
 import {injectable} from "inversify";
-import {Body, Controller, CurrentUser, Delete, Get, Param, Post, Put, Res, UseBefore} from "routing-controllers";
-import {IsAuthenticated} from "../../../auth/infrastructure/middlewares";
-import {UserResponse} from "../../../user/application/responses/user.response";
-import {QrCodeQuery} from "../../domain/entities/qrCode.query";
+import {isRight} from "fp-ts/Either";
+import {ResponseEntity} from "../../../shared";
+import {QrCodeCreator, QrCodeDeleter, QrCodeFinder, QrCodeUpdater} from "../../application";
+import {QrCodeError, QrCodeIdSpecification, OwnerIdSpecification} from "../../domain";
+import {IsAuthenticated} from "../../../auth";
+import {UserResponse} from "../../../user";
+import {QrCodeIdDTO} from "../../application/validations/qrCodeIdDTO";
+import {CreateQrCodeDTO} from "../../application/validations/qrCode.create";
+import {UpdateQrCodeDTO} from "../../application/validations/qrCode.update";
 
 @Controller('/qrCode')
 @UseBefore(IsAuthenticated)
@@ -26,43 +39,48 @@ export class QrCodeController {
         @CurrentUser() user: UserResponse
     ) {
 
-        const qrCode = await this.qrCodeFinder.executeByUserId(user.id);
+        const result = await this.qrCodeFinder.findAll(
+            new OwnerIdSpecification(user.id)
+        );
 
-        if (isRight(qrCode))
+        if (isRight(result))
             return ResponseEntity
                 .status(200)
-                .body(qrCode.right)
+                .body(result.right)
                 .buid();
 
-        return this.handleError(qrCode.left, res);
+        return this.handleError(result.left, res);
     }
 
     @Get('/:id')
     public async findOne (
-        @Param('id') id: string,
+        @Params() { id: qrCodeId }: QrCodeIdDTO,
         @Res() res: Response,
         @CurrentUser() user: UserResponse
     ) {
 
-        const qrCode = await this.qrCodeFinder.execute(id, user.id);
+        const result = await this.qrCodeFinder.findOne([
+            new OwnerIdSpecification(user.id),
+            new QrCodeIdSpecification(qrCodeId)
+        ]);
 
-        if (isRight(qrCode))
+        if (isRight(result))
             return ResponseEntity
                 .status(200)
-                .body(qrCode.right)
+                .body(result.right)
                 .buid();
 
-        return this.handleError(qrCode.left, res);
+        return this.handleError(result.left, res);
     }
 
     @Post('/')
     public async create (
         @Res() res: Response,
-        @Body() { name, groupId, enabled, url, manualRegistrationDate}: {name: string, groupId: string, enabled: boolean, url: string, manualRegistrationDate: Date},
+        @Body() qrCodeDataDTO: CreateQrCodeDTO,
         @CurrentUser() user: UserResponse
     ) {
 
-        const result = await this.qrCodeCreator.execute(name, groupId, user.id, enabled, url, manualRegistrationDate);
+        const result = await this.qrCodeCreator.execute(qrCodeDataDTO, user.id);
 
         if (isRight(result))
             return ResponseEntity
@@ -76,12 +94,15 @@ export class QrCodeController {
     @Put('/:id')
     public async update (
         @Res() res: Response,
-        @Body() updatedFields: QrCodeQuery,
-        @Param('id') id: string,
+        @Body() qrCodeDTO: UpdateQrCodeDTO,
+        @Params() { id: qrCodeId }: QrCodeIdDTO,
         @CurrentUser() user: UserResponse
     ) {
 
-        const result = await this.qrCodeUpdater.execute(updatedFields, id, user.id);
+        const result = await this.qrCodeUpdater.execute(qrCodeDTO, [
+            new OwnerIdSpecification(user.id),
+            new QrCodeIdSpecification(qrCodeId)
+        ]);
 
         if (isRight(result))
             return ResponseEntity
@@ -95,11 +116,14 @@ export class QrCodeController {
     @Delete('/:id')
     public async delete (
         @Res() res: Response,
-        @Param('id') id: string,
+        @Params() { id: qrCodeId }: QrCodeIdDTO,
         @CurrentUser() user: UserResponse
     ) {
 
-        const result = await this.qrCodeDeleter.execute(id, user.id);
+        const result = await this.qrCodeDeleter.execute([
+            new OwnerIdSpecification(user.id),
+            new QrCodeIdSpecification(qrCodeId)
+        ]);
 
         if (isRight(result))
             return ResponseEntity
