@@ -1,71 +1,40 @@
-import {UserFinder, UserDeleter, UserUpdater } from "../../application/useCases";
-import {Request, Response} from "express";
+import {Response} from "express";
+import {Body, JsonController, Put, Res, CurrentUser, UseBefore} from "routing-controllers";
 import {isRight} from "fp-ts/Either";
-import {ResponseEntity} from "../../../../shared/infrastructure/entities/response.entity";
-import {UserError} from "../../domain/errors/userError";
 import {injectable} from "inversify";
-import {Body, Delete, Get, JsonController, Put, QueryParam, Req, Res, UseBefore} from "routing-controllers";
-import {IsAuthenticated} from "../../../auth/infrastructure/middlewares";
+import {ResponseEntity} from "../../../shared";
+import {IsAuthenticated} from "../../../auth";
+import {UserResponse, UserUpdater} from "../../application";
+import {UpdateUserDTO} from "../../application/validators/user.update";
+import {UserIdSpecification, UserError} from "../../domain";
 
 @JsonController('/user')
+@UseBefore(IsAuthenticated)
 @injectable()
 export class UserController {
     constructor(
-        private readonly userFinder: UserFinder,
-        private readonly userUpdater: UserUpdater,
-        private readonly userDeleter: UserDeleter
+        private readonly userUpdater: UserUpdater
     ) {}
 
-    @Get('/')
-    public async getUserById (@Res() res: Response, @QueryParam("userId", {required: true}) userId: string) {
+    @Put('/')
+    public async update(
+        @Res() res: Response,
+        @Body() fieldsToUpdate: UpdateUserDTO,
+        @CurrentUser() user: UserResponse
+    ) {
 
-        const user = await this.userFinder.execute(userId);
+        const result = await this.userUpdater.execute(
+            fieldsToUpdate,
+            new UserIdSpecification(user.id)
+        );
 
-        if (isRight(user))
+        if (isRight(result))
             return ResponseEntity
-                .body(user.right)
+                .ok()
+                .body({ rowsUpdated: result.right })
                 .buid();
 
-        return this.handleError(user.left, res);
-    }
-
-    @Delete('/delete')
-    @UseBefore(IsAuthenticated)
-    public async delete (@Req() req: Request, @Res() res: Response) {
-
-        // @ts-ignore
-        const { id: userId } = req.user;
-        const user = await this.userDeleter.execute(userId);
-
-        if (isRight(user))
-            return ResponseEntity
-                .body(user.right)
-                .buid();
-
-        return this.handleError(user.left, res);
-    }
-
-    @Put('/update')
-    @UseBefore(IsAuthenticated)
-    public async update(@Req() req: Request, @Res() res: Response, @Body() {fields}: any) {
-
-        // @ts-ignore
-        const { id: userId = '' } = req.user;
-
-        const expectedFields = {
-            name: fields.name,
-            lastname: fields.lastname,
-            email: fields.email,
-            password: fields.password
-        }
-
-        const user = await this.userUpdater.execute(expectedFields, userId);
-        if (isRight(user))
-            return ResponseEntity
-                .body(user.right)
-                .buid();
-
-       return this.handleError(user.left, res);
+       return this.handleError(result.left, res);
     }
 
     private handleError (error: UserError, res: Response) {

@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+  node-app:
+    container_name: node-app
+    build:
+        context: .
+        dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    networks:
+      - qrAttendanceNetwork
+    depends_on:
+        - mysql-db
+    volumes:
+      - .:/usr/src/app
+  mysql-db:
+    container_name: mysql-db
+    image: mysql:8
+    ports:
+      - "3306:3306"
+    environment:
+        MYSQL_ROOT_PASSWORD: 12345
+        MYSQL_DATABASE: QrAttendance
+    volumes:
+      - ./QrAttendance.sql:/docker-entrypoint-initdb.d/QrAttendance.sql
+    networks:
+        - qrAttendanceNetwork
+
+networks:
+    qrAttendanceNetwork:
+        driver: bridge

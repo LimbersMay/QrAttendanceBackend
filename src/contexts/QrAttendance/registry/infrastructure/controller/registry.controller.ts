@@ -1,24 +1,26 @@
-import {Request, Response} from "express";
-import {injectable} from "inversify";
-import * as E from 'fp-ts/lib/Either';
-
-import {RegistryCreator, RegistryDeleter, RegistryFinder, RegistryUpdater} from "../../application/useCases";
-import {ResponseEntity} from "../../../../shared/infrastructure/entities/response.entity";
-import {RegistryError} from "../../domain/errors/registry.error";
+import {Response} from "express";
 import {
     Body,
-    BodyParam,
-    Controller,
+    Controller, CurrentUser,
     Delete,
     Get,
-    Param,
+    Res, UseBefore,
     Post,
-    Put,
-    Req, Res, UseBefore
+    Put, Params
 } from "routing-controllers";
-import {IsAuthenticated} from "../../../auth/infrastructure/middlewares";
+import {injectable} from "inversify";
+import {isRight} from "fp-ts/Either";
+import {ResponseEntity} from "../../../shared";
+import {RegistryCreator, RegistryDeleter, RegistryFinder, RegistryUpdater} from "../../application";
+import {RegistryError, OwnerIdSpecification, RegistryIdSpecification} from "../../domain";
+import {IsAuthenticated} from "../../../auth";
+import {UserResponse} from "../../../user";
+import {CreateRegistryDTO} from "../../application/validations/registry.create";
+import {UpdateRegistryDTO} from "../../application/validations/registry.update";
+import {RegistryIdDTO} from "../../application/validations/registryId";
 
 @Controller('/registry')
+@UseBefore(IsAuthenticated)
 @injectable()
 export class RegistryController {
     constructor(
@@ -26,55 +28,19 @@ export class RegistryController {
         private readonly registryFinder: RegistryFinder,
         private readonly registryDeleter: RegistryDeleter,
         private readonly registryUpdater: RegistryUpdater
+    ) {}
+
+    @Get('/')
+    public async findAll(
+        @Res() res: Response,
+        @CurrentUser() user: UserResponse
     ) {
-    }
 
-    @Post('/create')
-    @UseBefore(IsAuthenticated)
-    public async create (@Req() req: Request, @Res() res: Response, @Body() body: any) {
+        const registries = await this.registryFinder.findAll(
+            new OwnerIdSpecification(user.id),
+        );
 
-        // @ts-ignore
-        const {id: userId} = req.user;
-        const {qrId, name, group, career, firstSurname, secondSurname} = body;
-
-        const registry = await this.registryCreator.execute(qrId, userId, name, group, career, firstSurname, secondSurname);
-
-        if (E.isRight(registry))
-            return ResponseEntity
-                .status(201)
-                .body(registry.right)
-                .buid();
-
-        return this.handleErrors(registry.left, res);
-    }
-
-    @Get('/find')
-    @UseBefore(IsAuthenticated)
-    public async find (@Req() req: Request, @Res() res: Response, @BodyParam('registryId') registryId: string) {
-
-        // @ts-ignore
-        const {id: userId} = req.user;
-
-        const registry = await this.registryFinder.execute(registryId, userId);
-
-        if (E.isRight(registry))
-            return ResponseEntity
-                .status(200)
-                .body(registry.right)
-                .buid();
-
-        return this.handleErrors(registry.left, res);
-    }
-
-    @Get('/all')
-    @UseBefore(IsAuthenticated)
-    public async findByUserId(@Req() req: Request, @Res() res: Response) {
-
-        // @ts-ignore
-        const {id: userId} = req.user;
-        const registries = await this.registryFinder.executeByUserId(userId);
-
-        if (E.isRight(registries))
+        if (isRight(registries))
             return ResponseEntity
                 .status(200)
                 .body(registries.right)
@@ -83,54 +49,68 @@ export class RegistryController {
         return this.handleErrors(registries.left, res);
     }
 
-    @Put('/update')
-    @UseBefore(IsAuthenticated)
-    public async update (@Req() req: Request, @Res() res: Response, @Body() body: any) {
+    @Post('/')
+    public async create (
+        @Res() res: Response,
+        @Body() registryDTO: CreateRegistryDTO,
+        @CurrentUser() user: UserResponse
+    ) {
 
-        // @ts-ignore
-        const {id: userId} = req.user;
-        const {id, updatedFields} = body;
+        const registry = await this.registryCreator.execute(registryDTO, user.id);
 
-        const expectedFields = {
-            name: updatedFields.name,
-            group: updatedFields.group,
-            career: updatedFields.career,
-            firstSurname: updatedFields.firstSurname,
-            secondSurname: updatedFields.secondSurname,
-            checkinTime: updatedFields.checkinTime
-        }
-
-        const registry = await this.registryUpdater.execute(expectedFields, id, userId);
-
-        if (E.isRight(registry))
+        if (isRight(registry))
             return ResponseEntity
-                .status(200)
+                .status(201)
                 .body(registry.right)
                 .buid();
 
         return this.handleErrors(registry.left, res);
     }
 
-    @Delete('/delete/:id')
-    @UseBefore(IsAuthenticated)
-    public async delete (@Req() req: Request, @Res() res: Response, @Param('id') id: string) {
+    @Put('/:id')
+    public async update (
+        @Res() res: Response,
+        @Body() registryDTO: UpdateRegistryDTO,
+        @Params() { id: registryId }: RegistryIdDTO,
+        @CurrentUser() user: UserResponse
+    ) {
 
-        // @ts-ignore
-        const {id: userId} = req.user;
+        const registry = await this.registryUpdater.execute(registryDTO, [
+            new RegistryIdSpecification(registryId),
+            new OwnerIdSpecification(user.id)
+        ]);
 
-        const registry = await this.registryDeleter.execute(id, userId);
-
-        if (E.isRight(registry))
+        if (isRight(registry))
             return ResponseEntity
                 .status(200)
-                .body(registry.right)
+                .body({ rowsUpdated: registry.right })
                 .buid();
 
         return this.handleErrors(registry.left, res);
+    }
+
+    @Delete('/:id')
+    public async delete (
+        @Res() res: Response,
+        @Params() { id: registryId}: RegistryIdDTO,
+        @CurrentUser() user: UserResponse
+    ) {
+
+        const result = await this.registryDeleter.execute([
+            new RegistryIdSpecification(registryId),
+            new OwnerIdSpecification(user.id)
+        ]);
+
+        if (isRight(result))
+            return ResponseEntity
+                .status(200)
+                .body({ rowsDeleted: result.right })
+                .buid();
+
+        return this.handleErrors(result.left, res);
     }
 
     private handleErrors = (error: RegistryError, res: Response) => {
-        console.log(error);
         switch (error) {
             case RegistryError.REGISTRY_NOT_FOUND:
                 return ResponseEntity

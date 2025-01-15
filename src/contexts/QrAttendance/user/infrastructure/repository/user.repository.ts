@@ -1,27 +1,26 @@
-import User from '../model/user.schema';
-import {injectable} from "inversify";
+import {inject, injectable} from "inversify";
 import {left, right} from "fp-ts/Either";
+import {WhereOptions} from "sequelize";
+import {TYPES} from "../../../../../apps/QrAttendance/dependency-injection/types";
+import {SpecificationBuilder, Either, Criteria} from "../../../shared";
 
-import {UserQuery} from "../../domain/user.query";
-import {Either} from "../../../../shared/types/ErrorEither";
-import {UserError} from "../../domain/errors/userError";
-import {UserEntity, UserRepository} from "../../domain";
+import User from '../model/user.schema';
+import {UserEntity, UserRepository, UserQuery, UserError} from "../../domain";
 
 @injectable()
 export class UserMysqlRepository implements UserRepository {
 
-    public constructor(){}
-    async findUserByEmail(email: string): Promise<Either<UserError, UserEntity>>{
+    public constructor(
+        @inject(TYPES.SpecificationBuilder) private readonly specificationBuilder: SpecificationBuilder<UserEntity, WhereOptions<UserEntity>>
+    ) {}
 
-        const user = await User.findOne({
-            where: {
-                email
-            }
-        });
+    public async findAll(specifications: Criteria): Promise<Either<UserError, UserEntity[]>> {
+        const whereClause = this.specificationBuilder.buildWhereClauseFromSpecifications(specifications);
 
-        if (!user) return left(UserError.USER_NOT_FOUND);
+        const matchedUsers = await User.findAll({ where: whereClause });
+        if (!matchedUsers) return left(UserError.USER_NOT_FOUND);
 
-        return right({
+        return right(matchedUsers.map(user => ({
             userId: user.userId,
             name: user.name,
             email: user.email,
@@ -29,23 +28,29 @@ export class UserMysqlRepository implements UserRepository {
             lastname: user.lastname,
             createdAt: user.createdAt,
             updatedAt: user.updatedAt
-        });
+        })));
     }
-    async findUserById(userId: string): Promise<Either<UserError, UserEntity>> {
-        const user = await User.findByPk(userId);
-        if(!user) return left(UserError.USER_NOT_FOUND);
+
+    public async findOne(query: Criteria): Promise<Either<UserError, UserEntity>> {
+
+        const whereClause = this.specificationBuilder.buildWhereClauseFromSpecifications(query);
+
+        const matchedUser = await User.findOne({ where: whereClause });
+
+        if (!matchedUser) return left(UserError.USER_NOT_FOUND);
 
         return right({
-            userId: user.userId,
-            name: user.name,
-            email: user.email,
-            password: user.password,
-            lastname: user.lastname,
-            createdAt: user.createdAt,
-            updatedAt: user.updatedAt
+            userId: matchedUser.userId,
+            name: matchedUser.name,
+            email: matchedUser.email,
+            password: matchedUser.password,
+            lastname: matchedUser.lastname,
+            createdAt: matchedUser.createdAt,
+            updatedAt: matchedUser.updatedAt
         });
     }
-    async createUser(user: UserEntity): Promise<Either<UserError, UserEntity>> {
+
+    public async createUser(user: UserEntity): Promise<Either<UserError, UserEntity>> {
 
         const userCreated = await User.create(user);
         if (!userCreated) return left(UserError.DUPLICATED_EMAIL);
@@ -60,28 +65,29 @@ export class UserMysqlRepository implements UserRepository {
             updatedAt: userCreated.updatedAt
         });
     }
-    async deleteUser(userId: string): Promise<Either<UserError, number>>{
+    public async deleteUser(criteria: Criteria): Promise<Either<UserError, number>>{
+
+        const whereClause = this.specificationBuilder.buildWhereClauseFromSpecifications(criteria);
 
         const rows = await User.destroy({
-            where: {
-                userId: userId
-            }
+            where: whereClause
         });
 
         return (rows > 0)
             ? right(rows)
             : left(UserError.USER_NOT_FOUND);
     }
-    async updateUser(fields: UserQuery, userId: string): Promise<Either<UserError, number>> {
+
+    public async updateUser(fields: UserQuery, criteria: Criteria): Promise<Either<UserError, number>> {
+
+        const whereClause = this.specificationBuilder.buildWhereClauseFromSpecifications(criteria);
 
         const rowsAffected = await User.update(
             {
                 ...fields
             },
             {
-                where: {
-                    userId: userId
-                }
+                where: whereClause
             }
         )
 

@@ -1,5 +1,5 @@
 import {Table, Column, Model, PrimaryKey, Unique, ForeignKey, BelongsTo, HasMany} from "sequelize-typescript";
-import {GroupEntity} from "../../domain/group.entity";
+import {GroupEntity} from "../../domain";
 import User from "../../../user/infrastructure/model/user.schema";
 import QrCode from "../../../qr_code/infrastructure/models/qrCode.schema";
 
